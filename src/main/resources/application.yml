@@ -1,0 +1,13 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: AI2502TeamPro
+
+  thymeleaf:
+    prefix: classpath:/templates/views/
+    cache: false #spring.thymeleaf.cache
+
+mybatis:
+  mapper-locations: classpath:mapper/**/*.xml
