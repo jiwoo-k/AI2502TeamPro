@@ -1,6 +1,6 @@
 package com.lec.spring.controller;
 
-import com.lec.spring.domain.Board;
+import com.lec.spring.domain.Post;
 import com.lec.spring.service.BoardService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,7 +22,7 @@ public class BoardController {
     public void write (){}
 
     @PostMapping("/write")
-    public String write (Board board, Model model) {
+    public String write (Post board, Model model) {
         int result = boardService.write(board);
         model.addAttribute("result", result);
         return "board/write";
@@ -43,7 +43,7 @@ public class BoardController {
         return "board/update";
     }
     @GetMapping("/update")
-    public String update(Model model, Board board){
+    public String update(Model model, Post board){
         int result = boardService.update(board);
         model.addAttribute("result", result);
         return "board/update";
