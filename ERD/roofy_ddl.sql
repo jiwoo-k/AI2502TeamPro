@@ -39,7 +39,8 @@ CREATE TABLE authority
 CREATE TABLE category
 (
     id   INT         NOT NULL AUTO_INCREMENT,
-    name VARCHAR(50) NULL,
+    name VARCHAR(50) NOT NULL,
+    color VARCHAR(10) DEFAULT '#808080',
     PRIMARY KEY (id)
 ) COMMENT '대분류';
 
@@ -96,7 +97,7 @@ CREATE TABLE posttype
 
 CREATE TABLE tag
 (
-    id          BIGINT   NOT NULL AUTO_INCREMENT,
+    id          INT   NOT NULL AUTO_INCREMENT,
     category_id INT      NOT NULL,
     name        LONGTEXT NOT NULL,
     PRIMARY KEY (id)
@@ -226,7 +227,7 @@ ALTER TABLE tag
     ADD CONSTRAINT FK_category_TO_tag
         FOREIGN KEY (category_id)
             REFERENCES category (id)
-            ON UPDATE RESTRICT ON DELETE CASCADE;
+            ON UPDATE RESTRICT;
 
 /* attachment 외래키 */
 ALTER TABLE attachment
