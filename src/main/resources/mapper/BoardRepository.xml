@@ -54,7 +54,7 @@
 
     <delete id="delete" parameterType="com.lec.spring.domain.Board" flushCache="true">
         delete
-        from post
+        from post where id = #{id}
 
     </delete>
 
