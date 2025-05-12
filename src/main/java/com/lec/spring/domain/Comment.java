@@ -18,5 +18,5 @@ public class Comment {
     private Long postId;
     private Long parentCmtId;
     private String content;
-    private LocalDateTime regDate;                                                                    v
+    private LocalDateTime regDate;
 }
