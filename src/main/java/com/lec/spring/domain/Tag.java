@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 public class Tag {
     private Long id;
     private String name;
+    private Long categoryId;
 }
