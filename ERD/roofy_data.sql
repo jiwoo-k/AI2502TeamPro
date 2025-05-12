@@ -62,8 +62,8 @@ INSERT INTO posttype (name)
 VALUES ('일반');
 
 -- [샘플 게시글]
--- post 테이블 구조 : (user_id, posttype_id, title, content)
-INSERT INTO post (user_id, posttype_id, title, content)
+-- post 테이블 구조 : (user_id, type, title, content)
+INSERT INTO post (user_id, type, title, content)
 VALUES (1, 1, '첫 번째 게시글', '첫 번째 게시글의 내용입니다.'),
        (2, 1, '두 번째 게시글', '두 번째 게시글의 내용입니다.');
 

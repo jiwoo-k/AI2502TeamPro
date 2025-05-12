@@ -72,7 +72,7 @@ CREATE TABLE post
 (
     id          INT          NOT NULL AUTO_INCREMENT,
     user_id     INT          NOT NULL,
-    posttype_id INT          NOT NULL,
+    type        INT          NOT NULL,
     title       VARCHAR(100) NOT NULL,
     content     LONGTEXT     NULL,
     regdate     DATETIME     NULL DEFAULT now(),
@@ -86,13 +86,6 @@ CREATE TABLE post_tag
     tag_id        BIGINT NOT NULL,
     PRIMARY KEY (guest_post_id, tag_id)
 ) COMMENT '게시물에 있는 태그';
-
-CREATE TABLE posttype
-(
-    id   INT          NOT NULL AUTO_INCREMENT,
-    name VARCHAR(100) NULL,
-    PRIMARY KEY (id)
-) COMMENT '게시물종류';
 
 CREATE TABLE tag
 (
