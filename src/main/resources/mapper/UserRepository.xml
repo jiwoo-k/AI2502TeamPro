@@ -17,6 +17,7 @@
             longitude,
             status
         FROM user
+
         WHERE 1 = 1
     </sql>
 
