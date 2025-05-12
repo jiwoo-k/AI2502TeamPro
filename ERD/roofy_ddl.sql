@@ -22,7 +22,7 @@ DROP TABLE IF EXISTS user;
 
 CREATE TABLE attachment
 (
-    id         INT          NOT NULL,
+    id         INT          NOT NULL AUTO_INCREMENT,
     post_id    INT          NOT NULL,
     sourcename VARCHAR(100) NOT NULL,
     filename   VARCHAR(100) NOT NULL,
@@ -43,15 +43,16 @@ CREATE TABLE category
     PRIMARY KEY (id)
 ) COMMENT '대분류';
 
-CREATE TABLE comment
-(
-    id              INT      NOT NULL AUTO_INCREMENT,
-    user_id         INT      NOT NULL,
-    post_id         INT      NOT NULL,
-    parentcommentid INT      NOT NULL,
-    content         TEXT     NULL,
-    regdate         DATETIME NULL DEFAULT now(),
-    PRIMARY KEY (id)
+CREATE TABLE comment (
+    id         INT      NOT NULL AUTO_INCREMENT,
+    user_id    INT      NOT NULL,
+    post_id    INT      NOT NULL,
+    parent_id  INT      DEFAULT NULL,
+    content    TEXT     NULL,
+    regdate    DATETIME DEFAULT now(),
+    PRIMARY KEY (id),
+    FOREIGN KEY (parent_id) REFERENCES comment(id)
+        ON DELETE CASCADE ON UPDATE RESTRICT
 ) COMMENT '댓글';
 
 CREATE TABLE follower
@@ -191,7 +192,7 @@ ALTER TABLE comment
 
 ALTER TABLE comment
     ADD CONSTRAINT FK_comment_TO_comment
-        FOREIGN KEY (parentcommentid)
+        FOREIGN KEY (parent_id)
             REFERENCES comment (id)
             ON UPDATE RESTRICT ON DELETE CASCADE;
 
