@@ -27,9 +27,11 @@ WHERE TABLE_SCHEMA = 'db2502'
 -- 2. 각 테이블의 데이터 확인
 SELECT *
 FROM authority;
+
 SELECT *
 FROM user
 ORDER BY id DESC;
+
 SELECT *
 FROM user_authorities;
 SELECT *

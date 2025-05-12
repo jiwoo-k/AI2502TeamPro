@@ -105,16 +105,16 @@ CREATE TABLE tag
 CREATE TABLE user
 (
     id         INT          NOT NULL AUTO_INCREMENT,
-    username   VARCHAR(100) NOT NULL COMMENT '사용자아이디',
-    name       VARCHAR(80)  NOT NULL COMMENT '닉네임',
+    username   VARCHAR(100) NOT NULL UNIQUE COMMENT '사용자아이디',
+    name       VARCHAR(80)  NOT NULL UNIQUE COMMENT '닉네임',
     password   VARCHAR(100) NOT NULL,
-    juminno    VARCHAR(10)  NOT NULL,
-    regdate    DATETIME     NULL DEFAULT now(),
+    juminNo    VARCHAR(13) UNIQUE NOT NULL,
+    createdAt    DATETIME  DEFAULT now(),
     provider   VARCHAR(40)  NULL,
-    providerid VARCHAR(200) NULL,
-    latitude   DOUBLE       NOT NULL,
-    longitude  DOUBLE       NOT NULL,
-    status     BOOLEAN      NULL,
+    providerId VARCHAR(200) NULL,
+    latitude   DOUBLE,
+    longitude  DOUBLE,
+    status     enum('active', 'paused', 'banned')  NOT NULL default 'active',
     PRIMARY KEY (id)
 ) COMMENT '사용자';
 

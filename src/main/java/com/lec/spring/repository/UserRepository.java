@@ -7,10 +7,10 @@ public interface UserRepository {
     int save(User user);
 
     //2. id 로 특정 사용자 찾기
-    User findUserById(Long id);
+    User findById(Long id);
 
     //3. username 으로 특정 사용자 찾기
-    User findUserByUsername(String username);
+    User findByUsername(String username);
 
     //4. 특정 사용자 정보 수정
     int update(User user);
