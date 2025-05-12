@@ -10,52 +10,22 @@
             (#{title},#{content},#{type})
     </insert>
     <select id="findAll" parameterType="com.lec.spring.domain.Board">
-        select
-            id,
-            user_id,
-            type,
-            title,
-            createdat,
-            followed_userid,
-            user_id,
-            post_id,
-            name
-        from post, user_follow, post_tag, attachment, user_tag, user
-        order by desc
+        SELECT p.id       "p_id",
+               p.title    "p_title",
+               p.content  "p_content",
+               p.regdate  "p_regdate",
+               p.isfinish "p_isfinish",
+               u.id       "u_id",
+               u.username "u_username",
+               u.password "u_password",
+               u.name     "u_name",
+               u.juminno  "u_juminno",
+               u.regdate  "u_regdate"
+        FROM post p,
+             user u
+        WHERE p.user_id = u.id
+          AND p.id = 1
     </select>
-    <select id="findById" parameterType="com.lec.spring.domain.Board">
-        select
-            id,
-            user_id,
-            type,
-            title,
-            createdat,
-            followed_userid,
-            user_id,
-            post_id,
-            name
-        from post, user, user_follow, user_tag, post_tag
-    </select>
-    <update id="update" parameterType="com.lec.spring.domain.Board" flushCache="true">
-        update post
-        set title = #{title},
-            content = #{content},
-            createdat = #{createdat}
-        where id = #{id}
 
-        update user_tag
-        set user_id = #{user_tag}
-        where user_id = #{user_id}
-
-        update post_tag
-        set post_id = #{post_tag}
-        where post_id = #{post_id}
-    </update>
-
-    <delete id="delete" parameterType="com.lec.spring.domain.Board" flushCache="true">
-        delete
-        from post where id = #{id}
-
-    </delete>
 
 </mapper>
