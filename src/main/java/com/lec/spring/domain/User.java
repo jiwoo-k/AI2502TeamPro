@@ -18,6 +18,8 @@ public class User {
     private String username;
     private String name;
     private String password;
+    private String re_password;
+
     private String juminNo;
     private LocalDateTime createdAt;
 
