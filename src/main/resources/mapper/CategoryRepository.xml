@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lec.spring.repository.CategoryRepository">
+
+    <sql id="SELECT_BASE">
+        SELECT id,
+               name,
+               color
+        FROM category
+        WHERE 1 = 1
+    </sql>
+
+    <select id="findById" resultType="com.lec.spring.domain.Category">
+        <include refid="SELECT_BASE"/>
+        AND id = #{id}
+    </select>
+
+    <select id="findByName" resultType="com.lec.spring.domain.Category">
+        <include refid="SELECT_BASE"/>
+        AND name = #{name}
+    </select>
+
+    <insert id="save" flushCache="true" parameterType="com.lec.spring.domain.Category"
+            useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        INSERT INTO category(name, color)
+        VALUES (#{name}, #{color})
+    </insert>
+
+    <update id="update" flushCache="true" parameterType="com.lec.spring.domain.Category">
+        UPDATE category
+        SET name = #{name},
+            color = #{color}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="com.lec.spring.domain.Category" flushCache="true">
+        DELETE
+        FROM category WHERE id = #{id}
+
+    </delete>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

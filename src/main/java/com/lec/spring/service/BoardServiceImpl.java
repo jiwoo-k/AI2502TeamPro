@@ -17,7 +17,7 @@ public class BoardServiceImpl implements BoardService {
         this.userRepository = sqlSession.getMapper(UserRepository.class);
     }
     @Override
-    public int write(Post board) {
+    public int save(Post board) {
         return boardRepository.save(board);
     }
 

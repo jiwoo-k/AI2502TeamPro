@@ -3,15 +3,18 @@ package com.lec.spring.repository;
 import com.lec.spring.domain.Category;
 
 public interface CategoryRepository {
-    //1. 회원가입 시 사용자 저장
+    //1. 새 카테고리 저장
     int save(Category category);
 
-    //2. id 로 특정 사용자 찾기
-    Category findCategoryById(Long id);
+    //2. id 로 특정 카테고리 찾기
+    Category findById(Long id);
 
-    //3. username 으로 특정 사용자 찾기
-    Category findCategoryByName(String name);
+    //3. name 으로 특정 카테고리 찾기
+    Category findByName(String name);
 
-    //4. 특정 사용자 정보 수정
+    //4. 특정 카테고리 정보 수정
     int update(Category category);
+
+    //5. 특정 카테고리 삭제
+    int delete(Long id);
 }
