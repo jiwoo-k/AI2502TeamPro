@@ -40,8 +40,9 @@ CREATE TABLE category
 (
     id   INT         NOT NULL AUTO_INCREMENT,
     name VARCHAR(50) NULL,
+    color VARCHAR(10) DEFAULT '#808080' COMMENT 'RGB HEX',
     PRIMARY KEY (id)
-) COMMENT '대분류';
+) COMMENT '대분류(카테고리)';
 
 CREATE TABLE comment (
     id         INT      NOT NULL AUTO_INCREMENT,
@@ -94,7 +95,7 @@ CREATE TABLE tag
     category_id INT      NOT NULL,
     name        LONGTEXT NOT NULL,
     PRIMARY KEY (id)
-) COMMENT '태그';
+) COMMENT '소분류(태그)';
 
 CREATE TABLE user
 (
