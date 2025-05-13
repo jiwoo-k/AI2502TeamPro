@@ -164,12 +164,6 @@ ALTER TABLE post
             REFERENCES user (id)
             ON UPDATE RESTRICT ON DELETE CASCADE;
 
-ALTER TABLE post
-    ADD CONSTRAINT FK_posttype_TO_post
-        FOREIGN KEY (posttype_id)
-            REFERENCES posttype (id)
-            ON UPDATE RESTRICT ON DELETE CASCADE;
-
 /* comment 외래키 */
 ALTER TABLE comment
     ADD CONSTRAINT FK_user_TO_comment
