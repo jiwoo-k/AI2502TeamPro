@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lec.spring.repository.TagRepository">
+    <insert id="save" flushCache="true" parameterType="com.lec.spring.domain.Tag"
+            useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        INSERT INTO tag(category_id, name)
+        VALUES (#{category_id}, #{name});
+    </insert>
+
+    <select id="searchTag" resultType="com.lec.spring.domain.Tag">
+       select id, category_id, name
+       from tag
+       where category_id = #{category_id} and name = #{name}
+    </select>
+
+    <select id="findByPost" resultType="com.lec.spring.domain.Post">
+
+    </select>
+
+    <update id="update" parameterType="com.lec.spring.domain.User" flushCache="true">
+        update user
+        set username = #{username},
+            password = #{password}
+        where id = #{id};
+    </update>
+</mapper>
