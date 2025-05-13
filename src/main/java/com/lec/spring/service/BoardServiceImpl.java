@@ -14,6 +14,7 @@ public class BoardServiceImpl implements BoardService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     public BoardServiceImpl(SqlSession sqlSession) {
+        System.out.println("boardServiceImpl");
         this.postRepository = sqlSession.getMapper(PostRepository.class);
         this.userRepository = sqlSession.getMapper(UserRepository.class);
     }
@@ -24,6 +25,7 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public Post detail(Long id) {
+        System.out.println("잠깐만" + id);
         return postRepository.findById(id);
     }
 
@@ -45,10 +47,17 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public int delete(Long id) {
         int result = 0;
+        System.out.println("잠깐만 " + id);
         Post post = postRepository.findById(id);
         if (post != null) {
             result = postRepository.deleteById(id);
         }
         return result;
     }
+
+    @Override
+    public List<Post> listByType(String type) {
+        return postRepository.findByType(type);
+    }
+
 }

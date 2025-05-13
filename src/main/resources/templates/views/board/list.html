@@ -18,22 +18,29 @@
 <table>
     <thead>
         <tr>
-            <td>#</td>
             <td>name</td>
             <td>title</td>
             <td>날짜</td>
+            <td>타입</td>
         </tr>
     </thead>
     <tbody >
         <tr th:each="board : ${board}" >
-            <td ><a th:text="${board.id}" th:href="@{'detail/' + ${board.id}}"></a></td>
-            <td th:text="${board.name}"></td>
-            <td th:text="${board.title}"></td>
+            <td><a  th:text="${board.name}" th:href="@{'detail/' + ${board.id}}"></a></td>
+            <td><a  th:text="${board.title}" th:href="@{'detail/' + ${board.id}}"></a></td>
             <td th:text="${#temporals.format(board.createdat, 'yyyy-MM-dd HH:mm:ss')}"></td>
+            <td><a  th:text="${board.type}" th:href="@{'detail/' + ${board.id}}"></a></td>
         </tr>
     </tbody>
 </table>
 
 <button><a th:href="@{/board/write}">작성하기</a></button>
+<form method="get" action="/board/list">
+    <select name="type" onchange="this.form.submit()">
+        <option value="손님" th:selected="${selectedType == '손님'}">손님</option>
+        <option value="도우미" th:selected="${selectedType == '도우미'}">도우미</option>
+    </select>
+</form>
+
 </body>
 </html>

@@ -14,6 +14,8 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/board")
 public class BoardController {
@@ -22,7 +24,7 @@ public class BoardController {
         System.out.println("일단 생성");
         this.boardService = boardService;
     }
-// 수정, 추가의 경우 attr name을 result 로 하였음
+// 수정, 추가. 삭제의 경우 attr name을 result 로 하였음
     @GetMapping("/write")
     public void write (){}
 
@@ -44,11 +46,21 @@ public class BoardController {
         model.addAttribute("result", result);
         return "board/write";
     }
+
     @GetMapping("/list")
-    public String list (Model model){
-        model.addAttribute("board", boardService.list());
+    public String list(@RequestParam(required = false) String type, Model model) {
+        if (type == null || type.isBlank()) {
+            type = "손님";
+        }
+
+        List<Post> posts = boardService.listByType(type);
+
+        model.addAttribute("board", posts);
+        model.addAttribute("selectedType", type);
         return "board/list";
     }
+
+
     @GetMapping("/detail/{id}")
     public String detail(@PathVariable Long id, Model model){
         model.addAttribute("board", boardService.detail(id));
@@ -75,13 +87,13 @@ public class BoardController {
         }
         int result = boardService.update(post);
         model.addAttribute("result", result);
-        return "board/update" + post.getId();
+        return "board/updateOk" ;
     }
-    @GetMapping("/delete")
-    public String delete(Long id, Model model){
-        System.out.println("삭제결과");
-        model.addAttribute("result", boardService.detail(id));
-        return "board/delete";
+    @PostMapping("/delete")
+    public String delete( @RequestParam Long id, Model model){
+        System.out.println("삭제결과" + boardService.delete(id));
+        model.addAttribute("result", boardService.delete(id));
+        return "board/deleteOk";
     }
 
     @InitBinder

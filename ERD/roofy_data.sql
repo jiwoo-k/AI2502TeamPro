@@ -88,6 +88,22 @@ VALUES
 INSERT INTO post (user_id, type, title, content)
 VALUES (1, 1, '첫 번째 게시글', '첫 번째 게시글의 내용입니다.');
 
+insert into category (name, color)
+values ('food', '#8080');
+
+insert into category (name, color)
+values
+    ('운동', '#fffff'),
+    ('여행' ,'#redsef'),
+    ('소개팅' , '#dddddd');
+
+insert into tag (category_id, name) VALUE
+(1, '라면'),
+    (1, '마라탕'),
+    (2, '축구'),
+    (2, '요가'),
+    (3, '퐈리'),
+    (4, '남사친 구해요');
 
 -- ----------------------------------------------------
 -- [샘플 댓글 및 답글 데이터]
@@ -105,6 +121,7 @@ VALUES (1, 1, '첫 번째 게시글', '첫 번째 게시글의 내용입니다.'
 
 -- user
 
+SELECT * FROM tag;
 
 
 

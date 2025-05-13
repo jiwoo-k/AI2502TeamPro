@@ -14,10 +14,16 @@
             post.id,
             post.title,
             post.createdat,
-            user.name
+            user.name,
+            post.type
         FROM post, user
         order by id desc
     </select>
+
+    <select id="findByType" resultType="com.lec.spring.domain.Post">
+        SELECT * FROM post, user WHERE type = #{type}
+    </select>
+
 
     <select id="findById" parameterType="com.lec.spring.domain.Post">
         SELECT post.id, post.title, post.createdat, user.name, post.content
