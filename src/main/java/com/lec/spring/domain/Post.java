@@ -12,11 +12,11 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Board {
+public class Post {
     private Long id;
     private String title;
     private String content;
-    private LocalDateTime regdate;
+    private LocalDateTime createdat;
     private User userId;
     private Integer type;
     private Boolean isfinish;

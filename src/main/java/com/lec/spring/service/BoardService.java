@@ -1,25 +1,25 @@
 package com.lec.spring.service;
 
-import com.lec.spring.domain.Board;
+import com.lec.spring.domain.Post;
 import org.springframework.ui.Model;
 
 import java.util.List;
 
 public interface BoardService {
     // 게시판 작성하기
-    int write (Board board);
+    int write (Post Post);
 
     // id 가져와서 글 읽기
-    Board detail (Long id);
+    Post detail (Long id);
 
     // 게시판 목록
-    List<Board> list ();
+    List<Post> list ();
 
     // 페이징
-    List<Board> list (Integer page, Model model);
+    List<Post> list (Integer page, Model model);
 
     // 게시판 수정하기
-    int update(Board board);
+    int update(Post Post);
 
     // 게시판 삭제
     int delete(Long id);

@@ -49,8 +49,7 @@ SELECT id       "id",
        username "username",
        password "password",
        juminno  "juminno",
-       name     "name",
-       regdate  "regdate"
+       name     "name"
 FROM user
 WHERE 1 = 1
   AND id = 1
@@ -84,8 +83,7 @@ SELECT p.id       "p_id",
        u.username "u_username",
        u.password "u_password",
        u.name     "u_name",
-       u.juminno  "u_juminno",
-       u.regdate  "u_regdate"
+       u.juminno  "u_juminno"
 FROM post p,
      user u
 WHERE p.user_id = u.id
@@ -146,12 +144,3 @@ WHERE c.user_id = u.id
   AND c.post_id = 1
 ORDER BY c.id DESC
 ;
-
-SELECT
-    a.id,
-    a.title,
-    a.regdate,
-    b.name
-FROM post a, user b
-order by id desc
-

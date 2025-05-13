@@ -3,6 +3,8 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <title>Title</title>
 </head>
 <style>
@@ -19,17 +21,19 @@
             <td>#</td>
             <td>name</td>
             <td>title</td>
-            <td>regdate</td>
+            <td>날짜</td>
         </tr>
     </thead>
     <tbody >
-        <tr th:each="board : ${board}">
-            <td th:text="${board.id}"></td>
+        <tr th:each="board : ${board}" >
+            <td ><a th:text="${board.id}" th:href="@{'detail/' + ${board.id}}"></a></td>
             <td th:text="${board.name}"></td>
             <td th:text="${board.title}"></td>
-            <td th:text="${#temporals.format(board.regdate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+            <td th:text="${#temporals.format(board.createdat, 'yyyy-MM-dd HH:mm:ss')}"></td>
         </tr>
     </tbody>
 </table>
+
+<button><a th:href="@{/board/write}">작성하기</a></button>
 </body>
 </html>

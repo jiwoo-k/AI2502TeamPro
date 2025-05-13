@@ -7,6 +7,38 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-<h2>이것슨....</h2>
+<h2>게시물 작성</h2>
+
+<form th:action="@{/board/write}"  method="post">
+  <div>
+    <span>제목을 입력하세요</span>
+    <input type="text" th:value="${title}" placeholder="제목을 입력하세요" name="title">
+  </div>
+
+  <div>
+    <span>내용을 입력하세요</span>
+    <textarea th:value="${content}" placeholder="글을 작성하세요" name="content"></textarea>
+  </div>
+
+  <div>
+    <select name="type" placeholder="게시물 유형">
+      <option value="손님">손님</option>
+      <option value="도우미">도우미</option>
+    </select>
+  </div>
+  <div>
+    <button type="submit">작성</button>
+    <a th:href="@{/board/list}"></a>
+  </div>
+  <button><a th:href="@{/board/list}">목록</a></button>
+
+
+</form>
+
+<script th:if ='${result > 0}' th:inline ='javascript'>
+  alert("제출 성공")
+  location.href= "/board/list";
+</script>
+
 </body>
 </html>

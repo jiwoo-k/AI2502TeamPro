@@ -1,10 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
+<form th:action="@{/board/update}" method="post">
+    <div>
+        <div th:text="'작성자: ' + ${board.name}" ></div>
+        <div th:text="${#temporals.format(board.createdat,  'yyyy-MM-dd HH:mm:ss')} + ' 작성'"></div>
+    </div>
+    <div>
+        <span th:text="${board.title}"></span>
+        <input type="hidden" name="title" th:value="${board.title}">
+    </div>
+    <div>
+        <span th:text="${board.content}"></span>
+        <input type="hidden" name="content" th:value="${board.content}">
+    </div>
+
+    <div>
+        <span th:text="${board.content}"></span>
+    </div>
+
+    <button type="submit">수정완료</button>
+    <a th:href="@{/board/list}">목록</a>
+
+</form>
+<script th:if='${result > 0}' th:inline='javascript'>
+    alert("수정 성공");
+    location.href = "/board/list";
+</script>
+
+
+
+</form>
 
 </body>
+
 </html>
