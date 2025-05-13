@@ -3,59 +3,43 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lec.spring.repository.PostRepository">
+
     <insert id="save" flushCache="true" keyProperty="id" parameterType="com.lec.spring.domain.Post" useGeneratedKeys="true">
         insert into post
-        (title, content, type)
-        values
-            (#{title},#{content},#{type})
+            (user_id, title, content, type)
+        values (#{user_id}, #{title}, #{content}, #{type})
     </insert>
+
     <select id="findAll" parameterType="com.lec.spring.domain.Post">
-        select
-            id,
-            user_id,
-            type,
-            title,
-            createdat,
-            followed_userid,
-            user_id,
-            post_id,
-            name
-        from post, user_follow, post_tag, attachment, user_tag, user
-        order by desc
+        SELECT post.id,
+               post.title,
+               post.createdat,
+               user.name
+        FROM post,
+             user
+        order by id desc
     </select>
+
     <select id="findById" parameterType="com.lec.spring.domain.Post">
-        select
-            id,
-            user_id,
-            type,
-            title,
-            createdat,
-            followed_userid,
-            user_id,
-            post_id,
-            name
-        from post, user, user_follow, user_tag, post_tag
+        SELECT post.id, post.title, post.createdat, user.name, post.content
+        FROM post,
+             user
+        WHERE post.user_id = user.id
+          AND post.id = #{id}
     </select>
     <update id="update" parameterType="com.lec.spring.domain.Post" flushCache="true">
         update post
-        set title = #{title},
-            content = #{content},
-            createdat = #{createdat}
+        set title     = #{title},
+            content   = #{content},
+            createdat = #{createdat},
+            type      = #{type}
         where id = #{id}
-
-        update user_tag
-        set user_id = #{user_tag}
-        where user_id = #{user_id}
-
-        update post_tag
-        set post_id = #{post_tag}
-        where post_id = #{post_id}
     </update>
-
-    <delete id="delete" parameterType="com.lec.spring.domain.Post" flushCache="true">
+    <delete id="delete">
         delete
-        from post where id = #{id}
-
+        from post
+        where id = #{id}
     </delete>
+
 
 </mapper>
