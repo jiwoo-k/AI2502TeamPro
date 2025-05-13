@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lec.spring.repository.TagRepository">
-    <insert id="save" flushCache="true" parameterType="com.lec.spring.domain.Tag"
+    <insert id="addTag" flushCache="true" parameterType="com.lec.spring.domain.Tag"
             useGeneratedKeys="true" keyColumn="id" keyProperty="id">
         INSERT INTO tag(category_id, name)
         VALUES (#{category_id}, #{name});
@@ -15,14 +15,36 @@
        where category_id = #{category_id} and name = #{name}
     </select>
 
-    <select id="findByPost" resultType="com.lec.spring.domain.Post">
+    <insert id="savePostTag" flushCache="true" parameterType="arrayList">
+        INSERT INTO post_tag(post_id, tag_id)
+        VALUES
+        <foreach collection="list" item="e" separator=",">
+            (#{param2}, #{e.id})
+        </foreach>
+    </insert>
 
+    <insert id="saveUserTag" flushCache="true" parameterType="arrayList">
+        INSERT INTO user_tag(user_id, tag_id)
+        VALUES
+        <foreach collection="list" item="e" separator=",">
+            (#{param2}, #{e.id})
+        </foreach>
+    </insert>
+
+    <select id="findPostsByTags" flushCache="true" parameterType="arrayList">
+        select * from post
+        where id in (<foreach collection="array" item="e" separator=",">#{e.id}</foreach>)
     </select>
 
-    <update id="update" parameterType="com.lec.spring.domain.User" flushCache="true">
-        update user
-        set username = #{username},
-            password = #{password}
-        where id = #{id};
-    </update>
+    <select id="FindTagByPostId" resultType="com.lec.spring.domain.Tag">
+        select t.id, t.category_id,t.name
+        from post_tag pt, tag t
+        where pt.post_id = #{postId} and pt.tag_id = t.id;
+    </select>
+
+    <select id="FindTagByUserId" resultType="com.lec.spring.domain.Tag">
+        select t.id, t.category_id,t.name
+        from user_tag ut, tag t
+        where ut.user_id = #{userId} and ut.tag_id = t.id;
+    </select>
 </mapper>
