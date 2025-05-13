@@ -53,6 +53,7 @@ VALUES ('USER1', '$2a$10$samplehash1', '회원1', '0000000001', 37.5665, 126.978
        ('ADMIN1', '$2a$10$samplehash2', '관리자1', '0000000002', 37.4563, 126.7052, TRUE);
 
 
+
 -- [샘플 게시글]
 -- post 테이블 구조 : (user_id, type, title, content)
 INSERT INTO post (user_id, type, title, content)
