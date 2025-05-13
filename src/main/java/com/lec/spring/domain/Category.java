@@ -14,4 +14,7 @@ public class Category {
     private Long id;
     private String name;
     private String color;
+
+    //DB 에는 없지만 인기순 정렬 위해서..
+    private Long tagCount;
 }
