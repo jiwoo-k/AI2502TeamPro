@@ -95,7 +95,7 @@ public class CommentServiceImpl implements CommentService {
 
         // 권한 체크: 댓글 작성자와 수정 요청 사용자가 동일한지
         if (user == null || !existingComment.getUserId().equals(user.getId())) {
-            System.err.println("ERROR: 댓글 수정 실패 - 권한 없음. 댓글ID: " + comment.getId() + ", 사용자ID: " + (user != null ? user.getId() : "null"));
+            System.err.println("ERROR: 댓글 수정 실패 - 권한 없음. 댓글 ID: " + comment.getId() + ", 사용자 ID: " + (user != null ? user.getId() : "null"));
             throw new AccessDeniedException("댓글 수정 권한이 없습니다.");
         }
 
@@ -150,7 +150,7 @@ public class CommentServiceImpl implements CommentService {
         // 권한 체크: 게시글 작성자만 픽 가능
         if (postAuthorUserId == null || !existingComment.getPostId().equals(postAuthorUserId)) {
             System.err.println("ERROR: 댓글 픽 실패 - 권한 없음. 댓글ID: " + id + ", 게시글작성자ID: " + postAuthorUserId);
-             throw new AccessDeniedException("댓글 픽 권한이 없습니다. (게시글 작성자만 가능)");
+            throw new AccessDeniedException("댓글 픽 권한이 없습니다. (게시글 작성자만 가능)");
         }
 
 
