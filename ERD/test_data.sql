@@ -1,7 +1,7 @@
 insert into user(username, name, password, juminNo)
-values('user1', '회원1', '1234', '0009254222222'),
-      ('user2', '회원2', '1234', '9201021333333'),
-      ('user3', '회원3', '1234', '0402023444444');
+values('USER1', '회원1', '1234', '0009254222222'),
+      ('USER2', '회원2', '1234', '9201021333333'),
+      ('USER3', '회원3', '1234', '0402023444444');
 
 insert into category(name)
 values ('sport'), ('travel'), ('food');
@@ -15,7 +15,7 @@ VALUES (3, '같이밥먹어요'),
 
 insert into post(user_id, type, title, content)
 values(1, 'guest', 'title1', 'content1'),
-      (2, 'helper', 'title2', 'content2'),
+      (1, 'helper', 'title2', 'content2'),
       (3, 'guest', 'title3', 'content3')
 ;
 
@@ -42,6 +42,15 @@ values(1, 1),
       (3, 2)
 ;
 
+INSERT INTO authority (name) VALUES
+('ROLE_MEMBER'), ('ROLE_ADMIN');
+
+-- 샘플 사용자-권한
+INSERT INTO user_authorities
+VALUES (1, 1),
+       (3, 1),
+       (3, 2)
+;
 
 select * from post;
 select * from user;
