@@ -146,3 +146,12 @@ WHERE c.user_id = u.id
   AND c.post_id = 1
 ORDER BY c.id DESC
 ;
+
+SELECT
+    a.id,
+    a.title,
+    a.regdate,
+    b.name
+FROM post a, user b
+order by id desc
+

@@ -22,4 +22,5 @@ public class Board {
     private Boolean isfinish;
     private LocalDateTime deletedat;
     private int posttypeId;
+    private String name;
 }

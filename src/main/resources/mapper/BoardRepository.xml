@@ -10,21 +10,15 @@
             (#{title},#{content},#{type})
     </insert>
     <select id="findAll" parameterType="com.lec.spring.domain.Board">
-        SELECT p.id       "p_id",
-               p.title    "p_title",
-               p.content  "p_content",
-               p.regdate  "p_regdate",
-               p.isfinish "p_isfinish",
-               u.id       "u_id",
-               u.username "u_username",
-               u.password "u_password",
-               u.name     "u_name",
-               u.juminno  "u_juminno",
-               u.regdate  "u_regdate"
-        FROM post p,
-             user u
-        WHERE p.user_id = u.id
-          AND p.id = 1
+        SELECT
+            a.id,
+            a.title,
+            a.regdate,
+            b.name
+        FROM post a, user b
+        order by id desc
+
+
     </select>
 
 

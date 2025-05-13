@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -16,15 +17,15 @@
     <thead>
         <tr>
             <td>#</td>
-            <td>username</td>
+            <td>name</td>
             <td>title</td>
             <td>regdate</td>
         </tr>
     </thead>
     <tbody >
         <tr th:each="board : ${board}">
-            <td th:text="${board.username}"></td>
             <td th:text="${board.id}"></td>
+            <td th:text="${board.name}"></td>
             <td th:text="${board.title}"></td>
             <td th:text="${#temporals.format(board.regdate, 'yyyy-MM-dd HH:mm:ss')}"></td>
         </tr>
