@@ -105,6 +105,15 @@ insert into tag (category_id, name) VALUE
     (3, '퐈리'),
     (4, '남사친 구해요');
 
+insert into post_tag (post_id, tag_id) VALUE
+(7,1)
+,(8,3),
+    (9,2);
+
+insert into user_tag (user_id, tag_id) VALUE
+    (10,1)
+    ,(11,3),
+    (7,2);
 -- ----------------------------------------------------
 -- [샘플 댓글 및 답글 데이터]
 -- ----------------------------------------------------
@@ -121,7 +130,19 @@ insert into tag (category_id, name) VALUE
 
 -- user
 
-SELECT * FROM tag;
+SELECT * FROM user_tag;
+
+
+SELECT
+    post.id AS p_id,
+    post.title AS p_title,
+    post.content AS p_content,
+    post.createdat AS p_createdat,
+    post.type AS p_type,
+    user.id AS u_id,
+    user.name AS u_name
+FROM post
+         JOIN user ON post.user_id = user.id
 
 
 
