@@ -8,16 +8,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
 import java.util.List;
+
 @Service
 public class BoardServiceImpl implements BoardService {
+
     private final PostRepository boardRepository;
     private final UserRepository userRepository;
+
     public BoardServiceImpl(SqlSession sqlSession) {
         this.boardRepository = sqlSession.getMapper(PostRepository.class);
         this.userRepository = sqlSession.getMapper(UserRepository.class);
     }
+
     @Override
-    public int save(Post board) {
+    public int write(Post board) {
         return boardRepository.save(board);
     }
 

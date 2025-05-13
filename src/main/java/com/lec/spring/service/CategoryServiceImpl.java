@@ -1,0 +1,40 @@
+package com.lec.spring.service;
+
+import com.lec.spring.domain.Category;
+import com.lec.spring.repository.CategoryRepository;
+import org.springframework.stereotype.Service;
+
+@Service
+public class CategoryServiceImpl implements CategoryService {
+
+    private final CategoryRepository categoryRepository;
+
+    public CategoryServiceImpl(CategoryRepository categoryRepository) {
+        this.categoryRepository = categoryRepository;
+    }
+
+    @Override
+    public int save(Category category) {
+        return categoryRepository.save(category);
+    }
+
+    @Override
+    public int update(Category category) {
+        return categoryRepository.update(category);
+    }
+
+    @Override
+    public int delete(Long id) {
+        return categoryRepository.delete(id);
+    }
+
+    @Override
+    public Category findById(Long id) {
+        return categoryRepository.findById(id);
+    }
+
+    @Override
+    public Category findByName(String name) {
+        return categoryRepository.findByName(name);
+    }
+}

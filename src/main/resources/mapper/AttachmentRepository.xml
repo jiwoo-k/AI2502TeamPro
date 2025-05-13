@@ -4,7 +4,7 @@
 <mapper namespace="com.lec.spring.repository.AttachmentRepository">
 
     <insert id="insert" flushCache="true" parameterType="arrayList">
-        INSERT INTO t5_attachment(sourcename, filename, post_id)
+        INSERT INTO attachment(sourcename, filename, post_id)
         VALUES
             <foreach collection="list" item="e" separator=",">
             (#{e.sourcename}, #{e.filename}, #{param2})
@@ -12,7 +12,7 @@
     </insert>
 
     <insert id="save" flushCache="true" parameterType="com.lec.spring.domain.Attachment">
-        INSERT INTO t5_attachment(sourcename, filename, post_id)
+        INSERT INTO attachment(sourcename, filename, post_id)
         VALUES
             (#{sourcename}, #{filename}, #{post_id})
     </insert>
@@ -21,7 +21,7 @@
     <!-- 반복해서 사용될 쿼리문은 sql 태그로 정의 include 태그로 가져다 쓸수 있다 -->
     <sql id="SELECTFILE">
         SELECT id, sourcename, filename, post_id
-        FROM t5_attachment
+        FROM attachment
         WHERE 1 = 1
     </sql>
 
@@ -49,7 +49,7 @@
     </select>
 
     <delete id="deleteByIds" flushCache="true" parameterType="java.util.ArrayList">
-        DELETE FROM t5_attachment
+        DELETE FROM attachment
         WHERE id IN (<foreach collection="array" item="item" separator=",">
                 #{item}
             </foreach>
@@ -57,7 +57,7 @@
     </delete>
 
     <delete id="delete" flushCache="true" parameterType="com.lec.spring.domain.Attachment">
-        DELETE FROM t5_attachment WHERE id = #{id}
+        DELETE FROM attachment WHERE id = #{id}
     </delete>
 </mapper>
 

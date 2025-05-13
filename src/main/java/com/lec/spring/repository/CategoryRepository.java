@@ -1,7 +1,9 @@
 package com.lec.spring.repository;
 
 import com.lec.spring.domain.Category;
+import org.apache.ibatis.annotations.Mapper;
 
+@Mapper
 public interface CategoryRepository {
     //1. 새 카테고리 저장
     int save(Category category);
