@@ -89,7 +89,7 @@ public class SecurityConfig {
                 // 로그아웃 설정
                 .logout(logout -> logout
                         .logoutUrl("/user/logout") // 로그아웃 처리할 URL (기본값 /logout)
-                        // Controller 에는 이 URL 에 대한 특별한 핸들러 메소드가 없어도 ehla
+                        // Controller 에는 이 URL 에 대한 특별한 핸들러 메소드가 없어도 됨
                         // Spring Security 가 이 URL 로 들어오는 요청을 가로채서 로그아웃 처리
                         .logoutSuccessUrl("/home") // 로그아웃 성공 후 이동할 페이지 URL
                         .invalidateHttpSession(true) // HTTP 세션 무효화 (로그아웃 시)
