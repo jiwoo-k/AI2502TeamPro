@@ -18,10 +18,4 @@ public interface CommentRepository {
 
 
     int updateIsPicked(@Param("id") Long id, @Param("isPicked") Boolean isPicked);
-
-    // (추가 메소드 고려)
-    // - 특정 사용자가 작성한 댓글 조회 (마이페이지)
-    // - 특정 게시글에 달린 최상위 댓글만 조회
-    // - 특정 부모 댓글에 달린 답글만 조회
-    // - 삭제된 댓글 처리 (is_deleted 플래그 등 사용 시)
 }

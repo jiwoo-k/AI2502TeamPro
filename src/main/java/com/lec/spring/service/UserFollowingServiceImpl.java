@@ -28,7 +28,7 @@ public class UserFollowingServiceImpl implements UserFollowingService {
         //    return 0; // 또는 throw new IllegalArgumentException("자신을 팔로우할 수 없습니다.");
         // }
 
-        // 2. 이미 팔로우 중인지 확인하는 로직을 추가할 수 있습니다. (Repository에 해당 메소드 필요)
+        // 2. 이미 팔로우 중인지 확인하는 로직을 추가할 수 있습니다. (Repository 에 해당 메소드 필요)
         // if (repository.countByFollowingUserIdAndFollowedUserId(followingUser.getId(), followedUser.getId()) > 0) {
         //    // 이미 팔로우 중임
         //    return 0; // 또는 throw new IllegalStateException("이미 팔로우 중입니다.");
@@ -57,13 +57,13 @@ public class UserFollowingServiceImpl implements UserFollowingService {
     }
 
     @Override
-    @Transactional(readOnly = true) // **[추가됨]** 조회 작업은 읽기 전용 트랜잭션으로 설정하여 성능을 최적화합니다.
+    @Transactional(readOnly = true) // 조회 작업은 읽기 전용 트랜잭션으로 설정하여 성능을 최적화합니다.
     public List<UserFollowing> getFollowingList(Long followingUserId) {
         return repository.findByFollowingUserId(followingUserId);
     }
 
     @Override
-    @Transactional(readOnly = true) // **[추가됨]** 조회 작업은 읽기 전용 트랜잭션으로 설정하여 성능을 최적화합니다.
+    @Transactional(readOnly = true) // 조회 작업은 읽기 전용 트랜잭션으로 설정하여 성능을 최적화합니다.
     public List<UserFollowing> getFollowersList(Long followedUserId) {
         return repository.findByFollowedUserId(followedUserId);
     }

@@ -119,7 +119,7 @@ public class CommentServiceImpl implements CommentService {
 
         // 2. 권한 체크: 댓글 작성자 또는 관리자인지 확인
         boolean isAdmin = user != null && user.getAuthorities().stream()
-                .anyMatch(authority -> authority.getName().equals("ROLE_ADMIN"));
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
 
         if (user == null || (!existingComment.getUserId().equals(user.getId()) && !isAdmin)) {
             System.err.println("ERROR: 댓글 삭제 실패 - 권한 없음. 댓글ID: " + id + ", 사용자ID: " + (user != null ? user.getId() : "null"));
@@ -154,9 +154,9 @@ public class CommentServiceImpl implements CommentService {
         }
 
 
-        // **[미구현]** 손님 게시글의 경우 1개의 댓글만 픽 가능 로직 추가 필요 (이전 피드백 참고)
+        // [미구현] 손님 게시글의 경우 1개의 댓글만 픽 가능 로직 추가 필요
         // - 해당 게시글이 손님 게시글인지 확인 (PostRepository 필요)
-        // - 해당 게시글에 이미 픽된 다른 댓글이 있는지 확인 (CommentRepository에 메소드 추가 필요)
+        // - 해당 게시글에 이미 픽된 다른 댓글이 있는지 확인 (CommentRepository 에 메소드 추가 필요)
         // - 있다면 기존 픽을 해제하는 로직 수행
 
         return commentRepository.updateIsPicked(id, isPicked);
