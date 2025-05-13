@@ -5,6 +5,7 @@ import com.lec.spring.repository.PostRepository;
 import com.lec.spring.repository.UserRepository;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 
 import java.util.List;
@@ -40,14 +41,13 @@ public class BoardServiceImpl implements BoardService {
     public int update(Post post) {
         return postRepository.update(post);
     }
-
+    @Transactional
     @Override
     public int delete(Long id) {
         int result = 0;
-        postRepository.findById(id);
         Post post = postRepository.findById(id);
         if (post != null) {
-            result = postRepository.delete(id);
+            result = postRepository.deleteById(id);
         }
         return result;
     }

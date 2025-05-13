@@ -14,21 +14,24 @@
     <span>제목을 입력하세요</span>
     <input type="text" th:value="${title}" placeholder="제목을 입력하세요" name="title">
   </div>
+  <div th:if="${error_title}" th:text="${error_title}" style="color: red"></div>
 
   <div>
     <span>내용을 입력하세요</span>
     <textarea th:value="${content}" placeholder="글을 작성하세요" name="content"></textarea>
   </div>
+  <div th:if="${error_content}" th:text="${error_content}" style="color: red"></div>
+
 
   <div>
-    <select name="type" placeholder="게시물 유형">
+    <select name="type" placeholder="게시물 유형" th:value="${type}">
       <option value="손님">손님</option>
       <option value="도우미">도우미</option>
     </select>
   </div>
   <div>
     <button type="submit">작성</button>
-    <a th:href="@{/board/list}"></a>
+    <a th:href="@{/board/wirte}"></a>
   </div>
   <button><a th:href="@{/board/list}">목록</a></button>
 

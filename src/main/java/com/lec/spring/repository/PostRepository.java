@@ -19,7 +19,7 @@ public interface PostRepository {
     int update(Post post);
 
     // 게시판 삭제하기
-    int delete(Long id);
+    int deleteById(Long id);
 
     // 페이징
     List<Post> selectPage(int page , int rows);

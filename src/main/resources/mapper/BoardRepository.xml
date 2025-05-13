@@ -5,9 +5,9 @@
 <mapper namespace="com.lec.spring.repository.PostRepository">
     <insert id="save" flushCache="true" keyProperty="id" parameterType="com.lec.spring.domain.Post" useGeneratedKeys="true">
         insert into post
-        (title, content, type)
+        (user_id, title, content, type)
         values
-            (#{title},#{content},#{type})
+            (#{user_id},#{title},#{content},#{type})
     </insert>
     <select id="findAll" parameterType="com.lec.spring.domain.Post">
         SELECT
@@ -20,21 +20,20 @@
     </select>
 
     <select id="findById" parameterType="com.lec.spring.domain.Post">
-        SELECT
-            post.id,
-            post.title,
-            post.createdat,
-            user.name
+        SELECT post.id, post.title, post.createdat, user.name, post.content
         FROM post, user
-        where 1 = 1
+        WHERE post.user_id = user.id AND post.id = #{id}
     </select>
-    <update id="update" parameterType="com.lec.spring.domain.Post">
-        update post, user
+    <update id="update" parameterType="com.lec.spring.domain.Post"  flushCache="true">
+        update post
         set
-
-
+            title     = #{title},
+            content   = #{content}
+        where id = #{id}
     </update>
-
+    <delete id="deleteById" flushCache="true" parameterType="com.lec.spring.domain.Post">
+        delete from post where id = #{id}
+    </delete>
 
 
 </mapper>

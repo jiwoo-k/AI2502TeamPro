@@ -70,6 +70,7 @@ CREATE TABLE post
     PRIMARY KEY (id)
 ) COMMENT '게시글';
 
+
 CREATE TABLE post_tag
 (
     post_id INT NOT NULL,

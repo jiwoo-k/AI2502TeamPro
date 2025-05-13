@@ -144,3 +144,16 @@ WHERE c.user_id = u.id
   AND c.post_id = 1
 ORDER BY c.id DESC
 ;
+
+
+SELECT
+    post.id,
+    post.title,
+    post.createdat,
+    user.name
+FROM post
+         JOIN user ON post.user_id = user.id
+ORDER BY post.id DESC;
+
+
+delete from post where id = 1
