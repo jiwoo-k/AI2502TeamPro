@@ -22,8 +22,8 @@ public class BoardController {
     public void write (){}
 
     @PostMapping("/write")
-    public String write (Post board, Model model) {
-        int result = boardService.write(board);
+    public String save(Post board, Model model) {
+        int result = boardService.save(board);
         model.addAttribute("result", result);
         return "board/write";
     }
