@@ -22,7 +22,7 @@ DROP TABLE IF EXISTS user;
 
 CREATE TABLE attachment
 (
-    id         INT          NOT NULL,
+    id         INT          NOT NULL AUTO_INCREMENT,
     post_id    INT          NOT NULL,
     sourcename VARCHAR(100) NOT NULL,
     filename   VARCHAR(100) NOT NULL,
@@ -40,18 +40,20 @@ CREATE TABLE category
 (
     id   INT         NOT NULL AUTO_INCREMENT,
     name VARCHAR(50) NULL,
+    color VARCHAR(10) DEFAULT '#808080' COMMENT 'RGB HEX',
     PRIMARY KEY (id)
-) COMMENT '대분류';
+) COMMENT '대분류(카테고리)';
 
-CREATE TABLE comment
-(
-    id              INT      NOT NULL AUTO_INCREMENT,
-    user_id         INT      NOT NULL,
-    post_id         INT      NOT NULL,
-    parentcommentid INT      NOT NULL,
-    content         TEXT     NULL,
-    regdate         DATETIME NULL DEFAULT now(),
-    PRIMARY KEY (id)
+CREATE TABLE comment (
+    id         INT      NOT NULL AUTO_INCREMENT,
+    user_id    INT      NOT NULL,
+    post_id    INT      NOT NULL,
+    parent_id  INT      DEFAULT NULL,
+    content    TEXT     NULL,
+    regdate    DATETIME DEFAULT now(),
+    PRIMARY KEY (id),
+    FOREIGN KEY (parent_id) REFERENCES comment(id)
+        ON DELETE CASCADE ON UPDATE RESTRICT
 ) COMMENT '댓글';
 
 CREATE TABLE follower
@@ -93,7 +95,7 @@ CREATE TABLE tag
     category_id INT      NOT NULL,
     name        LONGTEXT NOT NULL,
     PRIMARY KEY (id)
-) COMMENT '태그';
+) COMMENT '소분류(태그)';
 
 CREATE TABLE user
 (
@@ -163,12 +165,6 @@ ALTER TABLE post
             REFERENCES user (id)
             ON UPDATE RESTRICT ON DELETE CASCADE;
 
-ALTER TABLE post
-    ADD CONSTRAINT FK_posttype_TO_post
-        FOREIGN KEY (posttype_id)
-            REFERENCES posttype (id)
-            ON UPDATE RESTRICT ON DELETE CASCADE;
-
 /* comment 외래키 */
 ALTER TABLE comment
     ADD CONSTRAINT FK_user_TO_comment
@@ -184,7 +180,7 @@ ALTER TABLE comment
 
 ALTER TABLE comment
     ADD CONSTRAINT FK_comment_TO_comment
-        FOREIGN KEY (parentcommentid)
+        FOREIGN KEY (parent_id)
             REFERENCES comment (id)
             ON UPDATE RESTRICT ON DELETE CASCADE;
 
