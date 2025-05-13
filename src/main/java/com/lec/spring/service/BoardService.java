@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import java.util.List;
 
 public interface BoardService {
+
     // 게시판 작성하기
     int write (Post post);
 

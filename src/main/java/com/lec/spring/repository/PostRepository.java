@@ -2,9 +2,11 @@ package com.lec.spring.repository;
 
 
 import com.lec.spring.domain.Post;
+import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
+@Mapper
 public interface PostRepository {
     // 작성한 글 저장하기
     int save (Post post);
