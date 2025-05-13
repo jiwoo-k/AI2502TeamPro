@@ -15,9 +15,8 @@
        where category_id = #{category_id} and name = #{name}
     </select>
 
-    <select id="findByUsername" resultType="com.lec.spring.domain.User">
-        <include refid="SELECT_BASE"/>
-        and username = #{username};
+    <select id="findByPost" resultType="com.lec.spring.domain.Post">
+
     </select>
 
     <update id="update" parameterType="com.lec.spring.domain.User" flushCache="true">

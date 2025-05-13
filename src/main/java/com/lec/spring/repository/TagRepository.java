@@ -11,7 +11,7 @@ public interface TagRepository {
     List<Tag> findByUser(User user);
 
     //특정 게시글의 게시글 태그(들) 가져오기
-    List<Tag> findByPost(Post post);
+    List<Tag> findByPost(Post post, int postType);
 
     //1. 새로운 태그 저장
     int save(Tag tag);
