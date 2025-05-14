@@ -1,14 +1,9 @@
 package com.lec.spring.service;
 
 import com.lec.spring.domain.Tag;
-import com.lec.spring.repository.AttachmentRepository;
-import com.lec.spring.repository.PostRepository;
 import com.lec.spring.repository.TagRepository;
-import com.lec.spring.repository.UserRepository;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class TagService {
