@@ -5,6 +5,7 @@ import com.lec.spring.domain.Post;
 import com.lec.spring.domain.User;
 import com.lec.spring.repository.CommentRepository;
 import com.lec.spring.repository.PostRepository;
+import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -20,9 +21,9 @@ public class CommentServiceImpl implements CommentService {
     private final PostRepository postRepository;
 
     @Autowired
-    public CommentServiceImpl(CommentRepository commentRepository, PostRepository postRepository) {
-        this.commentRepository = commentRepository;
-        this.postRepository = postRepository;
+    public CommentServiceImpl(SqlSession sqlSession) {
+        this.commentRepository = sqlSession.getMapper(CommentRepository.class);
+        this.postRepository = sqlSession.getMapper(PostRepository.class);
     }
 
     @Override

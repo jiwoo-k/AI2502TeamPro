@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
-@Mapper
+//@Mapper
 public interface PostRepository {
     // 작성한 글 저장하기
     int save (Post post);
