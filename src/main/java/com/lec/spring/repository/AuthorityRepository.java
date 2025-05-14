@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
-//@Mapper
+@Mapper
 public interface AuthorityRepository {
    //특정 이름의 권한 정보를 조회
     Authority findByName(String name);
