@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-//@Mapper
+@Mapper
 public interface CommentRepository {
 
     List<Comment> findByPostId(Long postId);
@@ -18,4 +18,5 @@ public interface CommentRepository {
 
 
     int updateIsPicked(@Param("id") Long id, @Param("isPicked") Boolean isPicked);
+    List<Comment> findByUserId(Long userId);
 }

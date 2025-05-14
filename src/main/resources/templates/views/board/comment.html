@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<th:block th:fragment="comment-fragment">
+
+    <div id="comment-section" class="container my-3">
+        <h4 class="mb-3">댓글 <span id="comment-count" class="badge bg-secondary">0</span></h4>
+
+        <div class="mb-3" sec:authorize="isAuthenticated()">
+            <div class="input-group">
+                <input type="text" class="form-control" id="input-comment-content" placeholder="댓글 내용을 입력하세요">
+                <button type="button" class="btn btn-primary" id="btn-write-comment">작성</button>
+            </div>
+        </div>
+        <div class="mb-3 alert alert-info" role="alert" sec:authorize="!isAuthenticated()">
+            댓글 작성은 로그인 후 가능합니다.
+        </div>
+
+
+        <div id="comment-list-area">
+            <div id="comment-list-container">
+            </div>
+
+        </div>
+    </div>
+</th:block>

@@ -3,7 +3,7 @@ package com.lec.spring.repository;
 import com.lec.spring.domain.User;
 import org.apache.ibatis.annotations.Mapper;
 
-//@Mapper
+@Mapper
 public interface UserRepository {
     //1. 회원가입 시 사용자 저장
     int save(User user);
