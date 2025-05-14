@@ -1,10 +1,47 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+<!--일단 필요한 name, title, 날짜, type 만 놔뒀음. 나중에 post_tag, user_tag 도 손님, 도우미 타입으로 바꿀떄 마다 같이 변경 되게 구현해야 함-->
     <title>Title</title>
 </head>
+<style>
+    td{
+        border: 1px solid black;
+    }
+</style>
 <body>
+
+<h2>게시판 목록</h2>
+<table>
+    <thead>
+        <tr>
+            <td>name</td>
+            <td>title</td>
+            <td>날짜</td>
+            <td>타입</td>
+        </tr>
+    </thead>
+    <tbody >
+        <tr th:each="board : ${board}" >
+            <td><a  th:text="${board.name}" th:href="@{'detail/' + ${board.id}}"></a></td>
+            <td><a  th:text="${board.title}" th:href="@{'detail/' + ${board.id}}"></a></td>
+            <!--    이거 날짜와 시간 넣을때 개인적으로 연도하고 분, 초는 필요가 없다고 생각함.-->
+            <td th:text="${#temporals.format(board.createdat, 'yyyy-MM-dd HH:mm:ss')}"></td>
+            <td><a  th:text="${board.type}" th:href="@{'detail/' + ${board.id}}"></a></td>
+        </tr>
+    </tbody>
+</table>
+
+<button><a th:href="@{/board/write}">작성하기</a></button>
+<form method="get" action="/board/list">
+    <select name="type" onchange="this.form.submit()">
+        <option value="손님" th:selected="${selectedType == '손님'}">손님</option>
+        <option value="도우미" th:selected="${selectedType == '도우미'}">도우미</option>
+    </select>
+</form>
 
 </body>
 </html>
