@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+<!--일단 필요한 name, title, 날짜, type 만 놔뒀음. 나중에 post_tag, user_tag 도 손님, 도우미 타입으로 바꿀떄 마다 같이 변경 되게 구현해야 함-->
     <title>Title</title>
 </head>
 <style>
@@ -28,6 +28,7 @@
         <tr th:each="board : ${board}" >
             <td><a  th:text="${board.name}" th:href="@{'detail/' + ${board.id}}"></a></td>
             <td><a  th:text="${board.title}" th:href="@{'detail/' + ${board.id}}"></a></td>
+            <!--    이거 날짜와 시간 넣을때 개인적으로 연도하고 분, 초는 필요가 없다고 생각함.-->
             <td th:text="${#temporals.format(board.createdat, 'yyyy-MM-dd HH:mm:ss')}"></td>
             <td><a  th:text="${board.type}" th:href="@{'detail/' + ${board.id}}"></a></td>
         </tr>

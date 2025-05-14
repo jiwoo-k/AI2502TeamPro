@@ -23,6 +23,8 @@ public interface BoardService {
 
     // 게시판 삭제
     int delete(Long id);
+
+    // 타입 선택 기능 추가
     List<Post> listByType(String type);
 
 }

@@ -7,7 +7,8 @@ import org.springframework.validation.Validator;
 
 public class BoardValidator implements Validator {
 
-
+// 일단 title, content 만 vaildator을 만들었음. 나중에 태그 추가 부분이 생기면 tag == null 부분도 추가해야 함
+    // 또 다른게 있나? vaildator 추가할게 또 뭐가 있지
     @Override
     public boolean supports(Class<?> clazz) {
         return Post.class.isAssignableFrom(clazz);

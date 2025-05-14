@@ -28,12 +28,14 @@ public class BoardController {
     @GetMapping("/write")
     public void write (){}
 
+
     @PostMapping("/write")
     public String write (@Valid Post post,
                          BindingResult bindingResult,
                          Model model,
                          RedirectAttributes redirectAttributes
     ) {
+        // vaildator
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("title", post.getTitle());
             redirectAttributes.addFlashAttribute("content", post.getContent());
@@ -46,7 +48,7 @@ public class BoardController {
         model.addAttribute("result", result);
         return "board/write";
     }
-
+    // listBytype (손님, 도우미 선택 가능 => findAll 은 혹시 몰라서 일부러 놔뒀음)
     @GetMapping("/list")
     public String list(@RequestParam(required = false) String type, Model model) {
         if (type == null || type.isBlank()) {
@@ -59,6 +61,7 @@ public class BoardController {
         model.addAttribute("selectedType", type);
         return "board/list";
     }
+
 
 
     @GetMapping("/detail/{id}")

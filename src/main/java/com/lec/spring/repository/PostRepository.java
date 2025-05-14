@@ -27,6 +27,6 @@ public interface PostRepository {
     // 전체 글의 개수
     int countAll();
 
-    // 타입
+    // 타입 선택 기능 추가
     List<Post> findByType(String type);
 }

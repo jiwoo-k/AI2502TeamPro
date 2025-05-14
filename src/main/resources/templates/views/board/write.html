@@ -23,6 +23,8 @@
   <div th:if="${error_content}" th:text="${error_content}" style="color: red"></div>
 
 
+<!--  게시물 유형을 바꿀 수 있게 select로 구현 함 => 근데 태크도 나중에 같이 수정되게 만들어야 하고, 심지어 팔로우도 도우미에서만 보이게 해야 함-->
+<!--  => 어떻게 하지...-->
   <div>
     <select name="type" placeholder="게시물 유형" th:value="${type}">
       <option value="손님">손님</option>
@@ -39,7 +41,8 @@
 </form>
 
 <script th:if ='${result > 0}' th:inline ='javascript'>
-  alert("제출 성공")
+  // 혹시 몰라서 alter 에서 confirm 으로 수정
+  confirm("제출 성공")
   location.href= "/board/list";
 </script>
 

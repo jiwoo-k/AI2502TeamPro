@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+// user_id 는 로그인 사용자를 구현해야 서버가 돌아가기 때문에 일단 1로 고정해둠
 public class Post {
     private Long id;
     private String title;

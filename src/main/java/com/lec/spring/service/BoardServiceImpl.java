@@ -29,11 +29,13 @@ public class BoardServiceImpl implements BoardService {
         return postRepository.findById(id);
     }
 
+    // 이거 혹시 몰라서 남겨둠
     @Override
     public List<Post> list() {
         return postRepository.findAll();
     }
 
+    // 페이징 부분
     @Override
     public List<Post> list(Integer page, Model model) {
         return List.of();
@@ -43,7 +45,8 @@ public class BoardServiceImpl implements BoardService {
     public int update(Post post) {
         return postRepository.update(post);
     }
-    @Transactional
+
+    
     @Override
     public int delete(Long id) {
         int result = 0;
@@ -54,7 +57,7 @@ public class BoardServiceImpl implements BoardService {
         }
         return result;
     }
-
+// 태그 선택 기능 추가
     @Override
     public List<Post> listByType(String type) {
         return postRepository.findByType(type);

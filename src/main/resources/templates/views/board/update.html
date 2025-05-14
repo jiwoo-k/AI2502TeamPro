@@ -11,6 +11,7 @@
 <body>
     <div>
         <div th:text="'작성자: ' + ${board.name}" ></div>
+<!--        이거 게시판을 올린 날짜로 기준으로 잡을지 수정하고 수정완료 한 날짜를 기준으로 잡아야 할지 모르겠음.-->
         <div th:text="${#temporals.format(board.createdat,  'yyyy-MM-dd HH:mm:ss')}"></div>
     </div>
 <form th:action="@{/board/update}" method="post">
