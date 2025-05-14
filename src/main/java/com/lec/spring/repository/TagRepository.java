@@ -3,9 +3,11 @@ package com.lec.spring.repository;
 import com.lec.spring.domain.Post;
 import com.lec.spring.domain.Tag;
 import com.lec.spring.domain.User;
+import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
+@Mapper
 public interface TagRepository {
     //1. 새로운 태그 추가하기
     int addTag(Tag tag);

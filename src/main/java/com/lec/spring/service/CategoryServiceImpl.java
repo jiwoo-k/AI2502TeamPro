@@ -37,4 +37,9 @@ public class CategoryServiceImpl implements CategoryService {
     public Category findByName(String name) {
         return categoryRepository.findByName(name);
     }
+
+    @Override
+    public <List> Category list() {
+        return null;
+    }
 }

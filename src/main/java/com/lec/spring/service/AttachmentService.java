@@ -1,23 +1,11 @@
-package com.lec.spring.repository;
+package com.lec.spring.service;
 
 import com.lec.spring.domain.Attachment;
-import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 import java.util.Map;
 
-@Mapper
-public interface AttachmentRepository {
-    /**
-    * 특정 글(postId) 에 첨부파일(들) 추가 INSERT
-    * 글 insert, update 시 사용됨.
-    * "@param list" :  Map<String, Object> 들의 List
-    *                      ↓        ↓
-    *                   <"sourcename",원본파일명>
-    *                   <"filename", 저장된파일명>
-    * "@param postId" : 첨부될 글
-    * @return : DML 수행 결과값
-    **/
+public interface AttachmentService {
 
     int insert(List<Map<String, Object>> list, Long PostId);
 
@@ -35,16 +23,15 @@ public interface AttachmentRepository {
 
     // 선택된 첨부파일들 SELECT
     // 글 수정 에서 사용
-    List<Attachment> findByIds(Long [] ids);
+    List<Attachment> findByIds(Long[] ids);
 
 
     // 선택된 첨부파일들 DELETE
     // 글 수정 에서 사용
-    int deleteByIds(Long [] ids);
+    int deleteByIds(Long[] ids);
 
 
     // 특정 첨부 파일(file)을 DB에서 DELETE
     int delete(Attachment file);
-
 
 }
