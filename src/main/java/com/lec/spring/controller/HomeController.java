@@ -18,4 +18,9 @@ public class HomeController {
     public void home(){
 
     }
+
+    @RequestMapping("/tag")
+    public String tag(Model model){
+        return "common/tag";
+    }
 }

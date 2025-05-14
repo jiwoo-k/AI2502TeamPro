@@ -1,3 +1,4 @@
+/*
 package com.lec.spring.service;
 
 import com.lec.spring.domain.Tag;
@@ -18,3 +19,4 @@ public class TagServiceImpl implements TagService {
         return 0;
     }
 }
+*/
