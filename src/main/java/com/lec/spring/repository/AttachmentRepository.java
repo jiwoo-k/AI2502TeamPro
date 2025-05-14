@@ -8,6 +8,7 @@ import java.util.Map;
 
 @Mapper
 public interface AttachmentRepository {
+
     /**
     * 특정 글(postId) 에 첨부파일(들) 추가 INSERT
     * 글 insert, update 시 사용됨.
@@ -19,7 +20,7 @@ public interface AttachmentRepository {
     * @return : DML 수행 결과값
     **/
 
-    int insert(List<Map<String, Object>> list, Long PostId);
+    int insert(List<Map<String, Object>> list, Long postId);
 
 
     // 첨부파일 한개 저장 INSERT

@@ -18,37 +18,44 @@ public class AttachmentServiceImpl implements AttachmentService {
     }
 
     @Override
-    public int insert(List<Map<String, Object>> list, Long PostId) {
-        return 0;
+    public int insert(List<Map<String, Object>> list, Long postId) {
+        if (list == null || list.isEmpty() || postId == null) return 0;
+        return attachmentRepository.insert(list, postId);
     }
 
     @Override
     public int save(Attachment file) {
-        return 0;
+        if (file == null) return 0;
+        return attachmentRepository.save(file);
     }
 
     @Override
     public List<Attachment> findByPost(Long postId) {
-        return List.of();
+        if (postId == null) return List.of();
+        return attachmentRepository.findByPost(postId);
     }
 
     @Override
     public Attachment findById(Long id) {
+        if (id == null) return null;
         return attachmentRepository.findById(id);
     }
 
     @Override
     public List<Attachment> findByIds(Long[] ids) {
-        return List.of();
+        if (ids == null || ids.length == 0) return List.of();
+        return attachmentRepository.findByIds(ids);
     }
 
     @Override
     public int deleteByIds(Long[] ids) {
-        return 0;
+        if (ids == null || ids.length == 0) return 0;
+        return attachmentRepository.deleteByIds(ids);
     }
 
     @Override
     public int delete(Attachment file) {
-        return 0;
+        if (file == null || file.getId() == null) return 0;
+        return attachmentRepository.delete(file);
     }
 }
