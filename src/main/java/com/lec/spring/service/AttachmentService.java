@@ -23,12 +23,12 @@ public interface AttachmentService {
 
     // 선택된 첨부파일들 SELECT
     // 글 수정 에서 사용
-    List<Attachment> findByIds(Long[] ids);
+    List<Attachment> findByIds(List<Long> ids);
 
 
     // 선택된 첨부파일들 DELETE
     // 글 수정 에서 사용
-    int deleteByIds(Long[] ids);
+    int deleteByIds(List<Long> ids);
 
 
     // 특정 첨부 파일(file)을 DB에서 DELETE
