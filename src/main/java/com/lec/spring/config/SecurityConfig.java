@@ -66,11 +66,14 @@ public class SecurityConfig {
                 )
                 .logout(httpSecurity -> httpSecurity
                                 .logoutUrl("/user/logout")
-                                .invalidateHttpSession(false) //session invalidate (default true)
-                                //TODO: 로그아웃 성공후 수행할 코드
-//                                .logoutSuccessHandler(new CustomLogoutSuccessHandler())
+//                                .invalidateHttpSession(false) //session invalidate (default true)
+                                .logoutSuccessHandler(new CustomLogoutSuccessHandler())
                 )
-
+                .exceptionHandling(httpsecurity -> httpsecurity
+                        // 권한(Authorization) 오류 발생시 수행할 코드
+                        // .accessDeniedHandler(AccessDeniedHandler)
+                        .accessDeniedHandler(new CustomAccessDeniedHandler())
+                )
 
                 .build();
     }
