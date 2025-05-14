@@ -52,7 +52,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/", "/home", "/user/login", "/user/register",
-                                "/board/list", "/board/detail/**"
+                                "/board/list", "/board/detail/**", "/css/**", "/js/**"
                         ).permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
@@ -61,7 +61,7 @@ public class SecurityConfig {
                         .loginPage("/user/login")
                         .loginProcessingUrl("/user/login")
                         .defaultSuccessUrl("/")
-                        .successHandler(new CustomLoginSuccessHandler("/home", sqlSession))
+                        .successHandler(new CustomLoginSuccessHandler("/home"))
                         .failureHandler(new CustomLoginFailureHandler())
                 )
                 .logout(httpSecurity -> httpSecurity

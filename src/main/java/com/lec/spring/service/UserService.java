@@ -10,8 +10,14 @@ public interface UserService {
     // username(회원 아이디) 의 User 정보 읽어오기
     User findByUsername(String username);
 
+    //name(닉네임) 의 User 정보 읽어오기
+    User findByName(String name);
+
     // 특정 username(회원 아이디) 의 회원이 존재하는지 확인
-    boolean isExist(String username);
+    boolean isExistUserName(String username);
+
+    // 특정 name(회원 아이디) 의 회원이 존재하는지 확인
+    boolean isExistName(String name);
 
     // 신규 회원 등록
     int register(User user);

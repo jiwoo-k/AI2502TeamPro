@@ -1,26 +1,32 @@
 package com.lec.spring.controller;
 
 import com.lec.spring.domain.User;
+import com.lec.spring.domain.UserValidator;
 import com.lec.spring.service.UserService;
 import jakarta.validation.Valid;
 import org.apache.ibatis.session.SqlSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
-@Controller("/user")
+@Controller
+@RequestMapping("/user")
 public class UserController {
 
-    private final UserService userService;
+    private UserService userService;
 
-    public UserController(SqlSession sqlSession) {
-        this.userService = sqlSession.getMapper(UserService.class);
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @GetMapping("/login")
@@ -44,6 +50,7 @@ public class UserController {
         if(result.hasErrors()){
             redirectAttributes.addFlashAttribute("username", user.getUsername());
             redirectAttributes.addFlashAttribute("name", user.getName());
+            redirectAttributes.addFlashAttribute("juminNo", user.getJuminNo());
 
 
             List<FieldError> errList = result.getFieldErrors();
@@ -61,5 +68,18 @@ public class UserController {
         int cnt = userService.register(user);
         model.addAttribute("result", cnt);
         return page;
+    }
+
+    @PostMapping("/loginError")
+    public String loginError(){
+        return "user/login";
+    }
+
+    @Autowired
+    UserValidator userValidator;
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder){
+        binder.setValidator(userValidator);
     }
 }

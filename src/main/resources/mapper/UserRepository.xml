@@ -23,8 +23,8 @@
 
     <insert id="save" flushCache="true" parameterType="com.lec.spring.domain.User"
             useGeneratedKeys="true" keyColumn="id" keyProperty="id">
-        INSERT INTO user(username, name, password, juminNo, provider, providerId, latitude, longitude, status)
-        VALUES (#{username}, #{name}, #{password}, #{juminNo}, #{provider}, #{providerId}, #{latitude}, #{longitude}, #{status});
+        INSERT INTO user(username, name, password, juminNo, provider, providerId, latitude, longitude)
+        VALUES (#{username}, #{name}, #{password}, #{juminNo}, #{provider}, #{providerId}, #{latitude}, #{longitude});
     </insert>
 
     <select id="findById" resultType="com.lec.spring.domain.User">
@@ -35,6 +35,11 @@
     <select id="findByUsername" resultType="com.lec.spring.domain.User">
         <include refid="SELECT_BASE"/>
         and username = #{username};
+    </select>
+
+    <select id="findByName" resultType="com.lec.spring.domain.User">
+        <include refid="SELECT_BASE"/>
+        and name = #{name};
     </select>
 
     <update id="update" parameterType="com.lec.spring.domain.User" flushCache="true">

@@ -28,10 +28,22 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByUsername(username);
     }
 
+    @Override
+    public User findByName(String name) {
+        return userRepository.findByName(name);
+    }
+
     //해당 username 의 사용자 존재하는가?
     @Override
-    public boolean isExist(String username) {
+    public boolean isExistUserName(String username) {
         User user = findByUsername(username);
+        return (user != null);
+    }
+
+    // 해당 닉네임의 사용자 존재하는가?
+    @Override
+    public boolean isExistName(String name) {
+        User user = findByName(name);
         return (user != null);
     }
 
