@@ -5,6 +5,7 @@ import com.lec.spring.domain.Post;
 import com.lec.spring.domain.User;
 import com.lec.spring.repository.CommentRepository;
 import com.lec.spring.repository.PostRepository;
+import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -20,9 +21,9 @@ public class CommentServiceImpl implements CommentService {
     private final PostRepository postRepository;
 
     @Autowired
-    public CommentServiceImpl(CommentRepository commentRepository, PostRepository postRepository) {
-        this.commentRepository = commentRepository;
-        this.postRepository = postRepository;
+    public CommentServiceImpl(SqlSession sqlSession) {
+        this.commentRepository = sqlSession.getMapper(CommentRepository.class);
+        this.postRepository = sqlSession.getMapper(PostRepository.class);
     }
 
     @Override
@@ -118,13 +119,13 @@ public class CommentServiceImpl implements CommentService {
         }
 
         // 2. 권한 체크: 댓글 작성자 또는 관리자인지 확인
-        boolean isAdmin = user != null && user.getAuthorities().stream()
-                .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
+        /*boolean isAdmin = user != null && user.getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));*/
 
-        if (user == null || (!existingComment.getUserId().equals(user.getId()) && !isAdmin)) {
+       /* if (user == null || (!existingComment.getUserId().equals(user.getId()) && !isAdmin)) {
             System.err.println("ERROR: 댓글 삭제 실패 - 권한 없음. 댓글ID: " + id + ", 사용자ID: " + (user != null ? user.getId() : "null"));
             throw new AccessDeniedException("댓글 삭제 권한이 없습니다.");
-        }
+        }*/
 
         // 3. 해당 댓글에 달린 모든 답글 먼저 삭제 (2단계까지만 허용하므로 직속 자식들만 삭제하면 됨)
         //    deleteByParentId 메소드는 parent_id가 id인 모든 댓글을 삭제하므로,

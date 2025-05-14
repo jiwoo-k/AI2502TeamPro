@@ -14,6 +14,7 @@ DROP TABLE IF EXISTS user;
 
 
 CREATE TABLE attachment
+
 (
   id         INT          NOT NULL AUTO_INCREMENT,
   post_id    INT          NOT NULL,
@@ -60,7 +61,7 @@ CREATE TABLE post
 (
   id        INT          NOT NULL AUTO_INCREMENT,
   user_id   INT          NOT NULL,
-  type      ENUM('손님', '도우미')    NOT NULL DEFAULT '손님' COMMENT '게시판 유형',
+  type      ENUM('guest', 'helper')    NOT NULL DEFAULT 'guest' COMMENT '게시판 유형',
   title     VARCHAR(100) NOT NULL,
   content   LONGTEXT     NULL    ,
   createdat DATETIME     NULL     DEFAULT now(),

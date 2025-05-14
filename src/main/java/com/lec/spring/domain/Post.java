@@ -13,11 +13,11 @@ import java.time.LocalDateTime;
 @Builder
 public class Post {
     private Long id;
+    private User user_id;
+    private Integer type;
     private String title;
     private String content;
-    private LocalDateTime regdate;
-    private User userId;
-    private Integer type;
-    private Boolean isfinish;
+    private LocalDateTime createdat;
+    private Boolean isdeleted;
     private LocalDateTime deletedat;
 }

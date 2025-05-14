@@ -15,6 +15,32 @@
        where category_id = #{category_id} and name = #{name}
     </select>
 
+    <select id="findPostsByTags" parameterType="arrayList" resultType="mapPost">
+        select p.id "p_id",
+               p.user_id "p_user_id",
+               p.type "p_type",
+               p.title "p_title",
+               p.content "p_content",
+               p.createdat "p_createdat",
+               p.isdeleted "p_isdeleted",
+               p.deletedat "p_deletedat"
+        from post p, post_tag pt
+        where p.id=pt.post_id
+          and pt.tag_id in (<foreach collection="array" item="e" separator=",">#{e.id}</foreach>)
+        and p.type = #{param2};
+    </select>
+
+    <resultMap id="mapPost" type="com.lec.spring.domain.Post">
+        <result column="p_id" property="id"/>
+        <result column="p_user_id" property="user_id"/>
+        <result column="p_type" property="type"/>
+        <result column="p_title" property="title"/>
+        <result column="p_content" property="content"/>
+        <result column="p_createdat" property="createdat"/>
+        <result column="p_isdeleted" property="isdeleted"/>
+        <result column="p_deletedat" property="deletedat"/>
+    </resultMap>
+
     <insert id="savePostTag" flushCache="true" parameterType="arrayList">
         INSERT INTO post_tag(post_id, tag_id)
         VALUES
@@ -31,20 +57,33 @@
         </foreach>
     </insert>
 
-    <select id="findPostsByTags" flushCache="true" parameterType="arrayList">
-        select * from post
-        where id in (<foreach collection="array" item="e" separator=",">#{e.id}</foreach>)
-    </select>
+    <delete id="deleteUserTag" flushCache="true" parameterType="com.lec.spring.domain.User">
+        delete from user_tag where id = #{id}
+    </delete>
 
-    <select id="FindTagByPostId" resultType="com.lec.spring.domain.Tag">
-        select t.id, t.category_id,t.name
+    <delete id="deletePostTag" flushCache="true" parameterType="com.lec.spring.domain.Post">
+        delete from post_tag where id = #{id}
+    </delete>
+
+    <select id="LoadPostTags" resultType="mapTag">
+        select t.id "t_id",
+               t.category_id "t_category_id",
+               t.name "t_name"
         from post_tag pt, tag t
         where pt.post_id = #{postId} and pt.tag_id = t.id;
     </select>
 
-    <select id="FindTagByUserId" resultType="com.lec.spring.domain.Tag">
-        select t.id, t.category_id,t.name
+    <select id="LoadUserTags" resultType="mapTag">
+        select t.id "t_id",
+               t.category_id "t_category_id",
+               t.name "t_name"
         from user_tag ut, tag t
         where ut.user_id = #{userId} and ut.tag_id = t.id;
     </select>
+
+    <resultMap id="mapTag" type="com.lec.spring.domain.Tag">
+        <result column="t_id" property="id"/>
+        <result column="t_category_id" property="category_id"/>
+        <result column="t_name" property="name"/>
+    </resultMap>
 </mapper>

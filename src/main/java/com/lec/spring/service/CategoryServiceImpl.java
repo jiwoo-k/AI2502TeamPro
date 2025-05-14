@@ -2,6 +2,7 @@ package com.lec.spring.service;
 
 import com.lec.spring.domain.Category;
 import com.lec.spring.repository.CategoryRepository;
+import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,8 +12,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
 
-    public CategoryServiceImpl(CategoryRepository categoryRepository) {
-        this.categoryRepository = categoryRepository;
+    public CategoryServiceImpl(SqlSession sqlSession) {
+        this.categoryRepository = sqlSession.getMapper(CategoryRepository.class);
     }
 
     @Override
@@ -41,7 +42,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<Category> list() {
-        return categoryRepository.list();
+    public List<Category> findAll() {
+        return List.of();
     }
 }
