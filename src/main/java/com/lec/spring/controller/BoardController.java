@@ -1,6 +1,7 @@
 package com.lec.spring.controller;
 
 import com.lec.spring.domain.Post;
+import com.lec.spring.domain.Tag;
 import com.lec.spring.service.BoardService;
 import com.lec.spring.vaildator.BoardValidator;
 import jakarta.servlet.http.HttpServletRequest;
@@ -66,10 +67,12 @@ public class BoardController {
 
     @GetMapping("/detail/{id}")
     public String detail(@PathVariable Long id, Model model){
+        Post post = boardService.detail(id);
         System.out.println("게시글 상세보기 ID: " + id);
         System.out.println("조회된 게시글: " + boardService.detail(id));
         System.out.println("조회된 게시글 ID: " + boardService.detail(id).getId());
-        model.addAttribute("board", boardService.detail(id));
+
+        model.addAttribute("board", post);
         return "board/detail";
     }
     @GetMapping("/update/{id}")

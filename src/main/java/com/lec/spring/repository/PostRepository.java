@@ -2,6 +2,7 @@ package com.lec.spring.repository;
 
 
 import com.lec.spring.domain.Post;
+import com.lec.spring.domain.Tag;
 
 import java.util.List;
 
@@ -29,4 +30,13 @@ public interface PostRepository {
 
     // 타입 선택 기능 추가
     List<Post> findByType(String type);
+
+    // 선택한 태그들 가져오기 (손님)
+    List <Tag> findByPostTag(Long post_id);
+
+    // 선택한 태그들 가져오기 (도우미)
+    List <Tag> findByUserTag(Long user_id);
+
+    // follwing 한 사람 count
+    int countByfollwing (Long follwing_id);
 }

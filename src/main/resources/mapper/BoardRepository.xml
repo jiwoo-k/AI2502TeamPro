@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lec.spring.repository.PostRepository">
-<!--가끔 수정하다가 'id 가 null 입니다.' 에러가 자꾸 나면 대부분 여기 문제임 (id 컬럼 명이 다르거나 중복된 이름이 있는지 확인해 보면 됨)-->
+    <!--가끔 수정하다가 'id 가 null 입니다.' 에러가 자꾸 나면 대부분 여기 문제임 (id 컬럼 명이 다르거나 중복된 이름이 있는지 확인해 보면 됨)-->
     <resultMap id="postMap" type="com.lec.spring.domain.Post">
         <result column="p_id" property="id"/>
         <result column="p_title" property="title"/>
@@ -11,13 +11,15 @@
         <result column="p_createdat" property="createdat"/>
         <result column="p_type" property="type"/>
         <result column="u_name" property="name"/>
+        <collection property="post_tag" ofType="com.lec.spring.domain.Tag"/>
+        <collection property="user_tag" ofType="com.lec.spring.domain.Tag"/>
     </resultMap>
 
     <resultMap id="userMap" type="com.lec.spring.domain.User">
         <result column="u_id" property="id"/>
         <result column="u_name" property="name"/>
     </resultMap>
-<!--write / 게시판 작성 후 저장 mapper-->
+    <!--write / 게시판 작성 후 저장 mapper-->
     <insert id="save" flushCache="true" keyProperty="id" parameterType="com.lec.spring.domain.Post" useGeneratedKeys="true">
         insert into post
             (user_id, title, content, type)
@@ -38,22 +40,22 @@
                  JOIN user ON post.user_id = user.id
     </sql>
 
-<!--    전체 글 조회를 할 수 있게 만듦 (물론 밑에 findBytype 이 있어서 필요가 없을거 같은데 혹시 몰라서 일단 놔둠)-->
+    <!--    전체 글 조회를 할 수 있게 만듦 (물론 밑에 findBytype 이 있어서 필요가 없을거 같은데 혹시 몰라서 일단 놔둠)-->
     <select id="findAll" resultMap="postMap">
         <include refid="select_base"/>
         ORDER BY post.id DESC
     </select>
-<!--손님, 도우미 타입 mapper-->
+    <!--손님, 도우미 타입 mapper-->
     <select id="findByType" resultMap="postMap">
         <include refid="select_base"/>
         WHERE post.type = #{type}
     </select>
-<!--게시글 상세조회-->
+    <!--게시글 상세조회-->
     <select id="findById" parameterType="long" resultMap="postMap">
         <include refid="select_base"/>
         WHERE post.id = #{id}
     </select>
-<!--게시글 수정-->
+    <!--게시글 수정-->
     <update id="update" parameterType="com.lec.spring.domain.Post" flushCache="true">
         update post
         set
@@ -61,8 +63,28 @@
             content = #{content}
         where id = #{id}
     </update>
-<!--게시글 삭제-->
+    <!--게시글 삭제-->
     <delete id="deleteById" flushCache="true" parameterType="com.lec.spring.domain.Post">
         delete from post where id = #{id}
     </delete>
+
+    <select id="findByPostTag" resultType="com.lec.spring.domain.Tag">
+        SELECT t.name ,post.id
+        FROM tag t
+                 JOIN post_tag pt ON pt.tag_id = t.id join post on pt.post_id = post.id
+        WHERE pt.post_id = #{id}
+    </select>
+
+    <select id="findByUserTag" resultType="com.lec.spring.domain.Tag">
+        SELECT
+            t.id AS id,
+            t.category_id AS category_id,
+            t.name AS name,
+            c.color AS color
+        FROM tag t
+                 JOIN category c ON t.category_id = c.id
+                 JOIN user_tag ut ON ut.tag_id = t.id
+                 JOIN post p ON ut.user_id = p.user_id
+        WHERE p.id = #{id}
+    </select>
 </mapper>

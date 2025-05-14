@@ -10,7 +10,7 @@
 <h2>게시물 상세조회</h2>
 <div>
     <div th:text="'작성자: ' + ${board.name}" ></div>
-<!--    이거 날짜와 시간 넣을때 개인적으로 연도하고 분, 초는 필요가 없다고 생각함.-->
+    <!--    이거 날짜와 시간 넣을때 개인적으로 연도하고 분, 초는 필요가 없다고 생각함.-->
     <div th:text="${#temporals.format(board.createdat,  'yyyy-MM-dd HH:mm:ss')} + ' 작성'"></div>
 </div>
 <div>
@@ -19,6 +19,22 @@
 
 <div>
     <span th:text="${board.content}"></span>
+</div>
+
+<!--post_tag-->
+<div th:if="${board.type == '손님'}">
+    <span>태그 목록</span>
+    <ul>
+        <li th:each="tag : ${board.post_tag}" th:text="${tag.name}"></li>
+    </ul>
+</div>
+
+<!--user_tag-->
+<div th:if="${board.type == '도우미'}">
+    <span>태그 목록</span>
+    <ul>
+        <li th:each="tag : ${board.user_tag}" th:text="${tag.name}"></li>
+    </ul>
 </div>
 
 

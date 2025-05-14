@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
+import com.lec.spring.domain.Tag;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -23,4 +23,13 @@ public class Post {
     private Boolean isdeleted;
     private LocalDateTime deletedat;
     private String name;
+
+    // 태그 검색
+    private List<Tag> post_tag;
+    private List<Tag> user_tag;
+
+    // 팔로우
+    private Integer followerCount;
+    private Integer following_userid;
+    private Integer followed_userid;
 }
