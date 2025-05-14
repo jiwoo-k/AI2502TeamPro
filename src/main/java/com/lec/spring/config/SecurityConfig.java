@@ -1,5 +1,7 @@
 package com.lec.spring.config;
 
+import org.apache.ibatis.session.SqlSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -15,6 +17,9 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    @Autowired
+    SqlSession sqlSession;
 
     // UserDetailsService 구현체
     private final UserDetailsService userDetailService;
@@ -56,10 +61,8 @@ public class SecurityConfig {
                         .loginPage("/user/login")
                         .loginProcessingUrl("/user/login")
                         .defaultSuccessUrl("/")
-                        //TODO: 로그인 성공
-//                        .successHandler(new CustomLoginSuccessHandler("/home"))  // 로그인 성공후 수행할 코드.
-                        //TODO: 로그인 실패
-//                        .failureHandler(new CustomLoginFailureHandler())
+                        .successHandler(new CustomLoginSuccessHandler("/home", sqlSession))
+                        .failureHandler(new CustomLoginFailureHandler())
                 )
                 .logout(httpSecurity -> httpSecurity
                                 .logoutUrl("/user/logout")

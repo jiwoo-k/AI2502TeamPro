@@ -4,82 +4,47 @@
         "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.lec.spring.repository.UserRepository">
-
-    <resultMap id="UserResultMap" type="com.lec.spring.domain.User">
-        <id property="id" column="u_id"/>
-        <result property="username" column="u_username"/>
-        <result property="name" column="u_name"/>
-        <result property="password" column="u_password"/>
-        <result property="juminNo" column="u_juminNo"/> <result property="createdAt" column="u_createdAt"/> <result property="provider" column="u_provider"/>
-        <result property="providerId" column="u_providerId"/> <result property="latitude" column="u_latitude"/>
-        <result property="longitude" column="u_longitude"/>
-        <result property="status" column="u_status"/> <collection property="authorities" ofType="com.lec.spring.domain.Authority">
-        <id property="id" column="a_id"/> <result property="name" column="a_name"/> </collection>
-    </resultMap>
-
-
-    <sql id="SELECT_USER_WITH_AUTHORITIES">
+    <sql id="SELECT_BASE">
         SELECT
-        u.id AS u_id, u.username AS u_username,
-        u.name AS u_name,
-        u.password AS u_password,
-        u.juminNo AS u_juminNo, u.createdAt AS u_createdAt, u.provider AS u_provider,
-        u.providerId AS u_providerId, u.latitude AS u_latitude,
-        u.longitude AS u_longitude,
-        u.status AS u_status, a.id AS a_id, a.name AS a_name FROM user u
-        JOIN user_authorities ua ON u.id = ua.user_id JOIN authority a ON ua.authority_id = a.id WHERE 1 = 1
+        id
+        , username
+        , password
+        , name
+        ,juminNo
+        , createdAt
+        , provider
+        , providerId
+        ,latitude
+        ,longitude
+        ,status
+        FROM user
+        WHERE 1 = 1
     </sql>
 
-    <insert id="save" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO user(username, name, password, juminNo, latitude, longitude, provider, providerId) VALUES (#{username}, #{name}, #{password}, #{juminNo}, #{latitude}, #{longitude}, #{provider}, #{providerId})
+    <insert id="save" flushCache="true" parameterType="com.lec.spring.domain.User"
+            useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        INSERT INTO user(username, name, password, juminNo, provider, providerId, latitude, longitude, status)
+        VALUES (#{username}, #{name}, #{password}, #{juminNo}, #{provider}, #{providerId}, #{latitude}, #{longitude}, #{status});
     </insert>
 
-    <select id="findById" resultMap="UserResultMap"> <include refid="SELECT_USER_WITH_AUTHORITIES"/> AND u.id = #{id}
-        GROUP BY u.id, u.username, u.name, u.password, u.juminNo, u.createdAt, u.provider, u.providerId, u.latitude, u.longitude, u.status </select>
+    <select id="findById" resultType="com.lec.spring.domain.User">
+        <include refid="SELECT_BASE"/>
+        and id = #{id};
+    </select>
 
-    <select id="findByUsername" resultMap="UserResultMap"> <include refid="SELECT_USER_WITH_AUTHORITIES"/> AND u.username = #{username}
-        GROUP BY u.id, u.username, u.name, u.password, u.juminNo, u.createdAt, u.provider, u.providerId, u.latitude, u.longitude, u.status </select>
+    <select id="findByUsername" resultType="com.lec.spring.domain.User">
+        <include refid="SELECT_BASE"/>
+        and username = #{username};
+    </select>
 
-    <update id="update">
-        UPDATE user
-        SET
-        username = #{username},
-        name = #{name},
-        password = #{password},
-        juminNo = #{juminNo},
-        latitude = #{latitude},
-        longitude = #{longitude},
-        provider = #{provider},
-        providerId = #{providerId},
-        status = #{status}
-        WHERE id = #{id}
+    <update id="update" parameterType="com.lec.spring.domain.User" flushCache="true">
+        update user
+        set name = #{name}, password = #{password}
+        where id = #{id};
     </update>
 
-    <delete id="delete">
-        DELETE FROM user WHERE id = #{id}
-    </delete>
-
-    <select id="countByUsername" resultType="int">
-        SELECT count(*) FROM user WHERE username = #{username}
-    </select>
-
-    <select id="countByName" resultType="int">
-        SELECT count(*) FROM user WHERE name = #{name}
-    </select>
-
-    <select id="countByJuminNo" resultType="int">
-        SELECT count(*) FROM user WHERE juminNo = #{juminNo}
-    </select>
-
-    <select id="findByProviderAndProviderId" resultMap="UserResultMap">
-        <include refid="SELECT_USER_WITH_AUTHORITIES"/>
-        AND u.provider = #{provider} AND u.providerId = #{providerId}
-        GROUP BY u.id, u.username, u.name, u.password, u.juminNo, u.createdAt, u.provider, u.providerId, u.latitude, u.longitude, u.status
-    </select>
-
-    <update id="updateStatus">
-        UPDATE user SET status = #{status} WHERE id = #{id}
-    </update>
-
-
+    <insert id="saveLogin">
+        insert into loginhistory(user_id)
+        values(#{id});
+    </insert>
 </mapper>
