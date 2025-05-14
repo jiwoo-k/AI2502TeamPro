@@ -1,10 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
+<h2>게시물 상세조회</h2>
+<div>
+    <div th:text="'작성자: ' + ${board.name}" ></div>
+<!--    이거 날짜와 시간 넣을때 개인적으로 연도하고 분, 초는 필요가 없다고 생각함.-->
+    <div th:text="${#temporals.format(board.createdat,  'yyyy-MM-dd HH:mm:ss')} + ' 작성'"></div>
+</div>
+<div>
+    <span th:text="${board.title}"></span>
+</div>
 
+<div>
+    <span th:text="${board.content}"></span>
+</div>
+
+
+<div>
+    <button><a th:href="@{'/board/list'}">목록</a></button>
+</div>
+<div>
+    <button><a th:href="@{'/board/update/' + ${board.id}}">수정하기</a></button>
+</div>
+<div>
+    <form th:action="@{'/board/delete'}" method="post">
+        <input type="hidden" name="id" th:value="${board.id}" />
+        <button type="submit">삭제</button>
+    </form>
+</div>
 </body>
 </html>

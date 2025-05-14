@@ -2,11 +2,9 @@ package com.lec.spring.repository;
 
 
 import com.lec.spring.domain.Post;
-import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
-//@Mapper
 public interface PostRepository {
     // 작성한 글 저장하기
     int save (Post post);
@@ -21,11 +19,14 @@ public interface PostRepository {
     int update(Post post);
 
     // 게시판 삭제하기
-    int delete(Long id);
+    int deleteById(Long id);
 
     // 페이징
     List<Post> selectPage(int page , int rows);
 
     // 전체 글의 개수
     int countAll();
+
+    // 타입 선택 기능 추가
+    List<Post> findByType(String type);
 }

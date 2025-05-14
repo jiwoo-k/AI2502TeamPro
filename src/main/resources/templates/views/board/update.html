@@ -1,10 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
+
+
 <body>
+    <div>
+        <div th:text="'작성자: ' + ${board.name}" ></div>
+<!--        이거 게시판을 올린 날짜로 기준으로 잡을지 수정하고 수정완료 한 날짜를 기준으로 잡아야 할지 모르겠음.-->
+        <div th:text="${#temporals.format(board.createdat,  'yyyy-MM-dd HH:mm:ss')}"></div>
+    </div>
+<form th:action="@{/board/update}" method="post">
+    <input type="hidden" name="id" th:value="${board.id}">
+
+    <input type="hidden" name="name" th:value="${board.name}">
+    <div>
+        <span>제목 수정</span>
+        <input type="text" name="title" th:value="${board.title}">
+    </div>
+    <div th:if="${error_title}" th:text="${error_title}" style="color: red"></div>
+
+    <div>
+        <span >글 수정</span>
+        <input type="text" name="content" th:value="${board.content}">
+    </div>
+    <div th:if="${error_content}" th:text="${error_content}" style="color: red"></div>
+
+
+
+    <button type="submit">수정완료</button>
+    <a th:href="@{/board/list}">목록</a>
+
+</form>
+
 
 </body>
+
 </html>

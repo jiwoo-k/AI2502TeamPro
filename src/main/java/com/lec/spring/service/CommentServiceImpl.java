@@ -119,9 +119,6 @@ public class CommentServiceImpl implements CommentService {
         }
 
         // 2. 권한 체크: 댓글 작성자 또는 관리자인지 확인
-        /*boolean isAdmin = user != null && user.getAuthorities().stream()
-                .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));*/
-
        /* if (user == null || (!existingComment.getUserId().equals(user.getId()) && !isAdmin)) {
             System.err.println("ERROR: 댓글 삭제 실패 - 권한 없음. 댓글ID: " + id + ", 사용자ID: " + (user != null ? user.getId() : "null"));
             throw new AccessDeniedException("댓글 삭제 권한이 없습니다.");

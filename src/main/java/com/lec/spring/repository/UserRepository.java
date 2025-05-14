@@ -16,4 +16,7 @@ public interface UserRepository {
 
     //4. 특정 사용자 정보 수정
     int update(User user);
+
+    //5. 해당 사용자(id) 찾아 로그인 history 저장
+    int saveLogin(Long id);
 }

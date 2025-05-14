@@ -5,54 +5,62 @@ import com.lec.spring.repository.PostRepository;
 import com.lec.spring.repository.UserRepository;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 
 import java.util.List;
-
 @Service
 public class BoardServiceImpl implements BoardService {
-
-    private final PostRepository boardRepository;
+    private final PostRepository postRepository;
     private final UserRepository userRepository;
-
     public BoardServiceImpl(SqlSession sqlSession) {
-        this.boardRepository = sqlSession.getMapper(PostRepository.class);
+        System.out.println("boardServiceImpl");
+        this.postRepository = sqlSession.getMapper(PostRepository.class);
         this.userRepository = sqlSession.getMapper(UserRepository.class);
     }
-
     @Override
-    public int write(Post board) {
-        return boardRepository.save(board);
+    public int write(Post post) {
+        return postRepository.save(post);
     }
 
     @Override
     public Post detail(Long id) {
-        return boardRepository.findById(id);
+        System.out.println("잠깐만" + id);
+        return postRepository.findById(id);
     }
 
+    // 이거 혹시 몰라서 남겨둠
     @Override
     public List<Post> list() {
-        return boardRepository.findAll();
+        return postRepository.findAll();
     }
 
+    // 페이징 부분
     @Override
     public List<Post> list(Integer page, Model model) {
         return List.of();
     }
 
     @Override
-    public int update(Post board) {
-        return boardRepository.update(board);
+    public int update(Post post) {
+        return postRepository.update(post);
     }
 
+    
     @Override
     public int delete(Long id) {
         int result = 0;
-        boardRepository.findById(id);
-        Post board = boardRepository.findById(id);
-        if (board != null) {
-            result = boardRepository.delete(id);
+        System.out.println("잠깐만 " + id);
+        Post post = postRepository.findById(id);
+        if (post != null) {
+            result = postRepository.deleteById(id);
         }
         return result;
     }
+// 태그 선택 기능 추가
+    @Override
+    public List<Post> listByType(String type) {
+        return postRepository.findByType(type);
+    }
+
 }

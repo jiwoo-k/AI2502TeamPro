@@ -57,4 +57,10 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id);
         return authorityRepository.findByUser(user);
     }
+
+    @Override
+    public int saveUserLoginHistory(Long id) {
+        User user = userRepository.findById(id);
+        return userRepository.saveLogin(id);
+    }
 }

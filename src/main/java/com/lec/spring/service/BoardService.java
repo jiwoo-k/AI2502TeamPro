@@ -6,9 +6,8 @@ import org.springframework.ui.Model;
 import java.util.List;
 
 public interface BoardService {
-
     // 게시판 작성하기
-    int write (Post post);
+    int write (Post Post);
 
     // id 가져와서 글 읽기
     Post detail (Long id);
@@ -20,8 +19,12 @@ public interface BoardService {
     List<Post> list (Integer page, Model model);
 
     // 게시판 수정하기
-    int update(Post post);
+    int update(Post Post);
 
     // 게시판 삭제
     int delete(Long id);
+
+    // 타입 선택 기능 추가
+    List<Post> listByType(String type);
+
 }
