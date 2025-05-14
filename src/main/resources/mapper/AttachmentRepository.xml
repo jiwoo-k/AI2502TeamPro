@@ -3,65 +3,71 @@
 
 <mapper namespace="com.lec.spring.repository.AttachmentRepository">
 
-    <insert id="insert" flushCache="true" parameterType="arrayList">
-        INSERT INTO attachment(sourcename, filename, post_id)
-        VALUES
-            <foreach collection="list" item="e" separator=",">
-            (#{e.sourcename}, #{e.filename}, #{param2})
-            </foreach>
-    </insert>
+    <!-- 매핑 정보 정의: DB 컬럼 ↔ Java 필드 -->
+    <resultMap id="attachmentMap" type="com.lec.spring.domain.Attachment">
+        <result property="id" column="id"/>
+        <result property="sourceName" column="sourcename"/>
+        <result property="fileName" column="filename"/>
+        <result property="postId" column="post_id"/>
+    </resultMap>
 
-    <insert id="save" flushCache="true" parameterType="com.lec.spring.domain.Attachment">
-        INSERT INTO attachment(sourcename, filename, post_id)
-        VALUES
-            (#{sourcename}, #{filename}, #{post_id})
-    </insert>
-
-
-    <!-- 반복해서 사용될 쿼리문은 sql 태그로 정의 include 태그로 가져다 쓸수 있다 -->
+    <!-- SELECT 공통 쿼리 정의 -->
     <sql id="SELECTFILE">
         SELECT id, sourcename, filename, post_id
         FROM attachment
         WHERE 1 = 1
     </sql>
 
-    <select id="findByPost" resultType="com.lec.spring.domain.Attachment">
+    <!-- 첨부파일 여러 개 insert -->
+    <insert id="insert" parameterType="map">
+        INSERT INTO attachment(sourcename, filename, post_id)
+        VALUES
+        <foreach collection="list" item="e" separator=",">
+            (#{e.sourcename}, #{e.filename}, #{postId})
+        </foreach>
+    </insert>
+
+    <!-- 첨부파일 1개 insert -->
+    <insert id="save" parameterType="com.lec.spring.domain.Attachment">
+        INSERT INTO attachment(sourcename, filename, post_id)
+        VALUES (#{sourceName}, #{fileName}, #{postId})
+    </insert>
+
+    <!-- 특정 글(postId)의 첨부파일들 조회 -->
+    <select id="findByPost" resultMap="attachmentMap">
         <include refid="SELECTFILE"/>
-        AND
-            post_id = #{param1}
+        AND post_id = #{postId}
         ORDER BY id ASC
     </select>
 
-    <select id="findById" resultType="com.lec.spring.domain.Attachment">
+    <!-- 특정 첨부파일(id) 조회 -->
+    <select id="findById" resultMap="attachmentMap">
         <include refid="SELECTFILE"/>
-        AND
-        id = #{id}
+        AND id = #{id}
     </select>
 
-    <select id="findByIds" resultType="com.lec.spring.domain.Attachment"
-            parameterType="java.util.ArrayList">
+    <!-- 여러 첨부파일(id들) 조회 -->
+    <select id="findByIds" resultMap="attachmentMap" parameterType="java.util.List">
         <include refid="SELECTFILE"/>
         AND id IN
-            <foreach collection="array" item="e" separator="," open="(" close=")">
-                #{e}
-            </foreach>
+        <foreach collection="list" item="e" separator="," open="(" close=")">
+            #{e}
+        </foreach>
         ORDER BY id ASC
     </select>
 
-    <delete id="deleteByIds" flushCache="true" parameterType="java.util.ArrayList">
+    <!-- 여러 첨부파일(id들) 삭제 -->
+    <delete id="deleteByIds" parameterType="java.util.List">
         DELETE FROM attachment
-        WHERE id IN (<foreach collection="array" item="item" separator=",">
-                #{item}
-            </foreach>
-        )
+        WHERE id IN
+        <foreach collection="list" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
     </delete>
 
-    <delete id="delete" flushCache="true" parameterType="com.lec.spring.domain.Attachment">
+    <!-- 특정 첨부파일 삭제 -->
+    <delete id="delete" parameterType="com.lec.spring.domain.Attachment">
         DELETE FROM attachment WHERE id = #{id}
     </delete>
+
 </mapper>
-
-
-
-
-

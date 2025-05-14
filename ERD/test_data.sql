@@ -67,6 +67,15 @@ VALUES (1, 1),
        (3, 2)
 ;
 
+INSERT INTO attachment (post_id, sourcename, filename)
+VALUES (1, 'face01.png', 'face01.png'),
+       (1, 'face02.png', 'face02.png'),
+       (2, 'face03.png', 'face03.png'),
+       (2, 'face04.png', 'face04.png'),
+       (1, 'picture05.jpg', 'picture05_stored.jpg'),
+       (2, 'picture06.jpg', 'picture06_stored.jpg');
+
+
 select * from post;
 select * from user;
 select * from post_tag;

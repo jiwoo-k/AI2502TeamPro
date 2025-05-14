@@ -13,6 +13,15 @@
         WHERE 1 = 1
     </sql>
 
+    <select id="findAll" parameterType="com.lec.spring.domain.Category">
+        select id,
+               name,
+               color
+        from category
+        order by color desc
+    </select>
+
+
     <select id="findById" resultType="com.lec.spring.domain.Category">
         <include refid="SELECT_BASE"/>
         AND id = #{id}
@@ -42,7 +51,7 @@
 
     </delete>
 
-    <select id="findAll" resultMap="mapCategory">
+    <select id="list" resultType="mapCategory">
         select c.id "c_id",
                c.name "c_name",
                c.color "c_color",
