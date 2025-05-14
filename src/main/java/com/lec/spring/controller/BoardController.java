@@ -63,6 +63,9 @@ public class BoardController {
 
     @GetMapping("/detail/{id}")
     public String detail(@PathVariable Long id, Model model){
+        System.out.println("게시글 상세보기 ID: " + id);
+        System.out.println("조회된 게시글: " + boardService.detail(id));
+        System.out.println("조회된 게시글 ID: " + boardService.detail(id).getId());
         model.addAttribute("board", boardService.detail(id));
         return "board/detail";
     }
@@ -90,7 +93,7 @@ public class BoardController {
         return "board/updateOk" ;
     }
     @PostMapping("/delete")
-    public String delete( @RequestParam Long id, Model model){
+    public String delete(  Long id, Model model){
         System.out.println("삭제결과" + boardService.delete(id));
         model.addAttribute("result", boardService.delete(id));
         return "board/deleteOk";

@@ -150,3 +150,15 @@ FROM post
 
 
 
+SELECT
+    post.id AS p_id,
+    post.title AS p_title,
+    post.content AS p_content,
+    post.createdat AS p_createdat,
+    post.type AS p_type,
+    user.id AS u_id,
+    user.name AS u_name,
+    user.name AS name
+FROM post
+         JOIN user ON post.user_id = user.id
+WHERE post.id = 14;

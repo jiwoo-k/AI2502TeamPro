@@ -44,7 +44,7 @@ SELECT *
 FROM attachment
 ORDER BY id DESC;
 
-select * from category
+select * from category;
 
 -- 3. 특정 id의 사용자 조회
 SELECT id       "id",
@@ -159,3 +159,4 @@ ORDER BY post.id DESC;
 
 
 delete from post where id = 1
+select * from user;
