@@ -42,14 +42,14 @@ public class AttachmentServiceImpl implements AttachmentService {
     }
 
     @Override
-    public List<Attachment> findByIds(Long[] ids) {
-        if (ids == null || ids.length == 0) return List.of();
+    public List<Attachment> findByIds(List<Long> ids) {
+        if (ids == null || ids.isEmpty()) return List.of();
         return attachmentRepository.findByIds(ids);
     }
 
     @Override
-    public int deleteByIds(Long[] ids) {
-        if (ids == null || ids.length == 0) return 0;
+    public int deleteByIds(List<Long> ids) {
+        if (ids == null || ids.isEmpty()) return 0;
         return attachmentRepository.deleteByIds(ids);
     }
 
