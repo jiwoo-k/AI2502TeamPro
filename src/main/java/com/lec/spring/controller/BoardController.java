@@ -68,8 +68,6 @@ public class BoardController {
             post.setFollow(isFollowed);
         }
 
-        // 팔로우 몇명?
-
         model.addAttribute("follow", followFlag);
         model.addAttribute("board", posts);
         model.addAttribute("selectedType", type);
@@ -81,7 +79,24 @@ public class BoardController {
 
 
     @GetMapping("/detail/{id}")
-    public String detail(@PathVariable Long id, Model model){
+    public String detail(@PathVariable Long id, Model model,@RequestParam(required = false) String type,@RequestParam(required = false) Boolean follow){
+        // 손님, 도우미 타입 설정
+        if (type == null || type.isBlank()) {
+            type = "손님";
+        }
+        List<Post> posts = boardService.listByType(type);
+        boolean followFlag = (follow != null) ? follow : false;
+        // 팔로우 여부
+        Long loginUserId = 1L; // 고정 id
+        for (Post post : posts) {
+            boolean isFollowed = userFollowingService.isFollowing(loginUserId, post.getUser_id());
+            post.setFollow(isFollowed);
+        }
+
+        model.addAttribute("follow", followFlag);
+        model.addAttribute("board", posts);
+        model.addAttribute("selectedType", type);
+        System.out.println("과연!" + posts + followFlag + type);
         Post post = boardService.detail(id);
         System.out.println("게시글 상세보기 ID: " + id);
         System.out.println("조회된 게시글: " + boardService.detail(id));

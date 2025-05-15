@@ -21,6 +21,16 @@
     <span th:text="${board.content}"></span>
 </div>
 
+<tbody >
+<tr th:each="board : ${board}" >
+    <td><a  th:text="${board.type}" th:href="@{'detail/' + ${board.id}}"></a></td>
+    <td th:if="${board.type == '도우미'}"
+        th:text="${board.follow} == true ? 'FOLLOWING' : 'NOPE'"></td>
+    <th th:if="${board.type == '도우미'}" th:text="${board.count}"></th>
+
+</tr>
+</tbody>
+
 <!--post_tag-->
 <div th:if="${board.type == '손님'}">
     <span>태그 목록</span>

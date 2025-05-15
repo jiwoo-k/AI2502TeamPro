@@ -81,7 +81,9 @@ INSERT INTO user (username, password, name, juminNo, status)
 VALUES
        ('ADMIN1', '1234', '관리자1', '9801013000000', 'active');
 
-
+INSERT INTO user (username, password, name, juminNo, status)
+VALUES
+    ('user3', '1234', '유저3', '9801013000001', 'active');
 
 -- [샘플 게시글]
 -- post 테이블 구조 : (user_id, type, title, content)
@@ -89,11 +91,15 @@ INSERT INTO post (user_id, type, title, content)
 VALUES (1, 1, '첫 번째 게시글', '첫 번째 게시글의 내용입니다.');
 
 INSERT INTO post (user_id, type, title, content)
-VALUES (2, '도우미', '두 번째 게시글', '첫 번째 게시글의 내용입니다.');
+VALUES (4, '도우미', '두 번째 게시글', '첫 번째 게시글의 내용입니다.');
 
 INSERT INTO post (user_id, type, title, content)
-VALUES (3, '도우미', '두 번째 게시글', '첫 번째 게시글의 내용입니다.');
+VALUES
+       (9, '도우미', '두 번째 게시글', '첫 번째 게시글의 내용입니다.'),
+       (10, '도우미', '두 번째 게시글', '첫 번째 게시글의 내용입니다.'),
+       (11, '도우미', '두 번째 게시글', '첫 번째 게시글의 내용입니다.');
 
+select * from post;
 insert into category (name, color)
 values ('food', '#8080');
 
@@ -136,7 +142,7 @@ insert into user_tag (user_id, tag_id) VALUE
 
 -- user
 
-SELECT * FROM user_tag;
+SELECT * FROM user;
 
 
 SELECT
@@ -168,3 +174,12 @@ SELECT
 FROM post
          JOIN user ON post.user_id = user.id
 WHERE post.id = 14;
+
+
+select * from user_follow;
+
+insert into user_follow (following_userid, followed_userid) value
+(3,2);
+
+select * from warning
+
