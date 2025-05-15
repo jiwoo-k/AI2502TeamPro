@@ -17,6 +17,7 @@
                 <span th:text="${#authentication.principal.user.name}">닉네임</span>
                 <a th:href="@{/mypage}">마이페이지</a>
 
+
                 <!-- 로그인/로그아웃 토글 -->
                 <span sec:authorize="!isAuthenticated()">
                     <a th:href="@{/user/login}">로그인</a>
