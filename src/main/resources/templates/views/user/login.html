@@ -14,10 +14,15 @@
 
 <div class="container mt-3 text-center">
   <form th:action="@{/user/login}" method="POST">
-    <h1 class="h3 mb-3 fw-normal">로그인 하세요</h1>
+    <h1 class="h3 mb-3 fw-normal">ROOFY LOGIN</h1>
+    <!--OAUth zone-->
+    <div>
+      <a class="btn btn-lg my-1" th:href="@{/oauth2/authorization/google}">
+        <img th:src="@{/image/google_login_button.png}" width="40" height="40">
+      </a>
+    </div>
     <div class="row mt-5">
       <div class="col-12 text-danger" th:text="${errorMessage}">
-        <!-- 에러 메세지 -->
       </div>
     </div>
     <div class="form-floating">

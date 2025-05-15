@@ -49,7 +49,7 @@
     </update>
 
     <insert id="saveLogin">
-        insert into loginhistory(user_id)
+        insert into login_history(user_id)
         values(#{id});
     </insert>
 </mapper>
