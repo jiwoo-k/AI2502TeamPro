@@ -51,13 +51,6 @@
 
     </delete>
 
-    <resultMap id="mapCategory" type="com.lec.spring.domain.Category">
-        <result column="c_id" property="id"/>
-        <result column="c_name" property="name"/>
-        <result column="c_color" property="color"/>
-        <result column="tag_count" property="tagCount"/>
-    </resultMap>
-
     <select id="list" resultMap="mapCategory">
         select c.id "c_id",
                c.name "c_name",
@@ -69,7 +62,12 @@
         order by tagCount desc;
     </select>
 
-
+    <resultMap id="mapCategory" type="com.lec.spring.domain.Category">
+        <result column="c_id" property="id"/>
+        <result column="c_name" property="name"/>
+        <result column="c_color" property="color"/>
+        <result column="tag_count" property="tagCount"/>
+    </resultMap>
 </mapper>
 
 
