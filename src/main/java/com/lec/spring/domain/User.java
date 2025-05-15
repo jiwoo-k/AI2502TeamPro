@@ -36,8 +36,8 @@ public class User{
     private String providerId; // OAuth 제공자의 사용자 고유 ID
 
     //사용자 현재 위치
-    private double latitude;
-    private double longitude;
+    private Double latitude;
+    private Double longitude;
     private String areaName; // 행정구역명
 
     //계정상태
