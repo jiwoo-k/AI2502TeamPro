@@ -17,11 +17,12 @@ import java.time.LocalDateTime;
 
 
 public class CustomLoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
-//    private final UserRepository userRepository;
 
-    public CustomLoginSuccessHandler(String defaultTargetUrl) {
+    private UserService userService;
+
+    public CustomLoginSuccessHandler(String defaultTargetUrl, UserService userService) {
         setDefaultTargetUrl(defaultTargetUrl);
-//        this.userRepository = sqlSession.getMapper(UserRepository.class);
+        this.userService = userService;
     }
 
     @Override
@@ -47,8 +48,11 @@ public class CustomLoginSuccessHandler extends SavedRequestAwareAuthenticationSu
 
 
         //사용자의 login 이력 저장
-       /* User user = userRepository.findByUsername(userDetails.getUsername());
-        userRepository.saveLogin(user.getId());*/
+       User user = userService.findByUsername(userDetails.getUsername());
+       int cnt = userService.saveUserLoginHistory(user.getId());
+       if(cnt > 0) {
+           System.out.println("\t" + user.getUsername() + " 로그인 이력 저장");
+       }
 
 //        request.getSession().setAttribute("loginTime", loginTime);
 

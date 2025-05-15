@@ -3,6 +3,7 @@ package com.lec.spring.controller;
 import com.lec.spring.domain.User;
 import com.lec.spring.domain.UserValidator;
 import com.lec.spring.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,15 @@ public class UserController {
     @GetMapping("/login")
     public void login(Model model) {
 
+    }
+
+    @PostMapping("/loginError")
+    public String loginError(HttpServletRequest request, Model model) {
+        String errorMessage = (String) request.getAttribute("errorMessage");
+
+        // 디버깅: 여기서 errorMessage 값이 제대로 넘어왔는지 다시 한번 확인
+        System.out.println("### /user/loginError Handler: errorMessage from Request Attribute = " + errorMessage);
+        return "user/login";
     }
 
     @GetMapping("/register")
@@ -68,11 +78,6 @@ public class UserController {
         int cnt = userService.register(user);
         model.addAttribute("result", cnt);
         return page;
-    }
-
-    @PostMapping("/loginError")
-    public String loginError(){
-        return "user/login";
     }
 
     @Autowired
