@@ -39,6 +39,6 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
         if(request.getParameter("ret_url") != null) {
             redirectUrl = request.getParameter("ret_url");
         }*/
-        response.sendRedirect(redirectUrl);
+        response.sendRedirect("/home");
     }
 }
