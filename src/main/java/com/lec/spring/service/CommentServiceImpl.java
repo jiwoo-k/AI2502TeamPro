@@ -98,7 +98,7 @@ public class CommentServiceImpl implements CommentService {
         if (comment == null) throw new IllegalArgumentException("존재하지 않는 댓글입니다.");
 
         Post post = postRepository.findById(comment.getPostId());
-        if (post == null || post.getUser_id() == null || !post.getUser_id().getId().equals(userId)) {
+        if (post == null || post.getUser_id() == null || !post.getUser_id().equals(userId)) {
             throw new AccessDeniedException("픽 권한 없음");
         }
 
@@ -119,7 +119,7 @@ public class CommentServiceImpl implements CommentService {
         if (comment == null) throw new IllegalArgumentException("존재하지 않는 댓글입니다.");
 
         Post post = postRepository.findById(comment.getPostId());
-        if (post == null || post.getUser_id() == null || !post.getUser_id().getId().equals(userId)) {
+        if (post == null || post.getUser_id() == null || !post.getUser_id().equals(userId)) {
             throw new AccessDeniedException("픽 해제 권한 없음");
         }
 
