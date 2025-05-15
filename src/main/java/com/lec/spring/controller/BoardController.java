@@ -3,6 +3,7 @@ package com.lec.spring.controller;
 import com.lec.spring.domain.Post;
 import com.lec.spring.domain.Tag;
 import com.lec.spring.service.BoardService;
+import com.lec.spring.service.UserFollowingService;
 import com.lec.spring.vaildator.BoardValidator;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -21,9 +22,11 @@ import java.util.List;
 @RequestMapping("/board")
 public class BoardController {
     private final BoardService boardService;
-    public BoardController(BoardService boardService) {
+    private final UserFollowingService userFollowingService;
+    public BoardController(BoardService boardService, UserFollowingService userFollowingService) {
         System.out.println("일단 생성");
         this.boardService = boardService;
+        this.userFollowingService = userFollowingService;
     }
 // 수정, 추가. 삭제의 경우 attr name을 result 로 하였음
     @GetMapping("/write")
@@ -51,15 +54,27 @@ public class BoardController {
     }
     // listBytype (손님, 도우미 선택 가능 => findAll 은 혹시 몰라서 일부러 놔뒀음)
     @GetMapping("/list")
-    public String list(@RequestParam(required = false) String type, Model model) {
+    public String list(@RequestParam(required = false) String type, Model model,@RequestParam(required = false) Boolean follow) {
+        // 손님, 도우미 타입 설정
         if (type == null || type.isBlank()) {
             type = "손님";
         }
-
         List<Post> posts = boardService.listByType(type);
+        boolean followFlag = (follow != null) ? follow : false;
+        // 팔로우 여부
+        Long loginUserId = 1L; // 고정 id
+        for (Post post : posts) {
+            boolean isFollowed = userFollowingService.isFollowing(loginUserId, post.getUser_id());
+            post.setFollow(isFollowed);
+        }
 
+        // 팔로우 몇명?
+
+        model.addAttribute("follow", followFlag);
         model.addAttribute("board", posts);
         model.addAttribute("selectedType", type);
+        System.out.println("과연!" + posts + followFlag + type);
+
         return "board/list";
     }
 

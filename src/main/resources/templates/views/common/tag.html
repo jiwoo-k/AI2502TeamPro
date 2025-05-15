@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="tag">
+	<form th:action="@{/board/list}" name="tagForm">
+		<!--태그 검색창-->
+		<div id="tagSearch">
+			<!--태그 검색 및 추가-->
+			<div id="searchZone">
+				<input type="text" name="name" placeholder="태그 검색">
+				<button type="button" id="tagSearchButton">검색</button>
+				<button type="button" id="tagAddButton">추가</button>
+			</div>
+
+			<!--카테고리 보여주기-->
+			<div id="categoryZone">
+
+			</div>
+
+			<!--validation 문구-->
+			<div>
+
+			</div>
+		</div>
+
+		<!--담은 태그 목록창-->
+		<div id="tagChoice">
+
+		</div>
+
+		<!--radio 와 버튼-->
+		<div id="optionButtons">
+
+		</div>
+	</form>
+</th:block>
+</html>

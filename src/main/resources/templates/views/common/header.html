@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<th:block th:fragment="header-fragment">
+    <header>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2><a th:href="@{/}">ROOFY</a></h2>
+
+            <!-- 사용자 헤더 -->
+            <div sec:authorize="hasRole('USER')">
+                <span style="cursor: pointer; text-decoration: underline;"
+                      onclick="openMapFromHeader()"
+                      th:text="${#authentication.principal.user.areaName}">
+                위치
+                </span>
+                <span th:text="${#authentication.principal.user.name}">닉네임</span>
+                <a th:href="@{/mypage}">마이페이지</a>
+
+                <!-- 로그인/로그아웃 토글 -->
+                <span sec:authorize="!isAuthenticated()">
+                    <a th:href="@{/user/login}">로그인</a>
+                </span>
+                <span sec:authorize="isAuthenticated()">
+                    <a th:href="@{/user/logout}">로그아웃</a>
+                </span>
+            </div>
+
+
+            <!-- 관리자 헤더 -->
+            <div sec:authorize="hasRole('ADMIN')">
+                <span th:text="${#authentication.principal.user.name}">관리자명</span>
+
+                <!-- 로그인/로그아웃 토글 -->
+                <span sec:authorize="!isAuthenticated()">
+                    <a th:href="@{/user/login}">로그인</a>
+                </span>
+
+                <span sec:authorize="isAuthenticated()">
+                    <a th:href="@{/user/logout}">로그아웃</a>
+                </span>
+            </div>
+
+        </div>
+    </header>
+</th:block>
+</html>

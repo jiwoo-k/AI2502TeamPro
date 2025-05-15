@@ -3,6 +3,7 @@ package com.lec.spring.service;
 import com.lec.spring.domain.Post;
 import com.lec.spring.domain.Tag;
 import com.lec.spring.repository.PostRepository;
+import com.lec.spring.repository.UserFollowingRepository;
 import com.lec.spring.repository.UserRepository;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Service;
@@ -14,10 +15,12 @@ import java.util.List;
 public class BoardServiceImpl implements BoardService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final UserFollowingRepository userFollowingRepository;
     public BoardServiceImpl(SqlSession sqlSession) {
         System.out.println("boardServiceImpl");
         this.postRepository = sqlSession.getMapper(PostRepository.class);
         this.userRepository = sqlSession.getMapper(UserRepository.class);
+        this.userFollowingRepository = sqlSession.getMapper(UserFollowingRepository.class);
     }
     @Override
     public int write(Post post) {
@@ -75,7 +78,12 @@ public class BoardServiceImpl implements BoardService {
     // 태그 선택 기능 추가
     @Override
     public List<Post> listByType(String type) {
-        return postRepository.findByType(type);
+        List<Post> posts = postRepository.findByType(type);
+        for (Post post : posts) {
+            Integer followCount = userFollowingRepository.followCount(post.getUser_id());
+            post.setCount(followCount);
+        }
+        return posts;
     }
 
 }

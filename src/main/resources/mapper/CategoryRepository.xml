@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lec.spring.repository.CategoryRepository">
+
+    <sql id="SELECT_BASE">
+        SELECT id,
+               name,
+               color
+        FROM category
+        WHERE 1 = 1
+    </sql>
+
+    <select id="findAll" parameterType="com.lec.spring.domain.Category">
+        select id,
+               name,
+               color
+        from category
+        order by color desc
+    </select>
+
+
+    <select id="findById" resultType="com.lec.spring.domain.Category">
+        <include refid="SELECT_BASE"/>
+        AND id = #{id}
+    </select>
+
+    <select id="findByName" resultType="com.lec.spring.domain.Category">
+        <include refid="SELECT_BASE"/>
+        AND name = #{name}
+    </select>
+
+    <insert id="save" flushCache="true" parameterType="com.lec.spring.domain.Category"
+            useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        INSERT INTO category(name, color)
+        VALUES (#{name}, #{color})
+    </insert>
+
+    <update id="update" flushCache="true" parameterType="com.lec.spring.domain.Category">
+        UPDATE category
+        SET name = #{name},
+            color = #{color}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="com.lec.spring.domain.Category" flushCache="true">
+        DELETE
+        FROM category WHERE id = #{id}
+
+    </delete>
+
+    <select id="list" resultMap="mapCategory">
+        select c.id "c_id",
+               c.name "c_name",
+               c.color "c_color",
+               count(*) "tag_count"
+        from category c, tag t
+        where c.id = t.category_id
+        group by category_id
+        order by tagCount desc;
+    </select>
+
+    <resultMap id="mapCategory" type="com.lec.spring.domain.Category">
+        <result column="c_id" property="id"/>
+        <result column="c_name" property="name"/>
+        <result column="c_color" property="color"/>
+        <result column="tag_count" property="tagCount"/>
+    </resultMap>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

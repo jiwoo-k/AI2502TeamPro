@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lec.spring.repository.AttachmentRepository">
+
+    <!-- 매핑 정보 정의: DB 컬럼 ↔ Java 필드 -->
+    <resultMap id="attachmentMap" type="com.lec.spring.domain.Attachment">
+        <result property="id" column="id"/>
+        <result property="sourceName" column="sourcename"/>
+        <result property="fileName" column="filename"/>
+        <result property="postId" column="post_id"/>
+    </resultMap>
+
+    <!-- SELECT 공통 쿼리 정의 -->
+    <sql id="SELECTFILE">
+        SELECT id, sourcename, filename, post_id
+        FROM attachment
+        WHERE 1 = 1
+    </sql>
+
+    <!-- 첨부파일 여러 개 insert -->
+    <insert id="insert" parameterType="map">
+        INSERT INTO attachment(sourcename, filename, post_id)
+        VALUES
+        <foreach collection="list" item="e" separator=",">
+            (#{e.sourcename}, #{e.filename}, #{postId})
+        </foreach>
+    </insert>
+
+    <!-- 첨부파일 1개 insert -->
+    <insert id="save" parameterType="com.lec.spring.domain.Attachment">
+        INSERT INTO attachment(sourcename, filename, post_id)
+        VALUES (#{sourceName}, #{fileName}, #{postId})
+    </insert>
+
+    <!-- 특정 글(postId)의 첨부파일들 조회 -->
+    <select id="findByPost" resultMap="attachmentMap">
+        <include refid="SELECTFILE"/>
+        AND post_id = #{postId}
+        ORDER BY id ASC
+    </select>
+
+    <!-- 특정 첨부파일(id) 조회 -->
+    <select id="findById" resultMap="attachmentMap">
+        <include refid="SELECTFILE"/>
+        AND id = #{id}
+    </select>
+
+    <!-- 여러 첨부파일(id들) 조회 -->
+    <select id="findByIds" resultMap="attachmentMap" parameterType="java.util.List">
+        <include refid="SELECTFILE"/>
+        AND id IN
+        <foreach collection="list" item="e" separator="," open="(" close=")">
+            #{e}
+        </foreach>
+        ORDER BY id ASC
+    </select>
+
+    <!-- 여러 첨부파일(id들) 삭제 -->
+    <delete id="deleteByIds" parameterType="java.util.List">
+        DELETE FROM attachment
+        WHERE id IN
+        <foreach collection="list" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <!-- 특정 첨부파일 삭제 -->
+    <delete id="delete" parameterType="com.lec.spring.domain.Attachment">
+        DELETE FROM attachment WHERE id = #{id}
+    </delete>
+
+</mapper>
