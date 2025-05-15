@@ -32,4 +32,6 @@ select * from post;
 select * from post_tag;
 
 select * from user order by id desc;
+select * from login_history;
+select * from user;
 
