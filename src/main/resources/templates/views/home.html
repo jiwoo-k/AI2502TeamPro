@@ -12,9 +12,9 @@
 </head>
 
 <body>
-<!-- 조건부 헤더 -->
-<div th:if="${not #httpServletRequest.requestURI.matches('/user/(login|register).*')}">
-	<div th:replace="~{views/common/header :: header-fragment}"></div>
+<!-- 조건부 헤더: showHeader 가 true 일 때만 출력 -->
+<div th:if="${showHeader}">
+	<div th:replace="~{common/header :: header-fragment}"></div>
 </div>
 
 <main layout:fragment="content"></main>

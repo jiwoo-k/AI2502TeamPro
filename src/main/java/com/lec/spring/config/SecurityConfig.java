@@ -51,11 +51,10 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/", "/home", "/user/login", "/user/register",
-                                "/board/list", "/board/detail/**", "/css/**", "/js/**"
-                        ).permitAll()
+                                "/user/my_page/**", "/board/write", "/board/update/**"
+                        ).authenticated()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
                 .formLogin(form -> form
                         .loginPage("/user/login")

@@ -1,8 +1,5 @@
-<!DOCTYPE html>
-<html lang="ko"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<th:block th:fragment="header-fragment">
+<!-- templates/views/common/header.html -->
+<th:block th:fragment="header-fragment" xmlns:sec="http://www.w3.org/1999/xhtml">
     <header>
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <h2><a th:href="@{/}">ROOFY</a></h2>
@@ -29,12 +26,9 @@
             <!-- 관리자 헤더 -->
             <div sec:authorize="hasRole('ADMIN')">
                 <span th:text="${#authentication.principal.user.name}">관리자명</span>
-
-                <!-- 로그인/로그아웃 토글 -->
                 <span sec:authorize="!isAuthenticated()">
                     <a th:href="@{/user/login}">로그인</a>
                 </span>
-
                 <span sec:authorize="isAuthenticated()">
                     <a th:href="@{/user/logout}">로그아웃</a>
                 </span>
@@ -42,7 +36,7 @@
         </div>
     </header>
 
-    <!-- 지도 띄울 모달 추가 (숨겨진 상태) -->
+    <!-- 지도 띄울 모달 -->
     <div class="modal fade" id="headerMapModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
@@ -55,11 +49,10 @@
         </div>
     </div>
 
-    <!-- openMapFromHeader 함수 추가 -->
+    <!-- openMapFromHeader 함수 -->
     <script>
         function openMapFromHeader() {
             openMap("headerMap", "headerMapModal", "headerAddressOutput");
         }
     </script>
 </th:block>
-</html>
