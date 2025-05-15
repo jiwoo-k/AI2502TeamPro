@@ -32,7 +32,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        return http
+        http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
@@ -63,12 +63,12 @@ public class SecurityConfig {
 
                         // code 를 받아오는 것이 아니라 "AccessToken" 과 사용자 "프로필 정보" 를 한번에 받아온다(편리)
                         .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig
-                                //인증 서버의 userInfo Endpoint(후처리) 설정.
-                                //회원가입 + 로그인 진행
                                 .userService(principalOauth2UserService) //userService(Oauth2UserService<Oauth2UserRequest, Oauth2User>)
                         )
-                )
-                .build();
+                        .successHandler(new CustomLoginSuccessHandler("/home", userService)
+                ));
+
+                return http.build();
     }
 
 }

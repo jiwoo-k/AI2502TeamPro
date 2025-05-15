@@ -32,7 +32,7 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
         this.user = user;
     }
 
-    //OAuth2 로그인용 생성자
+    //OAuth2 원래 회원의 로그인용 생성자
     public PrincipalDetails(User user, Map<String, Object> attributes) {
         System.out.println("""
                 🎃UserDetails(user, oauth attributes) 생성:

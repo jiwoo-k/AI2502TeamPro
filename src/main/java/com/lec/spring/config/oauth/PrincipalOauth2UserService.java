@@ -5,6 +5,8 @@ import com.lec.spring.config.oauth.provider.GoogleUserInfo;
 import com.lec.spring.config.oauth.provider.OAuth2UserInfo;
 import com.lec.spring.domain.User;
 import com.lec.spring.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -58,8 +60,7 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
 //        String email = oAuth2UserInfo.getEmail();
 //        String name = oAuth2UserInfo.getName();
 
-        // 회원 가입 진행하기 전에
-        // 이미 가입한 회원인지, 혹은 비가입자인지 체크하여야 한다
+        // 회원 가입 진행하기 전
         User newUser = User.builder()
                 .username(username)
 //                .name(name)
@@ -69,7 +70,26 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
                 .providerId(providerId)
                 .build();
 
+
         User user = userService.findByUsername(username);
+        if(user == null) {
+            newUser.setJuminNo("0".repeat(13));
+
+            userService.register(newUser);
+
+            PrincipalDetails principalDetails = new PrincipalDetails(newUser, oAuth2User.getAttributes());
+            principalDetails.setUserService(userService);
+            return principalDetails;
+        }
+        else{
+            System.out.println("🏆이미 가입된 회원입니다");
+
+            PrincipalDetails principalDetails = new PrincipalDetails(user, oAuth2User.getAttributes());
+            principalDetails.setUserService(userService);
+            return principalDetails;
+        }
+
+        /*User user = userService.findByUsername(username);
         if (user == null) { //비가입자인 경우에만 회원 가입 진행
             user = newUser;
             int cnt = userService.register(user);
@@ -89,7 +109,7 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
 
         PrincipalDetails principalDetails = new PrincipalDetails(user, oAuth2User.getAttributes());
         principalDetails.setUserService(userService);
-        return principalDetails;
+        return principalDetails;*/
 
 //        return oAuth2User;
     }

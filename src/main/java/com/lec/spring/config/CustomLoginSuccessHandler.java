@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 
 public class CustomLoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
-    private UserService userService;
+    private final UserService userService;
 
     public CustomLoginSuccessHandler(String defaultTargetUrl, UserService userService) {
         setDefaultTargetUrl(defaultTargetUrl);
@@ -27,9 +27,14 @@ public class CustomLoginSuccessHandler extends SavedRequestAwareAuthenticationSu
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
-        System.out.println("🍤 로그인 성공: onAuthenticationSuccess() 호출");
+        System.out.println("🍤 인증 성공: onAuthenticationSuccess() 호출");
 
         PrincipalDetails userDetails = (PrincipalDetails) authentication.getPrincipal();
+
+        if(userDetails.getAttributes() != null && userDetails.getUser().getJuminNo().equals("0".repeat(13))){
+            System.out.println("OAuth 회원가입 진행중. 추가 정보 페이지로 redirect 합니다");
+            response.sendRedirect("/user/register");
+        }
 
         System.out.println("""
                     username: %s
