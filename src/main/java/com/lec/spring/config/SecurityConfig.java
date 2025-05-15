@@ -1,5 +1,7 @@
 package com.lec.spring.config;
 
+import com.lec.spring.config.oauth.PrincipalOauth2UserService;
+import com.lec.spring.service.UserService;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -19,27 +21,10 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Autowired
-    SqlSession sqlSession;
+    private UserService userService;
 
-    // UserDetailsService 구현체
-    private final UserDetailsService userDetailService;
-
-    // 생성자 주입
-    public SecurityConfig(UserDetailsService userDetailService) {
-        this.userDetailService = userDetailService;
-    }
-
-
-    // 인증 공급자(Authentication Provider) Bean 등록
-    // 사용자 정보를 로드하는 UserDetailsService 와 비밀번호 인코더를 연결
-    /*@Bean
-    public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(userDetailService); // 여러분이 만든 UserDetailsService 구현체 설정
-        provider.setPasswordEncoder(passwordEncoder()); // 위에서 등록한 PasswordEncoder 설정
-        // provider.setHideUserNotFoundExceptions(false); // 개발 단계에서 사용자 없는 경우 메시지 확인용 (운영 시에는 true 권장)
-        return provider;
-    }*/
+    @Autowired
+    private PrincipalOauth2UserService principalOauth2UserService;
 
     // Security Filter Chain Bean 등록
     // HTTP 요청에 대한 보안 규칙을 설정
@@ -51,17 +36,16 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/", "/home", "/user/login", "/user/register",
-                                "/board/list", "/board/detail/**", "/css/**", "/js/**"
-                        ).permitAll()
+                                "/user/my_page/**", "/board/write", "/board/update/**"
+                        ).authenticated()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
                 .formLogin(form -> form
                         .loginPage("/user/login")
                         .loginProcessingUrl("/user/login")
                         .defaultSuccessUrl("/")
-                        .successHandler(new CustomLoginSuccessHandler("/home"))
+                        .successHandler(new CustomLoginSuccessHandler("/home", userService))
                         .failureHandler(new CustomLoginFailureHandler())
                 )
                 .logout(httpSecurity -> httpSecurity
@@ -74,7 +58,16 @@ public class SecurityConfig {
                         // .accessDeniedHandler(AccessDeniedHandler)
                         .accessDeniedHandler(new CustomAccessDeniedHandler())
                 )
+                .oauth2Login(httpSecurity -> httpSecurity
+                        .loginPage("/user/login") // 로그인 페이지를 동일한 url 로 지정
 
+                        // code 를 받아오는 것이 아니라 "AccessToken" 과 사용자 "프로필 정보" 를 한번에 받아온다(편리)
+                        .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig
+                                //인증 서버의 userInfo Endpoint(후처리) 설정.
+                                //회원가입 + 로그인 진행
+                                .userService(principalOauth2UserService) //userService(Oauth2UserService<Oauth2UserRequest, Oauth2User>)
+                        )
+                )
                 .build();
     }
 
