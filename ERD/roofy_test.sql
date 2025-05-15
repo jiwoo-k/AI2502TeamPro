@@ -160,3 +160,59 @@ ORDER BY post.id DESC;
 
 delete from post where id = 1
 select * from user;
+
+SELECT CASE WHEN COUNT(*) > 0 THEN TRUE ELSE FALSE END
+FROM user_follow
+WHERE following_userid = 1
+  AND followed_userid = (
+    SELECT post.id FROM post WHERE id = 2
+)
+
+;
+
+select * from post
+
+select * from user_follow
+
+SELECT COUNT(*) FROM user_follow WHERE following_userid = 1 AND followed_userid = 2;
+
+
+SELECT *
+FROM user_follow
+WHERE following_userid = 1 AND followed_userid = 2;
+
+
+insert into user_follow (following_userid, followed_userid)
+    values (1,3)
+
+
+SELECT
+    following_userid AS followingUserId,
+    followed_userid AS followedUserId
+FROM user_follow
+WHERE following_userid = 1
+  AND followed_userid = 2
+
+SELECT
+    count(*) AS followCount
+FROM user_follow
+WHERE following_userid = #{follpwingUserId}
+GROUP BY following_userid
+
+
+SELECT
+    p.id AS p_id,
+    p.title AS p_title,
+    p.content AS p_content,
+    p.createdat AS p_createdat,
+    p.type AS p_type,
+    p.user_id AS p_user_id,
+    u.name AS u_name,
+    (
+        SELECT COUNT(*)
+        FROM user_follow
+        WHERE followed_userid = p.user_id
+    ) AS count
+FROM post p
+         JOIN user u ON p.user_id = u.id
+WHERE p.type = '도우미'

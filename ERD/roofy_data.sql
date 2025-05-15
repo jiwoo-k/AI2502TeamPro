@@ -88,6 +88,12 @@ VALUES
 INSERT INTO post (user_id, type, title, content)
 VALUES (1, 1, '첫 번째 게시글', '첫 번째 게시글의 내용입니다.');
 
+INSERT INTO post (user_id, type, title, content)
+VALUES (2, '도우미', '두 번째 게시글', '첫 번째 게시글의 내용입니다.');
+
+INSERT INTO post (user_id, type, title, content)
+VALUES (3, '도우미', '두 번째 게시글', '첫 번째 게시글의 내용입니다.');
+
 insert into category (name, color)
 values ('food', '#8080');
 

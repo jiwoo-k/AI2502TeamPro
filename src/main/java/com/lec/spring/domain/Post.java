@@ -29,7 +29,9 @@ public class Post {
     private List<Tag> user_tag;
 
     // 팔로우
-    private Integer followerCount;
-    private Integer following_userid;
-    private Integer followed_userid;
+    private Boolean follow;
+    private Integer count;
+
+
+
 }
