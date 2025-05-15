@@ -12,7 +12,7 @@
                 <span style="cursor: pointer; text-decoration: underline;"
                       onclick="openMapFromHeader()"
                       th:text="${#authentication.principal.user.areaName}">
-                위치
+                    위치
                 </span>
                 <span th:text="${#authentication.principal.user.name}">닉네임</span>
                 <a th:href="@{/mypage}">마이페이지</a>
@@ -25,7 +25,6 @@
                     <a th:href="@{/user/logout}">로그아웃</a>
                 </span>
             </div>
-
 
             <!-- 관리자 헤더 -->
             <div sec:authorize="hasRole('ADMIN')">
@@ -40,8 +39,27 @@
                     <a th:href="@{/user/logout}">로그아웃</a>
                 </span>
             </div>
-
         </div>
     </header>
+
+    <!-- 지도 띄울 모달 추가 (숨겨진 상태) -->
+    <div class="modal fade" id="headerMapModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header"><h5 class="modal-title">내 위치</h5></div>
+                <div class="modal-body">
+                    <div id="headerMap" style="width: 100%; height: 400px;"></div>
+                    <p><strong>행정구역:</strong> <span id="headerAddressOutput">-</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- openMapFromHeader 함수 추가 -->
+    <script>
+        function openMapFromHeader() {
+            openMap("headerMap", "headerMapModal", "headerAddressOutput");
+        }
+    </script>
 </th:block>
 </html>
