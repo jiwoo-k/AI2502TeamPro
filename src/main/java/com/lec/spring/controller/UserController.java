@@ -45,8 +45,9 @@ public class UserController {
     }
 
     @GetMapping("/register")
-    public void resgister(){
-
+    public void resgister(HttpServletRequest request, Model model) {
+        User user = (User) request.getSession().getAttribute("user");
+        model.addAttribute("user", user);
     }
 
     @PostMapping("/register")
