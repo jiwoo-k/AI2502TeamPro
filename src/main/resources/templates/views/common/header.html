@@ -43,5 +43,25 @@
 
         </div>
     </header>
+
+    <!-- 지도 띄울 모달 추가 (숨겨진 상태) -->
+    <div class="modal fade" id="headerMapModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header"><h5 class="modal-title">내 위치</h5></div>
+                <div class="modal-body">
+                    <div id="headerMap" style="width: 75%; height: 400px; border: 1px solid black"></div>
+                    <p><strong>행정구역:</strong> <span id="headerAddressOutput">-</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- openMapFromHeader 함수 추가 -->
+    <script>
+        function openMapFromHeader() {
+            openMap("headerMap", "headerMapModal", "headerAddressOutput");
+        }
+    </script>
 </th:block>
 </html>
