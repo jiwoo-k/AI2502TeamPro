@@ -1,10 +1,44 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
 	<meta charset="UTF-8">
-	<title>Title</title>
+	<title>ROOFY</title>
+	<link rel="stylesheet" th:href="@{/css/style.css}">
+	<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY"></script>
+	<script src="/js/location-util.js"></script>
 </head>
-<body>
 
+<body>
+<!-- 조건부 헤더 -->
+<div th:if="${not #httpServletRequest.requestURI.matches('/user/(login|register).*')}">
+	<div th:replace="~{views/common/header :: header-fragment}"></div>
+</div>
+
+<main layout:fragment="content"></main>
+
+<!-- 지도 모달 -->
+<div class="modal fade" id="mapModalFromHeader" tabindex="-1">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">내 현재 위치</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+			</div>
+			<div class="modal-body">
+				<div id="mapFromHeader" style="width: 100%; height: 400px;"></div>
+				<p class="mt-2">현재 위치: <span id="modal-area-name-header">로딩 중...</span></p>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	function openMapFromHeader() {
+		openMap("mapFromHeader", "mapModalFromHeader", "modal-area-name-header");
+	}
+</script>
 </body>
 </html>

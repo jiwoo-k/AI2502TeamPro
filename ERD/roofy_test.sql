@@ -94,8 +94,8 @@ WHERE p.user_id = u.id
 
 -- 7. 페이징 테스트용 다량의 데이터
 -- 먼저 기존 post 데이터를 한 건 복제하여 데이터량 증가(실제 운영 환경에서는 주의)
-INSERT INTO post(user_id, posttype_id, title, content)
-SELECT user_id, posttype_id, title, content
+INSERT INTO post(user_id, type, title, content)
+SELECT user_id, type, title, content
 FROM post;
 
 SELECT count(*)

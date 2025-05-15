@@ -1,29 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="com.lec.spring.repository.UserRepository">
     <sql id="SELECT_BASE">
         SELECT
-            id,
-            username,
-            name,
-            password,
-            juminNo,
-            createdAt,
-            provider,
-            providerId,
-            latitude,
-            longitude,
-            status
+        id
+        , username
+        , password
+        , name
+        ,juminNo
+        , createdAt
+        , provider
+        , providerId
+        ,latitude
+        ,longitude
+        ,status
         FROM user
         WHERE 1 = 1
     </sql>
 
     <insert id="save" flushCache="true" parameterType="com.lec.spring.domain.User"
             useGeneratedKeys="true" keyColumn="id" keyProperty="id">
-        INSERT INTO user(username, name, password, juminNo, latitude, longitude, provider, providerId)
-        VALUES (#{username}, #{name}, #{password}, #{juminNo}, #{latitude}, #{longitude}. #{provider}, #{providerId});
+        INSERT INTO user(username, name, password, juminNo, provider, providerId, latitude, longitude)
+        VALUES (#{username}, #{name}, #{password}, #{juminNo}, #{provider}, #{providerId}, #{latitude}, #{longitude});
     </insert>
 
     <select id="findById" resultType="com.lec.spring.domain.User">
@@ -36,10 +37,19 @@
         and username = #{username};
     </select>
 
+    <select id="findByName" resultType="com.lec.spring.domain.User">
+        <include refid="SELECT_BASE"/>
+        and name = #{name};
+    </select>
+
     <update id="update" parameterType="com.lec.spring.domain.User" flushCache="true">
         update user
-        set username = #{username},
-            password = #{password}
+        set name = #{name}, password = #{password}
         where id = #{id};
     </update>
+
+    <insert id="saveLogin">
+        insert into login_history(user_id)
+        values(#{id});
+    </insert>
 </mapper>

@@ -1,9 +1,10 @@
+SET SESSION FOREIGN_KEY_CHECKS = 0;
+
+/* 기존 테이블 삭제 (의존관계가 있는 순서로 삭제) */
 DROP TABLE IF EXISTS user_tag;
 DROP TABLE IF EXISTS user_hate;
-DROP TABLE IF EXISTS user_follow;
-DROP TABLE IF EXISTS warning;
-
 DROP TABLE IF EXISTS user_authorities;
+DROP TABLE IF EXISTS pick;
 DROP TABLE IF EXISTS post_tag;
 DROP TABLE IF EXISTS follower;
 DROP TABLE IF EXISTS attachment;
@@ -13,10 +14,14 @@ DROP TABLE IF EXISTS post;
 DROP TABLE IF EXISTS category;
 DROP TABLE IF EXISTS authority;
 DROP TABLE IF EXISTS user;
-DROP TABLE IF EXISTS loginhistory;
+
+/* ------------------------------
+   테이블 생성
+   ------------------------------ */
+
 CREATE TABLE attachment
 (
-    id         INT          NOT NULL AUTO_INCREMENT,
+    id         INT          NOT NULL,
     post_id    INT          NOT NULL,
     sourcename VARCHAR(100) NOT NULL,
     filename   VARCHAR(100) NOT NULL,
@@ -26,96 +31,85 @@ CREATE TABLE attachment
 CREATE TABLE authority
 (
     id   INT         NOT NULL AUTO_INCREMENT,
-    name VARCHAR(40) NOT NULL,
+    name VARCHAR(40) NULL,
     PRIMARY KEY (id)
 ) COMMENT '권한';
 
 CREATE TABLE category
 (
-    id    INT         NOT NULL AUTO_INCREMENT,
-    name  VARCHAR(50) NOT NULL,
-    color VARCHAR(10) NULL    ,
+    id   INT         NOT NULL AUTO_INCREMENT,
+    name VARCHAR(50) NOT NULL,
+    color VARCHAR(10) DEFAULT '#808080',
     PRIMARY KEY (id)
 ) COMMENT '대분류';
 
 CREATE TABLE comment
 (
-    id        INT      NOT NULL AUTO_INCREMENT,
-    user_id   INT      NOT NULL,
-    post_id   INT      NOT NULL,
-    parent_id INT      NULL    ,
-    content   TEXT     NULL    ,
-    createdat DATETIME NULL     DEFAULT now(),
-    ispicked  BOOLEAN  NOT NULL DEFAULT false COMMENT '픽여부',
+    id              INT      NOT NULL AUTO_INCREMENT,
+    user_id         INT      NOT NULL,
+    post_id         INT      NOT NULL,
+    parentcommentid INT      NOT NULL,
+    content         TEXT     NULL,
+    regdate         DATETIME NULL DEFAULT now(),
     PRIMARY KEY (id)
 ) COMMENT '댓글';
 
-CREATE TABLE loginhistory
+CREATE TABLE follower
 (
-    user_id INT      NOT NULL,
-    loginat DATETIME not NULL     DEFAULT now(),
-    PRIMARY KEY (user_id, loginat)
-) COMMENT '로그인 이력';
+    following_userid INT NOT NULL,
+    followed_userid  INT NOT NULL,
+    PRIMARY KEY (following_userid, followed_userid)
+) COMMENT '사용자팔로워수';
+
+CREATE TABLE pick
+(
+    post_id    INT NOT NULL,
+    comment_id INT NULL,
+    PRIMARY KEY (post_id)
+) COMMENT '선택된댓글';
 
 CREATE TABLE post
 (
-    id        INT          NOT NULL AUTO_INCREMENT,
-    user_id   INT          NOT NULL,
-    type      ENUM ('손님', '도우미')         NOT NULL COMMENT '게시판 유형',
-    title     VARCHAR(100) NOT NULL,
-    content   LONGTEXT     NULL    ,
-    createdat DATETIME     NULL     DEFAULT now(),
-    isdeleted BOOLEAN      NOT NULL DEFAULT false,
-    deletedat DATETIME     NULL     DEFAULT now(),
+    id          INT          NOT NULL AUTO_INCREMENT,
+    user_id     INT          NOT NULL,
+    type        INT          NOT NULL,
+    title       VARCHAR(100) NOT NULL,
+    content     LONGTEXT     NULL,
+    regdate     DATETIME     NULL DEFAULT now(),
+    isfinish    BOOLEAN      NULL DEFAULT false,
     PRIMARY KEY (id)
 ) COMMENT '게시글';
 
-
 CREATE TABLE post_tag
 (
-    post_id INT NOT NULL,
-    tag_id  INT NOT NULL,
-    PRIMARY KEY (post_id, tag_id)
+    guest_post_id INT    NOT NULL,
+    tag_id        BIGINT NOT NULL,
+    PRIMARY KEY (guest_post_id, tag_id)
 ) COMMENT '게시물에 있는 태그';
 
 CREATE TABLE tag
 (
-    id          INT      NOT NULL AUTO_INCREMENT,
+    id          INT   NOT NULL AUTO_INCREMENT,
     category_id INT      NOT NULL,
-    name        varchar(50) NOT NULL,
+    name        LONGTEXT NOT NULL,
     PRIMARY KEY (id)
 ) COMMENT '태그';
-
-ALTER TABLE tag
-    ADD CONSTRAINT UQ_category_id UNIQUE (category_id);
-
-ALTER TABLE tag
-    ADD CONSTRAINT UQ_name UNIQUE (name);
 
 CREATE TABLE user
 (
     id         INT          NOT NULL AUTO_INCREMENT,
-    username   VARCHAR(100) NOT NULL COMMENT '사용자아이디',
-    name       VARCHAR(80)  NOT NULL COMMENT '닉네임',
+    username   VARCHAR(100) NOT NULL UNIQUE COMMENT '사용자아이디',
+    name       VARCHAR(80)  NOT NULL UNIQUE COMMENT '닉네임',
     password   VARCHAR(100) NOT NULL,
-    juminNo    VARCHAR(13)  NOT NULL,
-    createdAt  DATETIME     NULL     DEFAULT now(),
-    provider   VARCHAR(40)  NULL    ,
-    providerId VARCHAR(200) NULL    ,
-    latitude   DOUBLE       NULL    ,
-    longitude  DOUBLE       NULL    ,
-    status     ENUM ('active', 'paused', 'banned')        NOT NULL  COMMENT '계정상태(active, paused, banned)',
+    juminNo    VARCHAR(13) UNIQUE NOT NULL,
+    createdAt    DATETIME  DEFAULT now(),
+    provider   VARCHAR(40)  NULL,
+    providerId VARCHAR(200) NULL,
+    latitude   DOUBLE,
+    longitude  DOUBLE,
+    status     enum('active', 'paused', 'banned')  NOT NULL default 'active',
     PRIMARY KEY (id)
 ) COMMENT '사용자';
-
-ALTER TABLE user
-    ADD CONSTRAINT UQ_username UNIQUE (username);
-
-ALTER TABLE user
-    ADD CONSTRAINT UQ_name UNIQUE (name);
-
-ALTER TABLE user
-    ADD CONSTRAINT UQ_juminNo UNIQUE (juminNo);
 
 CREATE TABLE user_authorities
 (
@@ -124,110 +118,153 @@ CREATE TABLE user_authorities
     PRIMARY KEY (user_id, authority_id)
 ) COMMENT '사용자별 권한리스트';
 
-CREATE TABLE user_follow
+CREATE TABLE user_hate
 (
-    following_userid INT NOT NULL,
-    followed_userid  INT NOT NULL,
-    PRIMARY KEY (following_userid, followed_userid)
-) COMMENT '팔로우관계 ';
+    complaint_userid INT NOT NULL,
+    offender_userid  INT NOT NULL,
+    PRIMARY KEY (complaint_userid, offender_userid)
+) COMMENT '사용자별신고수';
 
 CREATE TABLE user_tag
 (
-    user_id INT NOT NULL,
-    tag_id  INT NOT NULL,
+    user_id INT    NOT NULL,
+    tag_id  BIGINT NOT NULL,
     PRIMARY KEY (user_id, tag_id)
 ) COMMENT '사용자 태그';
 
-CREATE TABLE warning
-(
-    post_id           INT      NOT NULL COMMENT '신고게시물',
-    complaint_user_id INT      NOT NULL COMMENT '신고한사용자',
-    warndate          DATETIME NULL     DEFAULT now(),
-    reason            LONGTEXT NOT NULL COMMENT '신고사유',
-    PRIMARY KEY (post_id, complaint_user_id)
-) COMMENT '신고정보';
+/* ------------------------------
+   ALTER TABLE 으로 제약조건 추가
+   ------------------------------ */
 
+/* UNIQUE 제약조건 */
+ALTER TABLE user
+    ADD CONSTRAINT UQ_username UNIQUE (username);
+
+ALTER TABLE authority
+    ADD CONSTRAINT UQ_authority_name UNIQUE (name);
+
+/* user_authorities 외래키 */
 ALTER TABLE user_authorities
     ADD CONSTRAINT FK_user_TO_user_authorities
         FOREIGN KEY (user_id)
-            REFERENCES user (id);
+            REFERENCES user (id)
+            ON UPDATE RESTRICT ON DELETE CASCADE;
 
 ALTER TABLE user_authorities
     ADD CONSTRAINT FK_authority_TO_user_authorities
         FOREIGN KEY (authority_id)
-            REFERENCES authority (id);
+            REFERENCES authority (id)
+            ON UPDATE RESTRICT ON DELETE CASCADE;
 
+/* post 외래키 */
 ALTER TABLE post
     ADD CONSTRAINT FK_user_TO_post
         FOREIGN KEY (user_id)
-            REFERENCES user (id);
+            REFERENCES user (id)
+            ON UPDATE RESTRICT ON DELETE CASCADE;
 
-ALTER TABLE tag
-    ADD CONSTRAINT FK_category_TO_tag
-        FOREIGN KEY (category_id)
-            REFERENCES category (id);
+ALTER TABLE post
+    ADD CONSTRAINT FK_posttype_TO_post
+        FOREIGN KEY (posttype_id)
+            REFERENCES posttype (id)
+            ON UPDATE RESTRICT ON DELETE CASCADE;
 
-ALTER TABLE post_tag
-    ADD CONSTRAINT FK_post_TO_post_tag
-        FOREIGN KEY (post_id)
-            REFERENCES post (id);
-
-ALTER TABLE post_tag
-    ADD CONSTRAINT FK_tag_TO_post_tag
-        FOREIGN KEY (tag_id)
-            REFERENCES tag (id);
-
+/* comment 외래키 */
 ALTER TABLE comment
     ADD CONSTRAINT FK_user_TO_comment
         FOREIGN KEY (user_id)
-            REFERENCES user (id);
+            REFERENCES user (id)
+            ON UPDATE RESTRICT ON DELETE CASCADE;
 
 ALTER TABLE comment
     ADD CONSTRAINT FK_post_TO_comment
         FOREIGN KEY (post_id)
-            REFERENCES post (id);
-
-ALTER TABLE user_tag
-    ADD CONSTRAINT FK_user_TO_user_tag
-        FOREIGN KEY (user_id)
-            REFERENCES user (id);
-
-ALTER TABLE user_tag
-    ADD CONSTRAINT FK_tag_TO_user_tag
-        FOREIGN KEY (tag_id)
-            REFERENCES tag (id);
-
-ALTER TABLE attachment
-    ADD CONSTRAINT FK_post_TO_attachment
-        FOREIGN KEY (post_id)
-            REFERENCES post (id);
+            REFERENCES post (id)
+            ON UPDATE RESTRICT ON DELETE CASCADE;
 
 ALTER TABLE comment
     ADD CONSTRAINT FK_comment_TO_comment
-        FOREIGN KEY (parent_id)
-            REFERENCES comment (id);
+        FOREIGN KEY (parentcommentid)
+            REFERENCES comment (id)
+            ON UPDATE RESTRICT ON DELETE CASCADE;
 
-ALTER TABLE user_follow
-    ADD CONSTRAINT FK_user_TO_user_follow
-        FOREIGN KEY (following_userid)
-            REFERENCES user (id);
-
-ALTER TABLE user_follow
-    ADD CONSTRAINT FK_user_TO_user_follow1
-        FOREIGN KEY (followed_userid)
-            REFERENCES user (id);
-
-ALTER TABLE loginhistory
-    ADD CONSTRAINT FK_user_TO_loginhistory
-        FOREIGN KEY (user_id)
-            REFERENCES user (id);
-
-ALTER TABLE warning
-    ADD CONSTRAINT FK_post_TO_warning
+/* pick 외래키 */
+ALTER TABLE pick
+    ADD CONSTRAINT FK_post_TO_pick
         FOREIGN KEY (post_id)
-            REFERENCES post (id);
+            REFERENCES post (id)
+            ON UPDATE RESTRICT ON DELETE CASCADE;
 
-ALTER TABLE warning
-    ADD CONSTRAINT FK_user_TO_warning
-        FOREIGN KEY (complaint_user_id)
-            REFERENCES user (id);
+ALTER TABLE pick
+    ADD CONSTRAINT FK_comment_TO_pick
+        FOREIGN KEY (comment_id)
+            REFERENCES comment (id)
+            ON UPDATE RESTRICT ON DELETE CASCADE;
+
+/* post_tag 외래키 */
+ALTER TABLE post_tag
+    ADD CONSTRAINT FK_post_TO_post_tag
+        FOREIGN KEY (guest_post_id)
+            REFERENCES post (id)
+            ON UPDATE RESTRICT ON DELETE CASCADE;
+
+ALTER TABLE post_tag
+    ADD CONSTRAINT FK_tag_TO_post_tag
+        FOREIGN KEY (tag_id)
+            REFERENCES tag (id)
+            ON UPDATE RESTRICT ON DELETE CASCADE;
+
+/* tag 외래키 */
+ALTER TABLE tag
+    ADD CONSTRAINT FK_category_TO_tag
+        FOREIGN KEY (category_id)
+            REFERENCES category (id)
+            ON UPDATE RESTRICT;
+
+/* attachment 외래키 */
+ALTER TABLE attachment
+    ADD CONSTRAINT FK_post_TO_attachment
+        FOREIGN KEY (post_id)
+            REFERENCES post (id)
+            ON UPDATE RESTRICT ON DELETE CASCADE;
+
+/* follower 외래키 */
+ALTER TABLE follower
+    ADD CONSTRAINT FK_follower_user_1
+        FOREIGN KEY (following_userid)
+            REFERENCES user (id)
+            ON UPDATE RESTRICT ON DELETE CASCADE;
+
+ALTER TABLE follower
+    ADD CONSTRAINT FK_follower_user_2
+        FOREIGN KEY (followed_userid)
+            REFERENCES user (id)
+            ON UPDATE RESTRICT ON DELETE CASCADE;
+
+/* user_hate 외래키 */
+ALTER TABLE user_hate
+    ADD CONSTRAINT FK_user_hate_user_1
+        FOREIGN KEY (complaint_userid)
+            REFERENCES user (id)
+            ON UPDATE RESTRICT ON DELETE CASCADE;
+
+ALTER TABLE user_hate
+    ADD CONSTRAINT FK_user_hate_user_2
+        FOREIGN KEY (offender_userid)
+            REFERENCES user (id)
+            ON UPDATE RESTRICT ON DELETE CASCADE;
+
+/* user_tag 외래키 */
+ALTER TABLE user_tag
+    ADD CONSTRAINT FK_user_tag_user
+        FOREIGN KEY (user_id)
+            REFERENCES user (id)
+            ON UPDATE RESTRICT ON DELETE CASCADE;
+
+ALTER TABLE user_tag
+    ADD CONSTRAINT FK_user_tag_tag
+        FOREIGN KEY (tag_id)
+            REFERENCES tag (id)
+            ON UPDATE RESTRICT ON DELETE CASCADE;
+
+SET SESSION FOREIGN_KEY_CHECKS = 1;
