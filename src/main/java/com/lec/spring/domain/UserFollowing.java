@@ -12,9 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class UserFollowing {
-
     private Long followingUserId;
-
     private Long followedUserId;
 
     /**

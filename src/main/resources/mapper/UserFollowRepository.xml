@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lec.spring.repository.UserFollowingRepository">
+
+    <select id="findByFollow" resultType="com.lec.spring.domain.UserFollowing" parameterType="map">
+        SELECT
+            following_userid AS followingUserId,
+            followed_userid AS followedUserId
+        FROM user_follow
+        WHERE following_userid = #{followingUserId}
+          AND followed_userid = #{followedUserId}
+    </select>
+
+    <select id="followCount" resultType="int">
+        SELECT COALESCE(COUNT(*), 0)
+        FROM user_follow
+        WHERE following_userid = #{followingUserId}
+    </select>
+
+</mapper>

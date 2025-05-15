@@ -67,4 +67,19 @@ public class UserFollowingServiceImpl implements UserFollowingService {
     public List<UserFollowing> getFollowersList(Long followedUserId) {
         return repository.findByFollowedUserId(followedUserId);
     }
+
+    @Override
+    public Boolean isFollowing(Long followingUserId, Long followedUserId) {
+        System.out.println("👀 followingUserId = " + followingUserId);
+        System.out.println("👀 followedUserId  = " + followedUserId);
+
+        return repository
+                .findByFollow(followingUserId, followedUserId) !=null;
+    }
+
+    @Override
+    public int followCount(Long followingUserId) {
+        Integer count = repository.followCount(followingUserId);
+        return count != null ? count : 0;
+    }
 }

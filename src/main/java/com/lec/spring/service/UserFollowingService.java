@@ -21,4 +21,10 @@ public interface UserFollowingService {
 
     // 특정 사용자를 팔로우하는(즉, 팔로워인) 모든 관계를 조회합니다.
     List<UserFollowing> getFollowersList(Long followedUserId);
+
+    // 이 사람을 내가 팔로우 중인지 아닌지 확인
+    Boolean isFollowing (Long followingUserId, Long followedUserId);
+
+
+    int followCount(Long followingUserId);
 }

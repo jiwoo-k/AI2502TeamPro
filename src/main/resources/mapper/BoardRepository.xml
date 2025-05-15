@@ -10,7 +10,9 @@
         <result column="p_content" property="content"/>
         <result column="p_createdat" property="createdat"/>
         <result column="p_type" property="type"/>
+        <result column="u_id" property="user_id"/>
         <result column="u_name" property="name"/>
+        <result column="count" property="count"/>
         <collection property="post_tag" ofType="com.lec.spring.domain.Tag"/>
         <collection property="user_tag" ofType="com.lec.spring.domain.Tag"/>
     </resultMap>
@@ -67,14 +69,14 @@
     <delete id="deleteById" flushCache="true" parameterType="com.lec.spring.domain.Post">
         delete from post where id = #{id}
     </delete>
-
+<!--    손님 태그-->
     <select id="findByPostTag" resultType="com.lec.spring.domain.Tag">
         SELECT t.name ,post.id
         FROM tag t
                  JOIN post_tag pt ON pt.tag_id = t.id join post on pt.post_id = post.id
         WHERE pt.post_id = #{id}
     </select>
-
+<!--도우미 태그-->
     <select id="findByUserTag" resultType="com.lec.spring.domain.Tag">
         SELECT
             t.id AS id,
@@ -86,5 +88,12 @@
                  JOIN user_tag ut ON ut.tag_id = t.id
                  JOIN post p ON ut.user_id = p.user_id
         WHERE p.id = #{id}
+    </select>
+
+    <select id="findByFollow" resultType="com.lec.spring.domain.UserFollowing" parameterType="map">
+        SELECT *
+        FROM user_follow
+        WHERE following_userid = #{followingUserId}
+          AND followed_userid = #{followedUserId}
     </select>
 </mapper>

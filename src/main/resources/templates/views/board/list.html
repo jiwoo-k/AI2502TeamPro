@@ -22,6 +22,8 @@
             <td>title</td>
             <td>날짜</td>
             <td>타입</td>
+            <td>팔로우 여부</td>
+            <td>팔로우 몇명?</td>
         </tr>
     </thead>
     <tbody >
@@ -31,6 +33,10 @@
             <!--    이거 날짜와 시간 넣을때 개인적으로 연도하고 분, 초는 필요가 없다고 생각함.-->
             <td th:text="${#temporals.format(board.createdat, 'yyyy-MM-dd HH:mm:ss')}"></td>
             <td><a  th:text="${board.type}" th:href="@{'detail/' + ${board.id}}"></a></td>
+            <td th:if="${board.type == '도우미'}"
+                th:text="${board.follow} == true ? 'FOLLOWING' : 'NOPE'"></td>
+            <th th:if="${board.type == '도우미'}" th:text="${board.count}"></th>
+
         </tr>
     </tbody>
 </table>
