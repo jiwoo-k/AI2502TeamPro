@@ -5,8 +5,6 @@ import com.lec.spring.config.oauth.provider.GoogleUserInfo;
 import com.lec.spring.config.oauth.provider.OAuth2UserInfo;
 import com.lec.spring.domain.User;
 import com.lec.spring.service.UserService;
-import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
