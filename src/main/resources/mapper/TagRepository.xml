@@ -10,35 +10,35 @@
     </insert>
 
     <select id="searchTag" resultType="com.lec.spring.domain.Tag">
-       select id, category_id, name
-       from tag
-       where category_id = #{category_id} and name = #{name}
+        select id, category_id, name
+        from tag
+        where category_id = #{category_id} and name = #{name}
     </select>
 
-    <select id="findPostsByTags" parameterType="arrayList" resultType="mapPost">
+    <select id="findPostsByTags" parameterType="arrayList" resultMap="mapPost">
         select p.id "p_id",
-               p.user_id "p_user_id",
-               p.type "p_type",
-               p.title "p_title",
-               p.content "p_content",
-               p.createdat "p_createdat",
-               p.isdeleted "p_isdeleted",
-               p.deletedat "p_deletedat"
+        p.user_id "p_user_id",
+        p.type "p_type",
+        p.title "p_title",
+        p.content "p_content",
+        p.createdat "p_createdat",
+        p.isdeleted "p_isdeleted",
+        p.deletedat "p_deletedat"
         from post p, post_tag pt
         where p.id=pt.post_id
-          and pt.tag_id in (<foreach collection="array" item="e" separator=",">#{e.id}</foreach>)
+        and pt.tag_id in (<foreach collection="array" item="e" separator=",">#{e.id}</foreach>)
         and p.type = #{param2};
     </select>
 
     <resultMap id="mapPost" type="com.lec.spring.domain.Post">
         <result column="p_id" property="id"/>
-        <result column="p_user_id" property="user_id"/>
+        <result column="p_user_id" property="userId"/>
         <result column="p_type" property="type"/>
         <result column="p_title" property="title"/>
         <result column="p_content" property="content"/>
-        <result column="p_createdat" property="createdat"/>
-        <result column="p_isdeleted" property="isdeleted"/>
-        <result column="p_deletedat" property="deletedat"/>
+        <result column="p_createdat" property="createdAt"/>
+        <result column="p_isdeleted" property="isDeleted"/>
+        <result column="p_deletedat" property="deletedAt"/>
     </resultMap>
 
     <insert id="savePostTag" flushCache="true" parameterType="arrayList">
@@ -65,7 +65,7 @@
         delete from post_tag where id = #{id}
     </delete>
 
-    <select id="LoadPostTags" resultType="mapTag">
+    <select id="LoadPostTags" resultMap="mapTag">
         select t.id "t_id",
                t.category_id "t_category_id",
                t.name "t_name"
@@ -73,7 +73,7 @@
         where pt.post_id = #{postId} and pt.tag_id = t.id;
     </select>
 
-    <select id="LoadUserTags" resultType="mapTag">
+    <select id="LoadUserTags" resultMap="mapTag">
         select t.id "t_id",
                t.category_id "t_category_id",
                t.name "t_name"
@@ -83,7 +83,7 @@
 
     <resultMap id="mapTag" type="com.lec.spring.domain.Tag">
         <result column="t_id" property="id"/>
-        <result column="t_category_id" property="category_id"/>
+        <result column="t_category_id" property="categoryId"/> <!-- 🔧 수정됨 -->
         <result column="t_name" property="name"/>
     </resultMap>
 </mapper>
