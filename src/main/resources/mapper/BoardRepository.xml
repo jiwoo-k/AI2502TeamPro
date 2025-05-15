@@ -26,7 +26,7 @@
         insert into post
             (user_id, title, content, type)
         values
-            (#{user_id},#{title},#{content},#{type})
+            (#{user_id.id},#{title},#{content},#{type})
     </insert>
 
     <sql id="select_base">
