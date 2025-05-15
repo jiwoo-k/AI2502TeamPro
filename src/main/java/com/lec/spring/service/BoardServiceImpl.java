@@ -81,7 +81,7 @@ public class BoardServiceImpl implements BoardService {
         List<Post> posts = postRepository.findByType(type);
         for (Post post : posts) {
             Integer followCount = userFollowingRepository.followCount(post.getUser_id());
-            post.setCount(followCount);
+            post.setFollowerCount(followCount);
         }
         return posts;
     }
