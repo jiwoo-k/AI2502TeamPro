@@ -56,14 +56,14 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
 
         String providerId = oAuth2UserInfo.getProviderId();
         String username = provider + "_" + providerId; // "ex) google_xxxxxxxx"
+        String name = oAuth2UserInfo.getName();
         String password = oauth2Password;
 //        String email = oAuth2UserInfo.getEmail();
-//        String name = oAuth2UserInfo.getName();
 
         // 회원 가입 진행하기 전
         User newUser = User.builder()
                 .username(username)
-//                .name(name)
+                .name(name)
 //                .email(email)
                 .password(password)
                 .provider(provider)
@@ -72,24 +72,6 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
 
 
         User user = userService.findByUsername(username);
-        if(user == null) {
-            newUser.setJuminNo("0".repeat(13));
-
-            userService.register(newUser);
-
-            PrincipalDetails principalDetails = new PrincipalDetails(newUser, oAuth2User.getAttributes());
-            principalDetails.setUserService(userService);
-            return principalDetails;
-        }
-        else{
-            System.out.println("🏆이미 가입된 회원입니다");
-
-            PrincipalDetails principalDetails = new PrincipalDetails(user, oAuth2User.getAttributes());
-            principalDetails.setUserService(userService);
-            return principalDetails;
-        }
-
-        /*User user = userService.findByUsername(username);
         if (user == null) { //비가입자인 경우에만 회원 가입 진행
             user = newUser;
             int cnt = userService.register(user);
@@ -109,7 +91,7 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
 
         PrincipalDetails principalDetails = new PrincipalDetails(user, oAuth2User.getAttributes());
         principalDetails.setUserService(userService);
-        return principalDetails;*/
+        return principalDetails;
 
 //        return oAuth2User;
     }

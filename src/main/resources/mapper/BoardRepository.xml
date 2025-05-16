@@ -29,6 +29,7 @@
             (#{user_id},#{title},#{content},#{type})
     </insert>
 
+
     <sql id="select_base">
         SELECT
             post.id AS p_id,
