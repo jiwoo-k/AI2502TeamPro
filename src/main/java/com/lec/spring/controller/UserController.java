@@ -45,9 +45,8 @@ public class UserController {
     }
 
     @GetMapping("/register")
-    public void resgister(HttpServletRequest request, Model model) {
-        User user = (User) request.getSession().getAttribute("user");
-        model.addAttribute("user", user);
+    public void resgister() {
+
     }
 
     @PostMapping("/register")
@@ -61,7 +60,6 @@ public class UserController {
         if(result.hasErrors()){
             redirectAttributes.addFlashAttribute("username", user.getUsername());
             redirectAttributes.addFlashAttribute("name", user.getName());
-            redirectAttributes.addFlashAttribute("juminNo", user.getJuminNo());
 
 
             List<FieldError> errList = result.getFieldErrors();

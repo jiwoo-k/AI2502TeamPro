@@ -40,23 +40,16 @@ public class UserValidator implements Validator {
             errors.rejectValue("username", "이미 존재하는 아이디입니다");
         }
 
-        // name, password 검증
-        if(name == null || name.trim().isEmpty()){
-            errors.rejectValue("name", "이름(닉네임)은 필수입니다");
-        } else if(userService.isExistName(name)){
-            errors.rejectValue("name", "이미 존재하는 이름(닉네임)입니다");
-        }
 
+        //비밀번호, 이름(닉네임) 검증
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "password 는 필수입니다");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "이름(닉네임)은 필수입니다");
 
 
         // 입력 password, re_password 가 동일한지 비교
         if(!user.getPassword().equals(user.getRe_password())){
             errors.rejectValue("re_password", "비밀번호와 비밀번호 확인 입력값이 다릅니다");
         }
-
-        //주민등록번호 검증
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "juminNo", "주민등록번호 입력은 필수입니다");
 
     }
 }
