@@ -31,18 +31,15 @@ public class CustomLoginSuccessHandler extends SavedRequestAwareAuthenticationSu
 
         PrincipalDetails userDetails = (PrincipalDetails) authentication.getPrincipal();
 
-        if(userDetails.getAttributes() != null && userDetails.getUser().getJuminNo().equals("0".repeat(13))){
-            System.out.println("OAuth 회원가입 진행중. 추가 정보 페이지로 redirect 합니다");
-            response.sendRedirect("/user/register");
-        }
-
         System.out.println("""
                     username: %s
+                    name: %s
                     password: %s
                     authorities: %s
                 """.formatted(
 //                        getClientIp(request),
                 userDetails.getUsername(),
+                userDetails.getName(),
                 userDetails.getPassword(),
                 userDetails.getAuthorities())
         );

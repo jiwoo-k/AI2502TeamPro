@@ -34,22 +34,11 @@ public class U {
     }
 
     // 현재 로그인 한 사용자 User 객체 가져오기
-    public static User getLoggedUser() {
-        // SecurityContextHolder 에서 현재 보안 컨텍스트의 Authentication 객체를 가져옴
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        // Authentication 객체가 null 이 아니고, 인증된 상태인지 확인
-        if (authentication != null && authentication.isAuthenticated()) {
-            // 인증된 경우, Principal 객체 (사용자 정보의 핵심) 를 가져옴
-            Object principal = authentication.getPrincipal();
-
-            // Principal 객체가 UserDetails 인터페이스를 구현하고 있는지 확인
-            if (principal instanceof UserDetails) {
-                // UserDetails 객체를 우리의 User 객체 타입으로 캐스팅하여 반환
-                return ((PrincipalDetails) principal).getUser();  // ✅ 여기서 User 꺼내야 함
-            }
-        }
-        return null; // 로그인되지 않았거나 사용자 정보를 찾을 수 없는 경우 null 반환
+    public static User getLoggedUser(){
+        // 현재 로그인 한 사용자
+        PrincipalDetails userDetails = (PrincipalDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userDetails.getUser();
+        return user;
     }
 
 
