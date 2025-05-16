@@ -62,14 +62,6 @@ values (1, 1),
        (2, 3),
        (2, 4),
        (3, 2)
-values
-      (1, 2),
-      (1, 3),
-      (1, 4),
-      (2, 2),
-      (2, 3),
-      (2, 4),
-      (3, 2)
 ;
 
 INSERT INTO authority (name)
@@ -124,11 +116,11 @@ FROM tag t
          JOIN category c ON t.category_id = c.id
          JOIN user_tag ut ON ut.tag_id = t.id
          JOIN post p ON ut.user_id = p.user_id
-WHERE p.id = 1
+WHERE p.id = 1;
 
 
 insert into warning (post_id, complaint_user_id, reason)values
                                                 (2,2, '그냥 신고하고 싶음');
 
 
-select   from warning
+select *  from warning
