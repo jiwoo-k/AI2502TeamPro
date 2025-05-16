@@ -13,6 +13,6 @@ import lombok.NoArgsConstructor;
 public class Attachment {
     private Long id;
     private Long postId;
-    private String sourceName;
-    private String fileName;
+    private String sourcename;
+    private String filename;
 }

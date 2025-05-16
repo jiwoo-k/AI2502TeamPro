@@ -134,7 +134,7 @@ public class BoardController {
         return "board/updateOk" ;
     }
     @PostMapping("/delete")
-    public String delete(  Long id, Model model){
+    public String delete(Long id, Model model){
         System.out.println("삭제결과" + boardService.delete(id));
         model.addAttribute("result", boardService.delete(id));
         return "board/deleteOk";

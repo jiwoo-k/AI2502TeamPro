@@ -34,3 +34,6 @@ mybatis:
 app:
   oauth2:
     password: 1234
+
+  upload:
+    path: upload
