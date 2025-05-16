@@ -23,38 +23,42 @@ import java.util.List;
 public class BoardController {
     private final BoardService boardService;
     private final UserFollowingService userFollowingService;
+
     public BoardController(BoardService boardService, UserFollowingService userFollowingService) {
         System.out.println("일단 생성");
         this.boardService = boardService;
         this.userFollowingService = userFollowingService;
     }
-// 수정, 추가. 삭제의 경우 attr name을 result 로 하였음
+
+    // 수정, 추가. 삭제의 경우 attr name을 result 로 하였음
     @GetMapping("/write")
-    public void write (){}
+    public void write() {
+    }
 
 
     @PostMapping("/write")
-    public String write (@Valid Post post,
-                         BindingResult bindingResult,
-                         Model model,
-                         RedirectAttributes redirectAttributes
+    public String write(@Valid Post post,
+                        BindingResult bindingResult,
+                        Model model,
+                        RedirectAttributes redirectAttributes
     ) {
         // vaildator
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("title", post.getTitle());
             redirectAttributes.addFlashAttribute("content", post.getContent());
             for (FieldError error : bindingResult.getFieldErrors()) {
-                redirectAttributes.addFlashAttribute("error_" +  error.getField(),error.getDefaultMessage());
+                redirectAttributes.addFlashAttribute("error_" + error.getField(), error.getDefaultMessage());
             }
             return "redirect:/board/write";
         }
         int result = boardService.write(post);
         model.addAttribute("result", result);
-        return "board/write";
+        return "board/writeOk";
     }
+
     // listBytype (손님, 도우미 선택 가능 => findAll 은 혹시 몰라서 일부러 놔뒀음)
     @GetMapping("/list")
-    public String list(@RequestParam(required = false) String type, Model model,@RequestParam(required = false) Boolean follow) {
+    public String list(@RequestParam(required = false) String type, Model model, @RequestParam(required = false) Boolean follow) {
         // 손님, 도우미 타입 설정
         if (type == null || type.isBlank()) {
             type = "guest";
@@ -69,7 +73,6 @@ public class BoardController {
         }
 
 
-
         model.addAttribute("follow", followFlag);
         model.addAttribute("board", posts);
         model.addAttribute("selectedType", type);
@@ -77,7 +80,6 @@ public class BoardController {
 
         return "board/list";
     }
-
 
 
     @GetMapping("/detail/{id}")
@@ -111,10 +113,11 @@ public class BoardController {
     }
 
     @GetMapping("/update/{id}")
-    public String update(Model model, @PathVariable Long id){
+    public String update(Model model, @PathVariable Long id) {
         model.addAttribute("board", boardService.detail(id));
         return "board/update";
     }
+
     @PostMapping("/update")
     public String update(@Valid Post post,
                          BindingResult bindingResult,
@@ -131,17 +134,18 @@ public class BoardController {
         }
         int result = boardService.update(post);
         model.addAttribute("result", result);
-        return "board/updateOk" ;
+        return "board/updateOk";
     }
+
     @PostMapping("/delete")
-    public String delete(Long id, Model model){
+    public String delete(Long id, Model model) {
         System.out.println("삭제결과" + boardService.delete(id));
         model.addAttribute("result", boardService.delete(id));
         return "board/deleteOk";
     }
 
     @InitBinder
-    public void initBinder(WebDataBinder binder){
+    public void initBinder(WebDataBinder binder) {
         System.out.println("호출 성공");
         binder.setValidator(new BoardValidator());
     }
