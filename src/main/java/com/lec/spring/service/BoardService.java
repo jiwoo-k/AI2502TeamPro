@@ -27,7 +27,8 @@ public interface BoardService {
     // 타입 선택 기능 추가
     List<Post> listByType(String type);
 
-    // 도우미 팔로우 count 기능 추가
+    // 신고기능
+    int warning(Boolean warning);
 
 
 }

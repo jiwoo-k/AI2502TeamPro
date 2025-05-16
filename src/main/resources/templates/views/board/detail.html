@@ -2,41 +2,54 @@
 <html lang="ko"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- 댓글 기능을 위한 JS 연결 -->
-    <script th:src="@{/js/comment.js}" defer></script>
-    <script th:inline="javascript">
-        window.postId = [[${board.id}]];
-        window.loggedUserId = [[${#authentication.principal.id}]];
-        window.postAuthorId = [[${board.user.id}]];
-    </script>
 </head>
-
 <body>
-
 <h2>게시물 상세조회</h2>
-
-<!-- 게시글 작성자, 작성일 -->
 <div>
-    <div th:text="'작성자: ' + ${board.name}"></div>
-    <div th:text="${#temporals.format(board.createdat, 'yyyy-MM-dd HH:mm:ss')} + ' 작성'"></div>
+    <div th:text="'작성자: ' + ${board.name}" ></div>
+    <!--    이거 날짜와 시간 넣을때 개인적으로 연도하고 분, 초는 필요가 없다고 생각함.-->
+    <div th:text="${#temporals.format(board.createdat,  'yyyy-MM-dd HH:mm:ss')} + ' 작성'"></div>
 </div>
-
-<!-- 게시글 제목 -->
 <div>
     <span th:text="${board.title}"></span>
 </div>
 
-<!-- 게시글 본문 -->
 <div>
     <span th:text="${board.content}"></span>
 </div>
 
-<!-- 목록/수정/삭제 버튼 -->
+<tbody >
+<tr th:each="board : ${board}" >
+    <td><a  th:text="${board.type}" th:href="@{'detail/' + ${board.id}}"></a></td>
+    <td th:if="${board.type == 'helper'}"
+        th:text="${board.follow} == true ? 'FOLLOWING' : 'NOPE'"></td>
+    <th th:if="${board.type == 'helper'}" th:text="${board.count}"></th>
+
+</tr>
+</tbody>
+
+<!--post_tag-->
+<div th:if="${board.type == 'guest'}">
+    <span>태그 목록</span>
+    <ul>
+        <li th:each="tag : ${board.post_tag}" th:text="${tag.name}"></li>
+    </ul>
+</div>
+
+<!--user_tag-->
+<div th:if="${board.type == 'helper'}">
+    <span>태그 목록</span>
+    <ul>
+        <li th:each="tag : ${board.user_tag}" th:text="${tag.name}"></li>
+    </ul>
+</div>
+<td th:if="${board.type == 'helper'}"
+    th:text="${board.follow} == true ? 'FOLLOWING' : 'NOPE'"></td>
+<th th:if="${board.type == 'helper'}" th:text="${board.count}"></th>
+
 <div>
     <button><a th:href="@{'/board/list'}">목록</a></button>
 </div>
@@ -49,11 +62,5 @@
         <button type="submit">삭제</button>
     </form>
 </div>
-
-<!-- 댓글 영역 삽입 -->
-<hr class="my-4">
-<input type="hidden" id="post-id" th:value="${board.id}"/>
-<div th:replace="~{views/board/comment :: comment-fragment}"></div>
-
 </body>
 </html>

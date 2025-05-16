@@ -28,11 +28,10 @@ VALUES (3, '같이밥먹어요'),
        (2, '여행갈사람'),
        (1, '헬스장');
 
-insert into post(user_id, type, title, content)
-values(1, 'guest', 'title1', 'content1'),
-      (1, 'helper', 'title2', 'content2'),
-      (3, 'guest', 'title3', 'content3')
+insert into post (user_id, type, title, content)
+values(1, 'guest', 'title1', 'content1')
 ;
+
 
 
 insert into post_tag
@@ -47,7 +46,7 @@ values(1, 1),
       ;
 
 insert into user_tag
-values(1, 1),
+values
       (1, 2),
       (1, 3),
       (1, 4),
@@ -81,4 +80,26 @@ select * from user;
 select * from post_tag;
 select * from tag;
 select * from category;
-select * from user_tag;
+select * from warning
+
+
+ALTER TABLE post MODIFY type VARCHAR(10);
+
+
+SELECT
+    t.id AS id,
+    t.category_id AS category_id,
+    t.name AS name,
+    c.color AS color
+FROM tag t
+         JOIN category c ON t.category_id = c.id
+         JOIN user_tag ut ON ut.tag_id = t.id
+         JOIN post p ON ut.user_id = p.user_id
+WHERE p.id = 1
+
+
+insert into warning (post_id, complaint_user_id, reason)values
+                                                (2,2, '그냥 신고하고 싶음');
+
+
+select   from warning

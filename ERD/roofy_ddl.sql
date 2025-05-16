@@ -70,21 +70,22 @@ CREATE TABLE pick
 
 CREATE TABLE post
 (
-    id          INT          NOT NULL AUTO_INCREMENT,
-    user_id     INT          NOT NULL,
-    type        INT          NOT NULL,
-    title       VARCHAR(100) NOT NULL,
-    content     LONGTEXT     NULL,
-    regdate     DATETIME     NULL DEFAULT now(),
-    isfinish    BOOLEAN      NULL DEFAULT false,
+    id        INT          NOT NULL AUTO_INCREMENT,
+    user_id   INT          NOT NULL,
+    type      ENUM  ('guest', 'helper')       NOT NULL COMMENT '게시판 유형',
+    title     VARCHAR(100) NOT NULL,
+    content   LONGTEXT     NULL    ,
+    createdat DATETIME     NULL     DEFAULT now(),
+    isdeleted BOOLEAN      NOT NULL DEFAULT false,
+    deletedat DATETIME     NULL     DEFAULT now(),
     PRIMARY KEY (id)
 ) COMMENT '게시글';
 
 CREATE TABLE post_tag
 (
-    guest_post_id INT    NOT NULL,
+    post_id INT    NOT NULL,
     tag_id        BIGINT NOT NULL,
-    PRIMARY KEY (guest_post_id, tag_id)
+    PRIMARY KEY (post_id, tag_id)
 ) COMMENT '게시물에 있는 태그';
 
 CREATE TABLE tag

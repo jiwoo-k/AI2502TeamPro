@@ -26,7 +26,7 @@
         insert into post
             (user_id, title, content, type)
         values
-            (#{user_id.id},#{title},#{content},#{type})
+            (#{user_id},#{title},#{content},#{type})
     </insert>
 
     <sql id="select_base">
@@ -71,9 +71,10 @@
     </delete>
 <!--    손님 태그-->
     <select id="findByPostTag" resultType="com.lec.spring.domain.Tag">
-        SELECT t.name ,post.id
+        SELECT t.name, post.id
         FROM tag t
-                 JOIN post_tag pt ON pt.tag_id = t.id join post on pt.post_id = post.id
+                 JOIN post_tag pt ON pt.tag_id = t.id
+                 JOIN post ON pt.post_id = post.id
         WHERE pt.post_id = #{id}
     </select>
 <!--도우미 태그-->
@@ -95,5 +96,9 @@
         FROM user_follow
         WHERE following_userid = #{followingUserId}
           AND followed_userid = #{followedUserId}
+    </select>
+
+    <select id="warningOn" resultType="com.lec.spring.domain.Post">
+
     </select>
 </mapper>

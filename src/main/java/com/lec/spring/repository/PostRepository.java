@@ -37,6 +37,6 @@ public interface PostRepository {
     // 선택한 태그들 가져오기 (도우미)
     List <Tag> findByUserTag(Long user_id);
 
-    // follwing 한 사람 count
-    int countByfollwing (Long follwing_id);
+    // 신고하기
+    int warningOn(Boolean warning);
 }

@@ -36,7 +36,7 @@ public class BoardServiceImpl implements BoardService {
             List<Tag> postTag = postRepository.findByPostTag(id);
             post.setPost_tag(postTag);
             // user_tag 주입
-            if ("도우미".equals(post.getType())) {
+            if ("helper".equals(post.getType())) {
                 List <Tag> usertag = postRepository.findByUserTag(id);
                 System.out.println("usertag" + usertag);
                 post.setUser_tag(usertag);
@@ -81,9 +81,14 @@ public class BoardServiceImpl implements BoardService {
         List<Post> posts = postRepository.findByType(type);
         for (Post post : posts) {
             Integer followCount = userFollowingRepository.followCount(post.getUser_id());
-            post.setFollowerCount(followCount);
+            post.setFollowCount(followCount);
         }
         return posts;
+    }
+
+    @Override
+    public int warning(Boolean warning) {
+        return postRepository.warningOn(warning);
     }
 
 }
