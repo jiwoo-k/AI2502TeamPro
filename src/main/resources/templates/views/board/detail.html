@@ -9,7 +9,7 @@
 <body>
 <h2>게시물 상세조회</h2>
 <div>
-    <div th:text="'작성자: ' + ${board.name}" ></div>
+    <div th:text="'작성자: ' + ${board.name}"></div>
     <!--    이거 날짜와 시간 넣을때 개인적으로 연도하고 분, 초는 필요가 없다고 생각함.-->
     <div th:text="${#temporals.format(board.createdat,  'yyyy-MM-dd HH:mm:ss')} + ' 작성'"></div>
 </div>
@@ -21,9 +21,9 @@
     <span th:text="${board.content}"></span>
 </div>
 
-<tbody >
-<tr th:each="board : ${board}" >
-    <td><a  th:text="${board.type}" th:href="@{'detail/' + ${board.id}}"></a></td>
+<tbody>
+<tr th:each="board : ${board}">
+    <td><a th:text="${board.type}" th:href="@{'detail/' + ${board.id}}"></a></td>
     <td th:if="${board.type == 'helper'}"
         th:text="${board.follow} == true ? 'FOLLOWING' : 'NOPE'"></td>
     <th th:if="${board.type == 'helper'}" th:text="${board.followCount}"></th>
@@ -58,7 +58,7 @@
 </div>
 <div>
     <form th:action="@{'/board/delete'}" method="post">
-        <input type="hidden" name="id" th:value="${board.id}" />
+        <input type="hidden" name="id" th:value="${board.id}"/>
         <button type="submit">삭제</button>
     </form>
 </div>
