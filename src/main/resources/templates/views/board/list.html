@@ -33,9 +33,9 @@
             <!--    이거 날짜와 시간 넣을때 개인적으로 연도하고 분, 초는 필요가 없다고 생각함.-->
             <td th:text="${#temporals.format(board.createdat, 'yyyy-MM-dd HH:mm:ss')}"></td>
             <td><a  th:text="${board.type}" th:href="@{'detail/' + ${board.id}}"></a></td>
-            <td th:if="${board.type == '도우미'}"
+            <td th:if="${board.type == 'helper'}"
                 th:text="${board.follow} == true ? 'FOLLOWING' : 'NOPE'"></td>
-            <th th:if="${board.type == '도우미'}" th:text="${board.count}"></th>
+            <th th:if="${board.type == 'helper'}" th:text="${board.count}"></th>
 
         </tr>
     </tbody>
@@ -44,8 +44,8 @@
 <button><a th:href="@{/board/write}">작성하기</a></button>
 <form method="get" action="/board/list">
     <select name="type" onchange="this.form.submit()">
-        <option value="손님" th:selected="${selectedType == '손님'}">손님</option>
-        <option value="도우미" th:selected="${selectedType == '도우미'}">도우미</option>
+        <option value="guest" th:selected="${selectedType == 'guest'}">손님</option>
+        <option value="helper" th:selected="${selectedType == 'helper'}">도우미</option>
     </select>
 </form>
 

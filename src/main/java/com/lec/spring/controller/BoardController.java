@@ -57,7 +57,7 @@ public class BoardController {
     public String list(@RequestParam(required = false) String type, Model model,@RequestParam(required = false) Boolean follow) {
         // 손님, 도우미 타입 설정
         if (type == null || type.isBlank()) {
-            type = "손님";
+            type = "guest";
         }
         List<Post> posts = boardService.listByType(type);
         boolean followFlag = (follow != null) ? follow : false;
@@ -67,6 +67,8 @@ public class BoardController {
             boolean isFollowed = userFollowingService.isFollowing(loginUserId, post.getUser_id());
             post.setFollow(isFollowed);
         }
+
+
 
         model.addAttribute("follow", followFlag);
         model.addAttribute("board", posts);
@@ -79,32 +81,35 @@ public class BoardController {
 
 
     @GetMapping("/detail/{id}")
-    public String detail(@PathVariable Long id, Model model,@RequestParam(required = false) String type,@RequestParam(required = false) Boolean follow){
-        // 손님, 도우미 타입 설정
+    public String detail(@PathVariable Long id,
+                         Model model,
+                         @RequestParam(required = false) String type,
+                         @RequestParam(required = false) Boolean follow) {
+
         if (type == null || type.isBlank()) {
-            type = "손님";
+            type = "guest";
         }
+
+        Long loginUserId = 1L;
+
         List<Post> posts = boardService.listByType(type);
-        boolean followFlag = (follow != null) ? follow : false;
-        // 팔로우 여부
-        Long loginUserId = 1L; // 고정 id
-        for (Post post : posts) {
-            boolean isFollowed = userFollowingService.isFollowing(loginUserId, post.getUser_id());
-            post.setFollow(isFollowed);
+        for (Post p : posts) {
+            boolean isFollowed = userFollowingService.isFollowing(loginUserId, p.getUser_id());
+            p.setFollow(isFollowed);
         }
+        model.addAttribute("postList", posts);
 
-        model.addAttribute("follow", followFlag);
-        model.addAttribute("board", posts);
-        model.addAttribute("selectedType", type);
-        System.out.println("과연!" + posts + followFlag + type);
         Post post = boardService.detail(id);
-        System.out.println("게시글 상세보기 ID: " + id);
-        System.out.println("조회된 게시글: " + boardService.detail(id));
-        System.out.println("조회된 게시글 ID: " + boardService.detail(id).getId());
-
+        boolean isFollowed = userFollowingService.isFollowing(loginUserId, post.getUser_id());
+        post.setFollow(isFollowed);
         model.addAttribute("board", post);
+
+        model.addAttribute("follow", (follow != null) ? follow : false);
+        model.addAttribute("selectedType", type);
+
         return "board/detail";
     }
+
     @GetMapping("/update/{id}")
     public String update(Model model, @PathVariable Long id){
         model.addAttribute("board", boardService.detail(id));

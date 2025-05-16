@@ -24,15 +24,15 @@
 <tbody >
 <tr th:each="board : ${board}" >
     <td><a  th:text="${board.type}" th:href="@{'detail/' + ${board.id}}"></a></td>
-    <td th:if="${board.type == '도우미'}"
+    <td th:if="${board.type == 'helper'}"
         th:text="${board.follow} == true ? 'FOLLOWING' : 'NOPE'"></td>
-    <th th:if="${board.type == '도우미'}" th:text="${board.count}"></th>
+    <th th:if="${board.type == 'helper'}" th:text="${board.count}"></th>
 
 </tr>
 </tbody>
 
 <!--post_tag-->
-<div th:if="${board.type == '손님'}">
+<div th:if="${board.type == 'guest'}">
     <span>태그 목록</span>
     <ul>
         <li th:each="tag : ${board.post_tag}" th:text="${tag.name}"></li>
@@ -40,13 +40,15 @@
 </div>
 
 <!--user_tag-->
-<div th:if="${board.type == '도우미'}">
+<div th:if="${board.type == 'helper'}">
     <span>태그 목록</span>
     <ul>
         <li th:each="tag : ${board.user_tag}" th:text="${tag.name}"></li>
     </ul>
 </div>
-
+<td th:if="${board.type == 'helper'}"
+    th:text="${board.follow} == true ? 'FOLLOWING' : 'NOPE'"></td>
+<th th:if="${board.type == 'helper'}" th:text="${board.count}"></th>
 
 <div>
     <button><a th:href="@{'/board/list'}">목록</a></button>

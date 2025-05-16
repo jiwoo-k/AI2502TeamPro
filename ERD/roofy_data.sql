@@ -35,6 +35,9 @@ FROM tag;
 ALTER TABLE tag
     AUTO_INCREMENT = 1;
 
+
+DELETE
+FROM user_follow;
 -- (user_authorities, user_hate, user_tag 등 복합키 테이블은 AUTO_INCREMENT 없음)
 
 ------------------------------------------------------
@@ -49,8 +52,7 @@ VALUES ('ROLE_MEMBER'),
 -- [샘플 사용자]
 -- user 테이블 구조 : (username, password, name, juminno, latitude, longitude, status)
 INSERT INTO user (username, password, name, juminNo, status)
-VALUES ('USER1', '1234', '회원1', '0009254000000', 'active'),
-       ('ADMIN1', '1234', '관리자1', '9801013000000', 'active');
+VALUES ('USER1', '$2a$10$6gVaMy7.lbezp8bGRlV2fOArmA3WAk2EHxSKxncnzs28/m3DXPyA2', '회원1', '0009254000000', 'active');
 
 
 
@@ -116,3 +118,25 @@ VALUES (1, 'face01.png', 'face01.png'),
        (2, 'face04.png', 'face04.png'),
        (1, 'picture05.jpg', 'picture05_stored.jpg'),
        (2, 'picture06.jpg', 'picture06_stored.jpg');
+
+
+insert into post (user_id,type, title, content) values
+                                                     ( 3,'helper', '안녕하세요','그지같은거')
+;
+
+select *
+from user;
+
+insert into user_follow (following_userid, followed_userid) value
+    (2,1),
+    (1,3);
+
+insert into user_follow (following_userid, followed_userid) value
+(1,2)
+
+SELECT t.name ,post.id
+FROM tag t
+         JOIN post_tag pt ON pt.tag_id = t.id join post on pt.post_id = post.id
+WHERE pt.post_id =1
+
+select * from user_follow
