@@ -1,8 +1,8 @@
-insert into user(username, name, password, juminNo)
-values('USER1', '회원1', '$2a$10$6gVaMy7.lbezp8bGRlV2fOArmA3WAk2EHxSKxncnzs28/m3DXPyA2', '0009254222222'),
-      ('USER2', '회원2', '$2a$10$6gVaMy7.lbezp8bGRlV2fOArmA3WAk2EHxSKxncnzs28/m3DXPyA2', '9201021333333'),
-      ('USER3', '회원3', '$2a$10$6gVaMy7.lbezp8bGRlV2fOArmA3WAk2EHxSKxncnzs28/m3DXPyA2', '9901302333333'),
-      ('ADMIN', '관리자1', '$2a$10$6gVaMy7.lbezp8bGRlV2fOArmA3WAk2EHxSKxncnzs28/m3DXPyA2', '0402023444444')
+insert into user(username, name, password)
+values('USER1', '회원1', '$2a$10$6gVaMy7.lbezp8bGRlV2fOArmA3WAk2EHxSKxncnzs28/m3DXPyA2'),
+      ('USER2', '회원2', '$2a$10$6gVaMy7.lbezp8bGRlV2fOArmA3WAk2EHxSKxncnzs28/m3DXPyA2'),
+      ('USER3', '회원3', '$2a$10$6gVaMy7.lbezp8bGRlV2fOArmA3WAk2EHxSKxncnzs28/m3DXPyA2'),
+      ('ADMIN', '관리자1', '$2a$10$6gVaMy7.lbezp8bGRlV2fOArmA3WAk2EHxSKxncnzs28/m3DXPyA2')
 ;
 
 
@@ -65,8 +65,15 @@ VALUES (1, 'face01.png', 'face01.png'),
 
 
 select * from post;
-select * from user;
+select * from user order by id desc;
 select * from post_tag;
 select * from tag;
 select * from category;
 select * from user_tag;
+
+delete from user where id=6;
+
+update user
+set latitude=null, longitude=null
+where id=5;
+

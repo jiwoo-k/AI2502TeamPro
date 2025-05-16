@@ -146,7 +146,13 @@ CREATE TABLE warning
 ALTER TABLE user_authorities
   ADD CONSTRAINT FK_user_TO_user_authorities
     FOREIGN KEY (user_id)
-    REFERENCES user (id);
+    REFERENCES user (id)
+        ON UPDATE RESTRICT
+        ON DELETE CASCADE
+;
+
+alter table user_authorities
+    drop constraint FK_user_TO_user_authorities;
 
 ALTER TABLE user_authorities
   ADD CONSTRAINT FK_authority_TO_user_authorities
@@ -260,3 +266,9 @@ ALTER TABLE warning
     ON UPDATE RESTRICT
     ON DELETE CASCADE
 ;
+
+ALTER TABLE user
+    DROP COLUMN juminNo;
+
+
+
