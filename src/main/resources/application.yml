@@ -12,7 +12,7 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/roofy?useSSL=false&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
-    username: user1
+    username: myuser
     password: 1234
 
   security:
@@ -21,8 +21,8 @@ spring:
       client:
         registration:
           google:
-            client-id: xxxxxxxxxxx
-            client-secret: xxxxxxxx
+            client-id: xxxxxxx
+            client-secret: xxxxxxx
             scope:
               - email
               - profile
@@ -35,5 +35,9 @@ app:
   oauth2:
     password: 1234
 
-  upload:
-    path: upload
+    #kakao 로그인 관련 세팅값
+    kakao:
+      client-id: xxxxxxxxx # 앱 키
+      redirect-uri: xxxxxxxxxx # Redirect URI
+      token-uri: https://kauth.kakao.com/oauth/token # access token
+      user-info-uri: https://kapi.kakao.com/v2/user/me # 사용자 profile 요청
