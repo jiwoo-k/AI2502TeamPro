@@ -28,7 +28,7 @@ public interface BoardService {
     List<Post> listByType(String type);
 
     // 신고기능
-    int warning(Boolean warning);
+
 
 
 }

@@ -32,7 +32,4 @@ public class Post {
     private Boolean follow;
     private Integer followCount;
 
-    // 신고
-    private Boolean warning;
-
 }

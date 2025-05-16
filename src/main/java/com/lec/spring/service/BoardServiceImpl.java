@@ -86,9 +86,5 @@ public class BoardServiceImpl implements BoardService {
         return posts;
     }
 
-    @Override
-    public int warning(Boolean warning) {
-        return postRepository.warningOn(warning);
-    }
 
 }

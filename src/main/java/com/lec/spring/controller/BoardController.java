@@ -2,11 +2,16 @@ package com.lec.spring.controller;
 
 import com.lec.spring.domain.Post;
 import com.lec.spring.domain.Tag;
+import com.lec.spring.domain.User;
+import com.lec.spring.domain.UserWarning;
 import com.lec.spring.service.BoardService;
 import com.lec.spring.service.UserFollowingService;
+import com.lec.spring.service.UserService;
+import com.lec.spring.service.UserWarningService;
 import com.lec.spring.vaildator.BoardValidator;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,10 +28,14 @@ import java.util.List;
 public class BoardController {
     private final BoardService boardService;
     private final UserFollowingService userFollowingService;
-    public BoardController(BoardService boardService, UserFollowingService userFollowingService) {
+    private final UserWarningService userWarningService;
+    private final UserService userService;
+    public BoardController(BoardService boardService, UserFollowingService userFollowingService, UserWarningService userWarningService, UserService userService) {
         System.out.println("일단 생성");
         this.boardService = boardService;
         this.userFollowingService = userFollowingService;
+        this.userWarningService = userWarningService;
+        this.userService = userService;
     }
 // 수정, 추가. 삭제의 경우 attr name을 result 로 하였음
     @GetMapping("/write")
@@ -140,7 +149,24 @@ public class BoardController {
         return "board/deleteOk";
     }
 
-    @InitBinder
+    @PostMapping("/warning")
+    public String warning(UserWarning warning, Model model, @AuthenticationPrincipal(expression = "user") User loginUser
+    ) {
+
+        if (loginUser == null) {
+            // 로그인 안된 상태 처리 (예: 로그인 페이지로 리다이렉트)
+            return "redirect:/user/login";
+        }
+        warning.setComplaintUserId(loginUser.getId());
+
+        model.addAttribute("result", warning);
+        System.out.println("warning " + warning);
+        userWarningService.report(warning);
+        return "board/warning";
+    }
+
+
+    @InitBinder("post")
     public void initBinder(WebDataBinder binder){
         System.out.println("호출 성공");
         binder.setValidator(new BoardValidator());

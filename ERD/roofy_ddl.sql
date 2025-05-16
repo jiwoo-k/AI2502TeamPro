@@ -126,6 +126,8 @@ CREATE TABLE user_hate
     PRIMARY KEY (complaint_userid, offender_userid)
 ) COMMENT '사용자별신고수';
 
+
+select * from warning
 CREATE TABLE user_tag
 (
     user_id INT    NOT NULL,
@@ -269,3 +271,6 @@ ALTER TABLE user_tag
             ON UPDATE RESTRICT ON DELETE CASCADE;
 
 SET SESSION FOREIGN_KEY_CHECKS = 1;
+
+
+select * from warning

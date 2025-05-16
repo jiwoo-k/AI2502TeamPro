@@ -10,8 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class UserWarning {
-    //신고한 사용자
-    private Long complaint_userid;
-    //신고당한 사용자
-    private User offender_userid;
+    private Long complaintUserId;
+    private Long postId;
+    private String reason;
 }
