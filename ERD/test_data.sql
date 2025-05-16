@@ -80,7 +80,7 @@ select * from user;
 select * from post_tag;
 select * from tag;
 select * from category;
-select * from warning
+select * from warning;
 
 
 ALTER TABLE post MODIFY type VARCHAR(10);
@@ -102,4 +102,7 @@ insert into warning (post_id, complaint_user_id, reason)values
                                                 (2,2, '그냥 신고하고 싶음');
 
 
-select   from warning
+select complaint_user_id from warning
+
+
+SHOW CREATE TABLE warning;

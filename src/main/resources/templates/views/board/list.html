@@ -35,7 +35,7 @@
             <td><a  th:text="${board.type}" th:href="@{'detail/' + ${board.id}}"></a></td>
             <td th:if="${board.type == 'helper'}"
                 th:text="${board.follow} == true ? 'FOLLOWING' : 'NOPE'"></td>
-            <th th:if="${board.type == 'helper'}" th:text="${board.count}"></th>
+            <th th:if="${board.type == 'helper'}" th:text="${board.followCount}"></th>
 
         </tr>
     </tbody>

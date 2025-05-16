@@ -56,6 +56,7 @@
     <select id="findById" parameterType="long" resultMap="postMap">
         <include refid="select_base"/>
         WHERE post.id = #{id}
+
     </select>
     <!--게시글 수정-->
     <update id="update" parameterType="com.lec.spring.domain.Post" flushCache="true">
@@ -67,7 +68,7 @@
     </update>
     <!--게시글 삭제-->
     <delete id="deleteById" flushCache="true" parameterType="com.lec.spring.domain.Post">
-        delete from post where id = #{id}
+        delete from post where id = #{post_id}
     </delete>
 <!--    손님 태그-->
     <select id="findByPostTag" resultType="com.lec.spring.domain.Tag">
@@ -98,7 +99,5 @@
           AND followed_userid = #{followedUserId}
     </select>
 
-    <select id="warningOn" resultType="com.lec.spring.domain.Post">
 
-    </select>
 </mapper>

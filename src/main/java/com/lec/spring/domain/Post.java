@@ -30,9 +30,6 @@ public class Post {
 
     // 팔로우
     private Boolean follow;
-    private Integer count;
-
-    // 신고
-    private Boolean warning;
+    private Integer followCount;
 
 }
