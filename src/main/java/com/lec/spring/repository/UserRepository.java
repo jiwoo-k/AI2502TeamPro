@@ -22,4 +22,7 @@ public interface UserRepository {
 
     //6. 해당 사용자(id) 찾아 로그인 history 저장
     int saveLogin(Long id);
+
+    //7. 사용자 위치 정보 받기
+    int updateLocation(User user);
 }
