@@ -72,4 +72,9 @@ public class UserServiceImpl implements UserService {
     public int saveUserLoginHistory(Long id) {
         return userRepository.saveLogin(id);
     }
+
+    @Override
+    public int updateLocation(User user) {
+        return userRepository.updateLocation(user);
+    }
 }
