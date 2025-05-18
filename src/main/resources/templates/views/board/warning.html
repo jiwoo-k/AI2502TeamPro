@@ -9,7 +9,7 @@
 <body>
 <script th:inline="javascript" th:if="${result != null}">
 
-    alert("신고하시겠습니까??");
+    confirm("신고하시겠습니까??");
     location.href = "/board/list";
 
 </script>

@@ -3,52 +3,57 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
 <h2>게시물 작성</h2>
 
 <form th:action="@{/board/write}" method="post">
-    <div>
-        <span>제목을 입력하세요</span>
-        <input type="text" th:value="${title}" placeholder="제목을 입력하세요" name="title">
-    </div>
-    <div th:if="${error_title}" th:text="${error_title}" style="color: red"></div>
+  <div>
+    <span>제목을 입력하세요</span>
+    <input type="text" th:value="${title}" placeholder="제목을 입력하세요" name="title">
+  </div>
+  <div th:if="${error_title}" th:text="${error_title}" style="color: red"></div>
 
-    <div>
-        <span>내용을 입력하세요</span>
-        <textarea th:value="${content}" placeholder="글을 작성하세요" name="content"></textarea>
-    </div>
-    <div th:if="${error_content}" th:text="${error_content}" style="color: red"></div>
+  <div>
+    <span>내용을 입력하세요</span>
+    <textarea th:value="${content}" placeholder="글을 작성하세요" name="content"></textarea>
+  </div>
+  <div th:if="${error_content}" th:text="${error_content}" style="color: red"></div>
 
 
-    <!--  게시물 유형을 바꿀 수 있게 select로 구현 함 => 근데 태크도 나중에 같이 수정되게 만들어야 하고, 심지어 팔로우도 도우미에서만 보이게 해야 함-->
-    <!--  => 어떻게 하지...-->
-    <div>
-        <select name="type" placeholder="게시물 유형" th:value="${type}">
-            <option value="guest">손님</option>
-            <option value="helper">도우미</option>
-        </select>
-    </div>
-    <div>
-        <button type="submit">작성</button>
-        <a th:href="@{/board/write}"></a>
-    </div>
-    <button><a th:href="@{/board/list}">목록</a></button>
+  <!--  게시물 유형을 바꿀 수 있게 select로 구현 함 => 근데 태크도 나중에 같이 수정되게 만들어야 하고, 심지어 팔로우도 도우미에서만 보이게 해야 함-->
+  <!--  => 어떻게 하지...-->
+  <div>
+    <select name="type" placeholder="게시물 유형" th:value="${type}">
+      <option value="guest">손님</option>
+      <option value="helper">도우미</option>
+    </select>
+  </div>
+  <div>
+    <button type="submit">작성</button>
+    <a th:href="@{/board/write}"></a>
+  </div>
+  <button><a th:href="@{/board/list}">목록</a></button>
 
-    <!-- 첨부파일 -->
-    <div class="container mt-3 mb-3 border rounded">
-        <div class="mb-3 mt-3">
-            <label>첨부파일:</label>
-            <div id="files">
+  <!-- 첨부파일 -->
+  <div class="container mt-3 mb-3 border rounded">
+    <div class="mb-3 mt-3">
+      <label>첨부파일:</label>
+      <div id="files">
 
-            </div>
-            <button type="button" id="btnAdd" class="btn btn-secondary">추가</button>
-        </div>
+      </div>
+      <button type="button" id="btnAdd" class="btn btn-secondary">추가</button>
     </div>
-    <!-- 첨부파일 -->
+  </div>
+  <!-- 첨부파일 -->
 
 </form>
 </body>
+<script th:if='${result > 0}' th:inline='javascript'>
+  confirm("작성하시겠습니까?");
+  location.href = "/board/list";
+</script>
+
 </html>

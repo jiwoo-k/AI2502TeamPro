@@ -7,6 +7,9 @@ import java.util.List;
 
 public interface UserService {
 
+    // 유저 id 가지고 오기 (팔로우 땜에 필요)
+    User findByUSerId(Long id);
+
     // username(회원 아이디) 의 User 정보 읽어오기
     User findByUsername(String username);
 

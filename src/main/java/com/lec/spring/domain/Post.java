@@ -18,14 +18,11 @@ public class Post {
     private String title;
     private String content;
     private LocalDateTime createdat;
-    private User user;
+    private Long user_id = 1L;
     private String type;
     private Boolean isdeleted;
     private LocalDateTime deletedat;
     private String name;
-
-    @Builder.Default
-    private Long user_id = 1L;
 
     // 태그 검색
     private List<Tag> post_tag;

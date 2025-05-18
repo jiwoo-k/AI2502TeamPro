@@ -10,6 +10,7 @@ import com.lec.spring.service.UserService;
 import com.lec.spring.service.UserWarningService;
 import com.lec.spring.vaildator.BoardValidator;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -46,8 +48,10 @@ public class BoardController {
     public String write (@Valid Post post,
                          BindingResult bindingResult,
                          Model model,
-                         RedirectAttributes redirectAttributes
+                         RedirectAttributes redirectAttributes,
+                         HttpSession session
     ) {
+
         // vaildator
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("title", post.getTitle());
@@ -77,8 +81,6 @@ public class BoardController {
             post.setFollow(isFollowed);
         }
 
-
-
         model.addAttribute("follow", followFlag);
         model.addAttribute("board", posts);
         model.addAttribute("selectedType", type);
@@ -93,7 +95,8 @@ public class BoardController {
     public String detail(@PathVariable Long id,
                          Model model,
                          @RequestParam(required = false) String type,
-                         @RequestParam(required = false) Boolean follow) {
+                         @RequestParam(required = false) Boolean follow
+    ) {
 
         if (type == null || type.isBlank()) {
             type = "guest";
@@ -116,8 +119,55 @@ public class BoardController {
         model.addAttribute("follow", (follow != null) ? follow : false);
         model.addAttribute("selectedType", type);
 
+        // User 객체 가져오기
+        User PostUser = userService.findByName(post.getName());
+        model.addAttribute("user", PostUser);
+
         return "board/detail";
     }
+
+    // 팔로우하기
+    @PostMapping("/follow/insert")
+    public String insertFollow(@RequestParam("followingUserId") Long followingUserId,
+                               Principal principal) {
+        if (principal == null) {
+            return "redirect:/user/login";
+        }
+        String username = principal.getName();
+        User loginUser = userService.findByName(username);
+
+        System.out.println("followingUserId: " + followingUserId);
+        User followedUser = userService.findByUSerId(followingUserId);
+        System.out.println("followedUser: " + followedUser);
+
+        if (followedUser == null) {
+            System.out.println("팔로우하려는 사용자가 존재하지 않습니다.");
+            return "redirect:/board/list";
+        }
+        userFollowingService.follow(loginUser, followedUser);
+        return "redirect:/board/detail/" + followingUserId;
+    }
+
+
+    // 언팔로우하기
+    @PostMapping("/follow/delete")
+    public String deleteFollow(@RequestParam("followingUserId") Long followingUserId,
+                               Principal principal) {
+        if (principal == null) {
+            return "redirect:/user/login";
+        }
+        String username = principal.getName();
+        User loginUser = userService.findByName(username);
+        User followedUser = userService.findByUSerId(followingUserId);
+        if (followedUser == null) {
+            System.out.println("팔로우하려는 사용자가 존재하지 않습니다.");
+            return "redirect:/board/list";
+        }
+        userFollowingService.unfollow(loginUser, followedUser);
+        return "redirect:/board/detail/" + followingUserId;
+    }
+
+
 
     @GetMapping("/update/{id}")
     public String update(Model model, @PathVariable Long id){

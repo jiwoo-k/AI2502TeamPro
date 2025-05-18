@@ -140,3 +140,6 @@ FROM tag t
 WHERE pt.post_id =1
 
 select * from user_follow
+
+
+SELECT id, createdat FROM post ORDER BY createdat DESC;

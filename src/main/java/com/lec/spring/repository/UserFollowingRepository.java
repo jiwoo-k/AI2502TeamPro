@@ -1,10 +1,12 @@
 package com.lec.spring.repository;
 
+import com.lec.spring.domain.User;
 import com.lec.spring.domain.UserFollowing;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 @Mapper
 public interface UserFollowingRepository {
@@ -30,5 +32,7 @@ public interface UserFollowingRepository {
 
 
     // 지정한 팔로우 관계를 삭제합니다.
-    int delete(UserFollowing userFollowing);
+    int delete(@Param("followingUserId") Long followingUserId, @Param("followedUserId") Long followedUserId);
+
+    Optional<User> findById(Long id);
 }
