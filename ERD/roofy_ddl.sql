@@ -274,4 +274,3 @@ SET SESSION FOREIGN_KEY_CHECKS = 1;
 
 
 select * from warning
-select * from post_tag
