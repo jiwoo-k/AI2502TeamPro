@@ -1,8 +1,11 @@
-$(function (){
-    let tagName;
+$(function(){
+    const $categories = $('div.categoryBox');
 
-    //검색 버튼 클릭: tag 테이블에서 찾아온다.
-    $('#tagSearchButton').click(function (){
-        tagName = $('input[name="name"]').val('');
-    });
-});
+    $categories.on('click', function(){
+        $categories.removeClass('selected');
+        $(this).addClass('selected');
+
+        //해당 카테고리 id 를 넘겨주자
+        $("input[name='categoryId']").val($(this).attr('id'));
+    })
+})

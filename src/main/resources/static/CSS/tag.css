@@ -1,0 +1,11 @@
+/* 카테고리 박스 호버 스타일 */
+.categoryBox:hover {
+    border-color: #999;
+}
+
+/* 선택된 카테고리 박스 스타일 */
+.categoryBox.selected {
+    border-color: red; /* 선택 시 파란색 테두리 */
+    border-width: 2px;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.5); /* 선택 시 그림자 */
+}

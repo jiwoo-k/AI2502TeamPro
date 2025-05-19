@@ -1,9 +1,6 @@
 package com.lec.spring.controller;
 
-import com.lec.spring.domain.Category;
-import com.lec.spring.domain.LocationInfo;
-import com.lec.spring.domain.Tag;
-import com.lec.spring.domain.User;
+import com.lec.spring.domain.*;
 import com.lec.spring.repository.TagRepository;
 import com.lec.spring.service.CategoryService;
 import com.lec.spring.service.UserService;
@@ -19,6 +16,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -71,9 +69,55 @@ public class HomeController {
     }
 
     @GetMapping("/tag")
-    public String tag(Model model){
+    public String showTag(Model model){
         List<Category> categoryList = categoryService.list();
         model.addAttribute("categoryList", categoryList);
+
+        return "common/tag";
+    }
+
+    @PostMapping("/tag")
+    public String searchTag(TagSearch tagSearch,
+                            BindingResult result,
+                            Model model,
+                            RedirectAttributes redirectAttributes){
+
+        //검색 input 빈값인가?
+        if(tagSearch.getTagName() == null || tagSearch.getTagName().trim().isEmpty()){
+            result.rejectValue("tagName", "검색어 입력은 필수입니다.");
+        }
+
+        //카테고리 선택 했는가?
+        if(tagSearch.getCategoryId() == null){
+            result.rejectValue("categoryId", "카테고리 선택은 필수입니다.");
+        }
+
+
+        if(result.hasErrors()){
+            for(FieldError err : result.getFieldErrors()){
+                redirectAttributes.addFlashAttribute("error_" + err.getField(), err.getCode());
+
+            redirectAttributes.addFlashAttribute("name", tagSearch.getTagName());
+
+            List<Category> categoryList = categoryService.list(); // 카테고리 목록 다시 가져오기
+            redirectAttributes.addFlashAttribute("categoryList", categoryList);
+
+            redirectAttributes.addFlashAttribute("submittedCategoryId", tagSearch.getCategoryId());
+            }
+
+            return "redirect:/tag";
+        }
+
+        Tag searchedTag = tagRepository.searchTag(tagSearch.getCategoryId(), tagSearch.getTagName().trim());
+        List<Category> categoryList = categoryService.list();
+        model.addAttribute("categoryList", categoryList);
+
+
+        model.addAttribute("searchedTag", searchedTag);
+
+        String searchedTagCategoryName = categoryService.findById(searchedTag.getCategory_id()).getName();
+        model.addAttribute("searchedTagCategoryName", searchedTagCategoryName);
+
 
         return "common/tag";
     }
