@@ -1,12 +1,11 @@
 package com.lec.spring;
 
-import com.lec.spring.config.SecurityConfig;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Import;
 
 @SpringBootApplication
-@Import(SecurityConfig.class)
+@MapperScan("com.lec.spring.repository")
 public class Ai2502TeamProApplication {
 
     public static void main(String[] args) {

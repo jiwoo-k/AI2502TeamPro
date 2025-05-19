@@ -1,6 +1,9 @@
 package com.lec.spring.domain;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority; // Spring Security 권한 인터페이스 import
 import org.springframework.security.core.userdetails.UserDetails; // Spring Security 사용자 정보 인터페이스 import
 
@@ -23,10 +26,9 @@ public class User{
     private String username; // 사용자 아이디 (로그인 시 사용)
     private String name; // 닉네임 (화면에 표시)
     private String password; // 비밀번호
-    @ToString.Exclude
     private String re_password; // 비밀번호 확인 용도는 DB 도메인에 포함 X
 
-//    private String juminNo; // 주민등록번호
+    private String juminNo; // 주민등록번호
     private LocalDateTime createdAt; // 가입일시
 
     // OAuth 사용자용
@@ -34,20 +36,18 @@ public class User{
     private String providerId; // OAuth 제공자의 사용자 고유 ID
 
     //사용자 현재 위치
-    private Double latitude;
-    private Double longitude;
+    private double latitude;
+    private double longitude;
     private String areaName; // 행정구역명
 
     //계정상태
     private String status; // 계정 상태 (DB: ENUM 'active', 'paused', 'banned')
 
     //나이, 성별 (ERD user 테이블 칼럼은 아님. 주민번호 기반 계산)
-    @ToString.Exclude
     private Integer age;
-    @ToString.Exclude
     private String gender;
 
-   /* public int getAge() {
+    public int getAge() {
         if (juminNo == null || juminNo.length() != 13) return -1;
         int birthYear = Integer.parseInt(juminNo.substring(0, 2));
         int birthMonth = Integer.parseInt(juminNo.substring(2, 4));
@@ -84,6 +84,6 @@ public class User{
             case 2, 4, 6, 8, 0 -> "여자";
             default -> "Unknown";
         };
-    }*/
+    }
 
 }

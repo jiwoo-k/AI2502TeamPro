@@ -51,10 +51,4 @@
         insert into loginhistory(user_id)
         values(#{id});
     </insert>
-
-    <update id="updateLocation" parameterType="com.lec.spring.domain.User">
-        update user
-        set latitude=#{latitude}, longitude=#{longitude}
-        where id=#{id}
-    </update>
 </mapper>

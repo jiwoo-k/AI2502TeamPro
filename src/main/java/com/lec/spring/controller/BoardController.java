@@ -51,7 +51,6 @@ public class BoardController {
                          RedirectAttributes redirectAttributes,
                          HttpSession session
     ) {
-
         // vaildator
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("title", post.getTitle());
@@ -81,6 +80,8 @@ public class BoardController {
             post.setFollow(isFollowed);
         }
 
+
+
         model.addAttribute("follow", followFlag);
         model.addAttribute("board", posts);
         model.addAttribute("selectedType", type);
@@ -95,8 +96,7 @@ public class BoardController {
     public String detail(@PathVariable Long id,
                          Model model,
                          @RequestParam(required = false) String type,
-                         @RequestParam(required = false) Boolean follow
-    ) {
+                         @RequestParam(required = false) Boolean follow) {
 
         if (type == null || type.isBlank()) {
             type = "guest";

@@ -73,9 +73,9 @@ public class SecurityConfig {
                                 .userService(principalOauth2UserService) //userService(Oauth2UserService<Oauth2UserRequest, Oauth2User>)
                         )
                         .successHandler(new CustomLoginSuccessHandler("/home", userService)
-                        ));
+                ));
 
-        return http.build();
+                return http.build();
     }
 
 }

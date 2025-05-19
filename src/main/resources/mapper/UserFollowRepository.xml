@@ -19,16 +19,4 @@
         WHERE following_userid = #{followingUserId}
     </select>
 
-    <insert id="insert" parameterType="com.lec.spring.domain.UserFollowing">
-        insert into user_follow (
-            following_userid AS followingUserId,
-            followed_userid AS followedUserId
-        )  values
-               (#{followingUserId},#{followedUserId})
-    </insert>
-    <delete id="delete" parameterType="com.lec.spring.domain.UserFollowing">
-        delete from user_follow
-        WHERE following_userid = #{followingUserId}
-          AND followed_userid = #{followedUserId}
-    </delete>
 </mapper>
