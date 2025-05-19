@@ -80,4 +80,9 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id);
         return userRepository.saveLogin(id);
     }
+
+    @Override
+    public int updateLocation(User user) {
+        return userRepository.updateLocation(user);
+    }
 }
