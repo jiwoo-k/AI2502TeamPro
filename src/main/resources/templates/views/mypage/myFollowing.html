@@ -1,10 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>팔로잉 목록</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-
+<th:block th:replace="~{common/header :: header-fragment}"/>
+<main style="padding:40px; max-width:800px; margin:auto;">
+    <h2 style="text-align:center; margin-bottom:30px;">팔로잉 목록</h2>
+    <table style="width:100%; border-collapse:collapse;">
+        <thead>
+        <tr>
+            <th>사용자 닉네임</th>
+            <th>팔로우 상태</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="u : ${following}">
+            <td>
+                <a th:href="@{/mypage/myFollowing/{userId}(userId=${u.id})}" th:text="${u.name}">FollowerName</a>
+            </td>
+            <td>
+                <form th:if="${u.following}" th:action="@{/mypage/unfollow(userId=${u.id})}" method="post" style="display:inline;">
+                    <button type="submit" style="padding:5px 10px;">언팔로우</button>
+                </form>
+                <form th:unless="${u.following}" th:action="@{/mypage/follow(userId=${u.id})}" method="post" style="display:inline;">
+                    <button type="submit" style="padding:5px 10px;">팔로우</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div style="margin-top:20px; text-align:center;">
+        <a th:if="${!following.first}" th:href="@{/mypage/myFollowing(page=${following.number - 1})}">Previous</a>
+        <span th:text="'Page ' + (${following.number + 1}) + ' / ' + ${following.totalPages}"></span>
+        <a th:if="${!following.last}" th:href="@{/mypage/myFollowing(page=${following.number + 1})}">Next</a>
+    </div>
+</main>
 </body>
 </html>

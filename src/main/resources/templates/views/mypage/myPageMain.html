@@ -1,10 +1,29 @@
+<!-- File: myPageMain.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>마이페이지</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
+<!-- 공통 헤더 삽입 -->
+<th:block th:replace="~{common/header :: header-fragment}"></th:block>
 
+<main style="padding: 40px; max-width: 800px; margin: auto;">
+    <h2 style="text-align: center; margin-bottom: 30px;">마이페이지</h2>
+    <!-- 2. 내 활동 통계 -->
+    <div style="border:1px solid #ccc; padding:20px; text-align:center; margin-bottom:30px;">
+        <span style="margin-right:40px;">팔로워 수: <strong th:text="${user.followersCount}">0</strong></span>
+        <span>누적 신고 횟수: <strong th:text="${user.reportCount}">0</strong></span>
+    </div>
+    <!-- 3~6. 기능 버튼 -->
+    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px;">
+        <a th:href="@{/mypage/myPosts}" style="padding: 20px 30px; background-color: #e0f7fa; border-radius: 8px; text-decoration: none; color: black;">내가 작성한 글</a>
+        <a th:href="@{/mypage/myComments}" style="padding: 20px 30px; background-color: #e0f7fa; border-radius: 8px; text-decoration: none; color: black;">내가 쓴 댓글</a>
+        <a th:href="@{/mypage/editProfile}" style="padding: 20px 30px; background-color: #e0f7fa; border-radius: 8px; text-decoration: none; color: black;">회원정보 수정</a>
+        <a th:href="@{/mypage/myFollowing}" style="padding: 20px 30px; background-color: #e0f7fa; border-radius: 8px; text-decoration: none; color: black;">팔로잉 목록</a>
+    </div>
+</main>
 </body>
 </html>

@@ -1,10 +1,51 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>회원정보 수정</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-
+<th:block th:replace="~{common/header :: header-fragment}"/>
+<main style="padding: 40px; max-width: 800px; margin: auto;">
+    <!-- 1. 회원 정보 수정 -->
+    <div style="background-color:#555;color:#fff;padding:15px;margin-bottom:20px;">회원정보 수정</div>
+    <form th:action="@{/mypage/editProfile}" method="post" onsubmit="alert('회원정보 수정 완료');">
+        <!-- 2. 새로운 닉네임 입력 -->
+        <div style="border:1px solid #ccc;padding:15px;margin-bottom:10px;">
+            새로운 닉네임 입력
+            <input type="text" name="name" th:value="${user.name}" placeholder="새 닉네임" required style="width:100%;margin-top:5px;padding:8px;"/>
+        </div>
+        <!-- 3. 새로운 비밀번호 입력 -->
+        <div style="border:1px solid #ccc;padding:15px;margin-bottom:10px;">
+            새로운 비밀번호 입력
+            <input id="newPassword" name="password" type="password" placeholder="새 비밀번호" disabled style="width:100%;margin-top:5px;padding:8px;"/>
+        </div>
+        <!-- 4. 비밀번호 재입력 -->
+        <div style="border:1px solid #ccc;padding:15px;margin-bottom:10px;">
+            비밀번호 재입력
+            <input id="confirmPassword" name="confirmPassword" type="password" placeholder="비밀번호 확인" disabled style="width:100%;margin-top:5px;padding:8px;"/>
+        </div>
+        <!-- 비밀번호 수정 토글 -->
+        <button type="button" id="togglePassword" style="margin-bottom:20px;padding:8px 16px;">비밀번호 수정하기</button>
+        <!-- 5. 태그 form -->
+        <div style="border:1px solid #ccc;padding:15px;margin-bottom:20px;">
+            태그 추가
+            <input type="text" name="tags" placeholder="관심사 태그 입력" style="width:100%;margin-top:5px;padding:8px;"/>
+        </div>
+        <!-- 6. 수정 완료 버튼 -->
+        <button type="submit" style="padding:10px 20px;">수정 완료</button>
+    </form>
+    <script>
+        const toggleBtn = document.getElementById('togglePassword');
+        const pwInput = document.getElementById('newPassword');
+        const confirmInput = document.getElementById('confirmPassword');
+        toggleBtn.addEventListener('click', () => {
+            const disabled = pwInput.disabled;
+            pwInput.disabled = !disabled;
+            confirmInput.disabled = !disabled;
+        });
+    </script>
+</main>
 </body>
 </html>
