@@ -1,35 +1,54 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>태그Form</title>
+	<link rel="stylesheet" th:href="@{/css/main.css}">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+	<script src="/js/tag.js"></script>
+</head>
+
 <th:block th:fragment="tag-fragment">
+
 	<form th:action="@{/board/list}" name="tagForm">
 		<!--태그 검색창-->
 		<div id="tagSearch">
 			<!--태그 검색 및 추가-->
 			<div id="searchZone">
-				<input type="text" name="name" placeholder="태그 검색">
+				<input type="text" name="name" placeholder="태그 검색" value="">
 				<button type="button" id="tagSearchButton">검색</button>
 				<button type="button" id="tagAddButton">추가</button>
 			</div>
 
 			<!--카테고리 보여주기-->
-			<div id="categoryZone">
-
+			<div id="categoryZone" th:each="category : ${categoryList}">
+				<span th:text="${category.name}" th:style="'background-color: ' + ${category.color}"></span>
 			</div>
 
 			<!--validation 문구-->
 			<div>
-
+				<p></p>
+				<p></p>
 			</div>
 		</div>
 
 		<!--담은 태그 목록창-->
 		<div id="tagChoice">
+			<div id="tagList">
 
-		</div>
+			</div>
 
-		<!--radio 와 버튼-->
-		<div id="optionButtons">
+			<!--radio 와 버튼-->
+			<div id="optionButtons">
+				<input type="radio" name="type" value="guest" id="guest" checked>
+				<label for="guest">손님</label>
+				<input type="radio" name="type" value="helper" id="helper">
+				<label for="guest">도우미</label>
 
+				<button id="deleteAll" type="button">초기화</button>
+				<button id="postSearch" type="submit">조회</button>
+				<button id="saveTagList" type="submit">확인</button>
+			</div>
 		</div>
 	</form>
 </th:block>

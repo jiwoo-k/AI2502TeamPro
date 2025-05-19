@@ -1,7 +1,11 @@
 package com.lec.spring.controller;
 
+import com.lec.spring.domain.Category;
 import com.lec.spring.domain.LocationInfo;
+import com.lec.spring.domain.Tag;
 import com.lec.spring.domain.User;
+import com.lec.spring.repository.TagRepository;
+import com.lec.spring.service.CategoryService;
 import com.lec.spring.service.UserService;
 import com.lec.spring.util.U;
 import lombok.AllArgsConstructor;
@@ -16,14 +20,20 @@ import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/")
 public class HomeController {
 
     private final UserService userService;
+    private final TagRepository tagRepository;
+    private final CategoryService categoryService;
 
-    public HomeController(UserService userService) {
+    public HomeController(UserService userService, TagRepository tagRepository, CategoryService categoryService) {
         this.userService = userService;
+        this.tagRepository = tagRepository;
+        this.categoryService = categoryService;
     }
 
     @RequestMapping("/")
@@ -58,5 +68,13 @@ public class HomeController {
 
         System.out.println(user);
         return user;
+    }
+
+    @GetMapping("/tag")
+    public String tag(Model model){
+        List<Category> categoryList = categoryService.list();
+        model.addAttribute("categoryList", categoryList);
+
+        return "common/tag";
     }
 }
