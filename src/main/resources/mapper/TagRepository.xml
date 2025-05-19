@@ -12,7 +12,7 @@
     <select id="searchTag" resultType="com.lec.spring.domain.Tag">
        select id, category_id, name
        from tag
-       where category_id = #{category_id} and name = #{name}
+       where category_id = #{categoryId} and name = #{tagName}
     </select>
 
     <select id="findPostsByTags" parameterType="arrayList" resultMap="mapPost">
