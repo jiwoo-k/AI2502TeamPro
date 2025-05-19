@@ -25,6 +25,6 @@ public interface UserFollowingService {
     // 이 사람을 내가 팔로우 중인지 아닌지 확인
     Boolean isFollowing (Long followingUserId, Long followedUserId);
 
-
+    // 팔로우 몇명?
     int followCount(Long followingUserId);
 }

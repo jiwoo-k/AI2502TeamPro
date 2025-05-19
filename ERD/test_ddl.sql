@@ -3,17 +3,14 @@ DROP TABLE IF EXISTS user_authorities;
 DROP TABLE IF EXISTS post_tag;
 DROP TABLE IF EXISTS user_follow;
 DROP TABLE IF EXISTS attachment;
+DROP TABLE IF EXISTS comment;
 DROP TABLE IF EXISTS user_tag;
 DROP TABLE IF EXISTS tag;
-DROP TABLE IF EXISTS pick;
-DROP TABLE IF EXISTS comment;
 DROP TABLE IF EXISTS post;
 DROP TABLE IF EXISTS category;
 DROP TABLE IF EXISTS authority;
 DROP TABLE IF EXISTS loginhistory;
 DROP TABLE IF EXISTS user;
-DROP TABLE IF EXISTS follower;
-DROP TABLE IF EXISTS user_hate;
 
 
 CREATE TABLE attachment
@@ -53,7 +50,7 @@ CREATE TABLE comment
   PRIMARY KEY (id)
 ) COMMENT '댓글';
 
-CREATE TABLE loginhistory
+CREATE TABLE login_history
 (
   user_id INT      NOT NULL,
   loginat DATETIME NOT NULL     DEFAULT now(),
@@ -64,7 +61,7 @@ CREATE TABLE post
 (
   id        INT          NOT NULL AUTO_INCREMENT,
   user_id   INT          NOT NULL,
-  type      ENUM('guest', 'helper')  NOT NULL DEFAULT 'guest' COMMENT '게시판 유형',
+  type      ENUM('guest', 'helper')    NOT NULL DEFAULT 'guest' COMMENT '게시판 유형',
   title     VARCHAR(100) NOT NULL,
   content   LONGTEXT     NULL    ,
   createdat DATETIME     NULL     DEFAULT now(),
@@ -244,8 +241,8 @@ ALTER TABLE user_follow
     ON DELETE CASCADE
 ;
 
-ALTER TABLE loginhistory
-  ADD CONSTRAINT FK_user_TO_loginhistory
+ALTER TABLE login_history
+  ADD CONSTRAINT FK_user_TO_login_history
     FOREIGN KEY (user_id)
     REFERENCES user (id)
     ON UPDATE RESTRICT
@@ -263,3 +260,11 @@ ALTER TABLE warning
     ON UPDATE RESTRICT
     ON DELETE CASCADE
 ;
+
+
+
+insert into user_follow (
+    following_userid ,
+    followed_userid
+)  values
+    (2,2)

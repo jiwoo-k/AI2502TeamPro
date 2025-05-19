@@ -6,10 +6,8 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -22,11 +20,6 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    // OAuth 로그인
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
-    }
     @Autowired
     private UserService userService;
 
@@ -39,7 +32,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        http
+        return http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
@@ -70,12 +63,12 @@ public class SecurityConfig {
 
                         // code 를 받아오는 것이 아니라 "AccessToken" 과 사용자 "프로필 정보" 를 한번에 받아온다(편리)
                         .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig
+                                //인증 서버의 userInfo Endpoint(후처리) 설정.
+                                //회원가입 + 로그인 진행
                                 .userService(principalOauth2UserService) //userService(Oauth2UserService<Oauth2UserRequest, Oauth2User>)
                         )
-                        .successHandler(new CustomLoginSuccessHandler("/home", userService)
-                ));
-
-                return http.build();
+                )
+                .build();
     }
 
 }

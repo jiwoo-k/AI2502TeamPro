@@ -12,7 +12,7 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/roofy?useSSL=false&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
-    username: myuser
+    username: user1
     password: 1234
 
   security:
@@ -21,8 +21,8 @@ spring:
       client:
         registration:
           google:
-            client-id: xxxxxxx
-            client-secret: xxxxxxx
+            client-id: xxxxxxxxxxxx
+            client-secret: xxxxxxxxxxxxx
             scope:
               - email
               - profile
@@ -34,17 +34,3 @@ mybatis:
 app:
   oauth2:
     password: 1234
-
-    #kakao 로그인 관련 세팅값
-    kakao:
-      client-id: xxxxxxxxx # 앱 키
-      redirect-uri: xxxxxxxxxx # Redirect URI
-      token-uri: https://kauth.kakao.com/oauth/token # access token
-      user-info-uri: https://kapi.kakao.com/v2/user/me # 사용자 profile 요청
-
-  upload:
-    path: upload
-
-  pagination:
-    write_pages: 10
-    page_rows: 10

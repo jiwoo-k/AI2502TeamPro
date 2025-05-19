@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 
 public class CustomLoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
-    private final UserService userService;
+    private UserService userService;
 
     public CustomLoginSuccessHandler(String defaultTargetUrl, UserService userService) {
         setDefaultTargetUrl(defaultTargetUrl);
@@ -27,19 +27,17 @@ public class CustomLoginSuccessHandler extends SavedRequestAwareAuthenticationSu
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
-        System.out.println("🍤 인증 성공: onAuthenticationSuccess() 호출");
+        System.out.println("🍤 로그인 성공: onAuthenticationSuccess() 호출");
 
         PrincipalDetails userDetails = (PrincipalDetails) authentication.getPrincipal();
 
         System.out.println("""
                     username: %s
-                    name: %s
                     password: %s
                     authorities: %s
                 """.formatted(
 //                        getClientIp(request),
                 userDetails.getUsername(),
-                userDetails.getName(),
                 userDetails.getPassword(),
                 userDetails.getAuthorities())
         );
@@ -55,6 +53,8 @@ public class CustomLoginSuccessHandler extends SavedRequestAwareAuthenticationSu
        if(cnt > 0) {
            System.out.println("\t" + user.getUsername() + " 로그인 이력 저장");
        }
+
+       request.getSession().setAttribute("id", user.getId());
 
 //        request.getSession().setAttribute("loginTime", loginTime);
 

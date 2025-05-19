@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-
-<script th:unless="${result > 0}">
-  alert("삭제 실패");
-  history.back();
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>삭제 결과</title>
+</head>
+<!--삭제 할때 굳이 삭제 실패를 넣을 필요가 없을 거 같아서 confirm 만 만들고 삭제하기를 선택할 수 있게 만들었음-->
+<body>
+<script th:if="${result >= 0}">
+    // 삭제하고 난 다음에 내가 선택한 타입의 창으로 들어가게 수정해야 함
+    confirm("게시글을 삭제하시겠습니까?");
+    location.href = "/board/list";
 </script>
 
-<script th:if="${result > 0}" th:inline="javascript">
-  alert("삭제 성공");
-  location.href= `/board/list?page=[[${session.page}]]`;
-</script>
-
-
+</body>
 </html>

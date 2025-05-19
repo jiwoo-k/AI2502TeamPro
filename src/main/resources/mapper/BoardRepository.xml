@@ -29,7 +29,6 @@
             (#{user_id},#{title},#{content},#{type})
     </insert>
 
-
     <sql id="select_base">
         SELECT
             post.id AS p_id,
@@ -46,12 +45,14 @@
     <!--    전체 글 조회를 할 수 있게 만듦 (물론 밑에 findBytype 이 있어서 필요가 없을거 같은데 혹시 몰라서 일단 놔둠)-->
     <select id="findAll" resultMap="postMap">
         <include refid="select_base"/>
-        ORDER BY post.id DESC
+        ORDER BY post.createdat DESC
     </select>
     <!--손님, 도우미 타입 mapper-->
     <select id="findByType" resultMap="postMap">
         <include refid="select_base"/>
         WHERE post.type = #{type}
+        ORDER BY post.createdat DESC
+
     </select>
     <!--게시글 상세조회-->
     <select id="findById" parameterType="long" resultMap="postMap">

@@ -32,7 +32,7 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
         this.user = user;
     }
 
-    //OAuth2 원래 회원의 로그인용 생성자
+    //OAuth2 로그인용 생성자
     public PrincipalDetails(User user, Map<String, Object> attributes) {
         System.out.println("""
                 🎃UserDetails(user, oauth attributes) 생성:
@@ -53,7 +53,7 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
         //DB 에서 user의 권한(들) 읽어오기
         List<Authority> list = userService.selectAuthoritiesByUserId(user.getId());
 
-        for (Authority auth : list) {
+        for(Authority auth : list){
 //            collect.add(() -> auth.getName());
             collect.add(new GrantedAuthority() {
                 @Override
@@ -94,7 +94,7 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
     }
 
     @Override
-    public String getName() {
-        return user.getName();
+    public String getName(){
+        return null; //이번 예제에서는 사용 안함
     }
 }
