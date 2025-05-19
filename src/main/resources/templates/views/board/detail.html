@@ -25,18 +25,16 @@
         <span th:text="${board.content}"></span>
     </div>
 <table>
-    <div>
-        <form th:if="${board.follow}" th:action="@{/board/follow/delete}" method="post">
-            <input type="hidden" name="followingUserId" th:value="${board.user_id}" />
-            <button type="submit">언팔로우</button>
-        </form>
+    <tbody >
+    <tr th:each="board : ${board}" >
+        <td><a  th:text="${board.type}" th:href="@{'detail/' + ${board.id}}"></a></td>
+        <td th:if="${board.type == 'helper'}"
+            th:text="${board.follow} == true ? 'FOLLOWING' : 'NOPE'"></td>
+        <th th:if="${board.type == 'helper'}" th:text="${board.followCount}"></th>
 
-        <form th:if="${!board.follow}" th:action="@{/board/follow/insert}" method="post">
-            <input type="hidden" name="followingUserId" th:value="${board.user_id}" />
-            <button type="submit">팔로우</button>
-        </form>
-    </div>
-</table>
+    </tr>
+    </tbody>
+
     <!--post_tag-->
     <div th:if="${board.type == 'guest'}">
         <span>태그 목록</span>
@@ -44,29 +42,28 @@
             <li th:each="tag : ${board.post_tag}" th:text="${tag.name}"></li>
         </ul>
     </div>
+
+    <!--user_tag-->
     <div th:if="${board.type == 'helper'}">
         <span>태그 목록</span>
         <ul>
             <li th:each="tag : ${board.user_tag}" th:text="${tag.name}"></li>
         </ul>
     </div>
-
-
-
+    <td th:if="${board.type == 'helper'}"
+        th:text="${board.follow} == true ? 'FOLLOWING' : 'NOPE'"></td>
+    <th th:if="${board.type == 'helper'}" th:text="${board.followCount}"></th>
 
     <div>
         <button><a th:href="@{'/board/list'}">목록</a></button>
     </div>
     <div>
-        <button th:if="${session.id} == ${board.user_id}">
-            <a th:href="@{'/board/update/' + ${board.id}}">수정하기</a>
-        </button>
-
+        <button><a th:href="@{'/board/update/' + ${board.id}}">수정하기</a></button>
     </div>
     <div>
         <form th:action="@{'/board/delete'}" method="post">
             <input type="hidden" name="id" th:value="${board.id}" />
-            <button th:if="${session.id} == ${board.user_id}">삭제하기</button>
+            <button type="submit">삭제</button>
         </form>
 
         <!--신고-->
@@ -87,7 +84,6 @@
         </form>
 
     </div>
-
     </body>
-
+<!--</th:block>-->
 </html>

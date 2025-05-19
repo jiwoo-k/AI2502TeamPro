@@ -1,4 +1,4 @@
-<!--<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko"
 	  xmlns:th="http://www.thymeleaf.org"
 	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
@@ -12,11 +12,11 @@
 </head>
 
 <body>
-&lt;!&ndash; 조건부 헤더 &ndash;&gt;
-&lt;!&ndash;<div th:if="${not #httpServletRequest.requestURI.matches('/user/(login|register).*')}">&ndash;&gt;
+<!-- 조건부 헤더 -->
+<!--<div th:if="${not #httpServletRequest.requestURI.matches('/user/(login|register).*')}">-->
 <div th:if="${#httpServletRequest != null and not #httpServletRequest.requestURI.matches('/user/(login|register).*')}">
-	&lt;!&ndash;	<div th:replace="~{common/header :: header-fragment}"></div>&ndash;&gt;
-	&lt;!&ndash;	로그인 구현해야 주석 해제가능&ndash;&gt;
+	<!--	<div th:replace="~{common/header :: header-fragment}"></div>-->
+	<!--	로그인 구현해야 주석 해제가능-->
 </div>
 
 <div th:replace="~{common/header :: header-fragment}"></div>
@@ -26,20 +26,20 @@
 	<div th:replace="~{common/tag :: tag-fragment}"></div>
 
 
-	&lt;!&ndash;글쓰기 작성&ndash;&gt;
+	<!--글쓰기 작성-->
 	<button><a th:href="@{/board/write}">글쓰기</a></button>
 
 </main>
-&lt;!&ndash; 지도 모달 &ndash;&gt;
+<!-- 지도 모달 -->
 <div class="modal fade" id="mapModalFromHeader" tabindex="-1">
 	<div class="modal-dialog modal-lg">
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title">내 현재 위치</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+				<button type="button" class="btn-close" data-bs-dismiss="modal">위치 재설정</button>
 			</div>
 			<div class="modal-body">
-				<div id="mapFromHeader" style="width: 100%; height: 400px;"></div>
+				<div id="mapFromHeader" style="width: 75%; height: 300px; border: 1px solid black"></div>
 				<p class="mt-2">현재 위치: <span id="modal-area-name-header">로딩 중...</span></p>
 			</div>
 		</div>
@@ -51,34 +51,5 @@
 		openMap("mapFromHeader", "mapModalFromHeader", "modal-area-name-header");
 	}
 </script>
-</body>
-</html>-->
-
-
-<!DOCTYPE html>
-<html lang="ko"
-	  xmlns:th="http://www.thymeleaf.org"
-	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head>
-	<meta charset="UTF-8">
-	<title>ROOFY</title>
-	<link rel="stylesheet" th:href="@{/css/style.css}">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
-	<script src="https://maps.googleapis.com/maps/api/js?key=xxxxxxxxxxx"></script>
-	<script src="/js/location.js"></script>
-</head>
-
-<body>
-<!--현재 위치 가져오기-->
-<div id="location">
-	<button id="getLocation">현재 위치 가져오기</button>
-	<div id="showLocation"></div>
-	<div id="showLat"></div>
-	<div id="showLng"></div>
-	<div id="showMap"></div>
-</div>
-
-
 </body>
 </html>
