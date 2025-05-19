@@ -49,8 +49,9 @@ public class BoardController {
                          BindingResult bindingResult,
                          Model model,
                          RedirectAttributes redirectAttributes,
-                         HttpSession session
+                         @AuthenticationPrincipal(expression = "user") User loginUser
     ) {
+
         // vaildator
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("title", post.getTitle());
@@ -60,6 +61,9 @@ public class BoardController {
             }
             return "redirect:/board/write";
         }
+
+        // user_id 가지고 오기
+        post.setUser_id(loginUser.getId());
         int result = boardService.write(post);
         model.addAttribute("result", result);
         return "board/write";
@@ -81,7 +85,7 @@ public class BoardController {
         Long loginUserId = null;
         if (principal != null) {
             String username = principal.getName();
-            User loginUser = userService.findByName(username);
+            User loginUser = userService.findByUsername(username);
             loginUserId = loginUser.getId();
         }
 
@@ -102,7 +106,7 @@ public class BoardController {
     @GetMapping("/detail/{id}")
     public String detail(@PathVariable Long id,
                          Model model,
-                         @RequestParam(required = false) String type,
+                         @RequestParam(required = false, name = "type") String type,
                          @RequestParam(required = false) Boolean follow,
                          Principal principal) {
 
@@ -113,7 +117,7 @@ public class BoardController {
         Long loginUserId = null;
         if (principal != null) {
             String username = principal.getName();
-            User loginUser = userService.findByName(username);
+            User loginUser = userService.findByUsername(username);
             loginUserId = loginUser.getId();
         }
 
@@ -139,46 +143,6 @@ public class BoardController {
         return "board/detail";
     }
 
-    // 팔로우하기
-    @PostMapping("/follow/insert")
-    public String insertFollow(@RequestParam("followingUserId") Long followingUserId,
-                               Principal principal) {
-        if (principal == null) {
-            return "redirect:/user/login";
-        }
-        String username = principal.getName();
-        User loginUser = userService.findByName(username);
-
-        System.out.println("followingUserId: " + followingUserId);
-        User followedUser = userService.findByUserId(followingUserId);
-        System.out.println("followedUser: " + followedUser);
-
-        if (followedUser == null) {
-            System.out.println("팔로우하려는 사용자가 존재하지 않습니다.");
-            return "redirect:/board/list";
-        }
-        userFollowingService.follow(loginUser, followedUser);
-        return "redirect:/board/detail/" + followingUserId;
-    }
-
-
-    // 언팔로우하기 ㅇㅇㅇㅇ
-    @PostMapping("/follow/delete")
-    public String deleteFollow(@RequestParam("followingUserId") Long followingUserId,
-                               Principal principal) {
-        if (principal == null) {
-            return "redirect:/user/login";
-        }
-        String username = principal.getName();
-        User loginUser = userService.findByName(username);
-        User followedUser = userService.findByUserId(followingUserId);
-        if (followedUser == null) {
-            System.out.println("팔로우하려는 사용자가 존재하지 않습니다.");
-            return "redirect:/board/list";
-        }
-        userFollowingService.unfollow(loginUser, followedUser);
-        return "redirect:/board/detail/" + followingUserId;
-    }
 
 
 
@@ -191,7 +155,8 @@ public class BoardController {
     public String update(@Valid Post post,
                          BindingResult bindingResult,
                          Model model,
-                         RedirectAttributes redirectAttributes
+                         RedirectAttributes redirectAttributes,
+                         @AuthenticationPrincipal(expression = "user") User loginUser
     ) {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("title", post.getTitle());
@@ -201,14 +166,20 @@ public class BoardController {
             }
             return "redirect:/board/update/" + post.getId();
         }
+        post.setUser_id(loginUser.getId());
         int result = boardService.update(post);
         model.addAttribute("result", result);
+
+
         return "board/updateOk" ;
     }
     @PostMapping("/delete")
-    public String delete(  Long id, Model model){
+    public String delete(  Long id, Model model, @AuthenticationPrincipal(expression = "user") User loginUser) {
+
         System.out.println("삭제결과" + boardService.delete(id));
-        model.addAttribute("result", boardService.delete(id));
+        int result = boardService.delete(id);
+        model.addAttribute("result", result);
+
         return "board/deleteOk";
     }
 
