@@ -11,7 +11,7 @@
 
 <main style="padding: 40px; max-width: 800px; margin: auto;">
     <h2 style="text-align: center; margin-bottom: 30px;">나의 게시글 조회</h2>
-    <!-- 게시판 유형 선택 -->
+    <!-- 게시판 유형 선택  -->
     <form method="get" th:action="@{/mypage/myPosts}" style="margin-bottom: 20px;">
         <select name="selectedType" onchange="this.form.submit()">
             <option value="guest" th:selected="${selectedType == 'guest'}">손님 게시판</option>
