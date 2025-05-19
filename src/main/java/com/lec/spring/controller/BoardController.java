@@ -22,6 +22,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -136,7 +137,7 @@ public class BoardController {
         User loginUser = userService.findByName(username);
 
         System.out.println("followingUserId: " + followingUserId);
-        User followedUser = userService.findByUSerId(followingUserId);
+        User followedUser = userService.findByUserId(followingUserId);
         System.out.println("followedUser: " + followedUser);
 
         if (followedUser == null) {
@@ -157,7 +158,7 @@ public class BoardController {
         }
         String username = principal.getName();
         User loginUser = userService.findByName(username);
-        User followedUser = userService.findByUSerId(followingUserId);
+        User followedUser = userService.findByUserId(followingUserId);
         if (followedUser == null) {
             System.out.println("팔로우하려는 사용자가 존재하지 않습니다.");
             return "redirect:/board/list";
