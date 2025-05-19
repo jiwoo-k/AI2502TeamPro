@@ -70,7 +70,7 @@
     </update>
     <!--게시글 삭제-->
     <delete id="deleteById" flushCache="true" parameterType="com.lec.spring.domain.Post">
-        delete from post where id = #{post_id}
+        delete from post where id = #{id}
     </delete>
 <!--    손님 태그-->
     <select id="findByPostTag" resultType="com.lec.spring.domain.Tag">

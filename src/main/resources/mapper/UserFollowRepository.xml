@@ -21,8 +21,8 @@
 
     <insert id="insert" parameterType="com.lec.spring.domain.UserFollowing">
         insert into user_follow (
-            following_userid AS followingUserId,
-            followed_userid AS followedUserId
+            following_userid,
+            followed_userid
         )  values
                (#{followingUserId},#{followedUserId})
     </insert>
