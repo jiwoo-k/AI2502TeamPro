@@ -65,14 +65,14 @@ public class BoardController {
     }
     // listBytype (손님, 도우미 선택 가능 => findAll 은 혹시 몰라서 일부러 놔뒀음)
     @GetMapping("/list")
-    public String list(@RequestParam(required = false) String type, Model model,@RequestParam(required = false) Boolean follow) {
+    public String list(@RequestParam(required = false) String type, Model model, @RequestParam(required = false) Boolean follow) {
         // 손님, 도우미 타입 설정
         if (type == null || type.isBlank()) {
             type = "guest";
         }
         List<Post> posts = boardService.listByType(type);
         boolean followFlag = (follow != null) ? follow : false;
-        // 팔로우 여부 2
+        // 팔로우 여부
         Long loginUserId = 1L; // 고정 id
         for (Post post : posts) {
             boolean isFollowed = userFollowingService.isFollowing(loginUserId, post.getUser_id());
