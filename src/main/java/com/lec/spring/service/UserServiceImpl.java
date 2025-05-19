@@ -4,6 +4,7 @@ import com.lec.spring.domain.Authority;
 import com.lec.spring.domain.User;
 import com.lec.spring.repository.AuthorityRepository;
 import com.lec.spring.repository.UserRepository;
+import org.apache.ibatis.session.SqlSession;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -11,19 +12,20 @@ import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
-
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final AuthorityRepository authorityRepository;
 
-    public UserServiceImpl(
-            PasswordEncoder passwordEncoder,
-            UserRepository userRepository,
-            AuthorityRepository authorityRepository
-    ) {
+    //필요한 것들 생성자에서 주입
+    public UserServiceImpl(SqlSession sqlSession, PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
-        this.userRepository = userRepository;
-        this.authorityRepository = authorityRepository;
+        this.userRepository = sqlSession.getMapper(UserRepository.class);
+        this.authorityRepository = sqlSession.getMapper(AuthorityRepository.class);
+    }
+
+    @Override
+    public User findByUserId(Long id) {
+        return userRepository.findById(id);
     }
 
     @Override
