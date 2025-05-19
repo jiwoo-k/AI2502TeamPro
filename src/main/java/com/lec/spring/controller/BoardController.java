@@ -149,7 +149,7 @@ public class BoardController {
     }
 
 
-    // 언팔로우하기
+    // 언팔로우하기 ㅇㅇㅇㅇ
     @PostMapping("/follow/delete")
     public String deleteFollow(@RequestParam("followingUserId") Long followingUserId,
                                Principal principal) {
