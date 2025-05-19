@@ -74,7 +74,7 @@ public class BoardController {
         }
         List<Post> posts = boardService.listByType(type);
         boolean followFlag = (follow != null) ? follow : false;
-        // 팔로우 여부
+        // 팔로우 여부 2
         Long loginUserId = 1L; // 고정 id
         for (Post post : posts) {
             boolean isFollowed = userFollowingService.isFollowing(loginUserId, post.getUser_id());
