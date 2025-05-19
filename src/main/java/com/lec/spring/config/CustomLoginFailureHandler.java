@@ -16,6 +16,7 @@ import java.io.IOException;
 public class CustomLoginFailureHandler implements AuthenticationFailureHandler {
     private final String DEFAULT_FAILURE_FORWARD_URL = "/user/loginError";
 
+
     //인증 실패 직후 호출되는 콜백
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
