@@ -105,7 +105,7 @@ public class OAuth2Controller {
 
         // 이미 가입한 회원인지, 혹은 비가입자인지 체크하여야 한다
         User user = userService.findByUsername(username);
-        if(user == null){
+        if (user == null) {
             User newUser = User.builder()
                     .username(username)
                     .name(name)
@@ -115,15 +115,13 @@ public class OAuth2Controller {
                     .build();
 
             int cnt = userService.register(newUser);
-            if(cnt > 0){
+            if (cnt > 0) {
                 System.out.println("🍻[Kakao 인증 회원가입 성공]");
                 user = userService.findByUsername(username);
-            }
-            else{
+            } else {
                 System.out.println("🍻[Kakao 인증 회원가입 실패]");
             }
-        }
-        else{
+        } else {
             System.out.println("🍻[Kakao] 인증. 이미 가입된 회원입니다");
         }
 

@@ -2,65 +2,92 @@
 <html lang="ko"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-</head>
-<body>
-<h2>게시물 상세조회</h2>
-<div>
-    <div th:text="'작성자: ' + ${board.name}" ></div>
-    <!--    이거 날짜와 시간 넣을때 개인적으로 연도하고 분, 초는 필요가 없다고 생각함.-->
-    <div th:text="${#temporals.format(board.createdat,  'yyyy-MM-dd HH:mm:ss')} + ' 작성'"></div>
-</div>
-<div>
-    <span th:text="${board.title}"></span>
-</div>
 
-<div>
-    <span th:text="${board.content}"></span>
-</div>
 
-<tbody >
-<tr th:each="board : ${board}" >
-    <td><a  th:text="${board.type}" th:href="@{'detail/' + ${board.id}}"></a></td>
-    <td th:if="${board.type == 'helper'}"
-        th:text="${board.follow} == true ? 'FOLLOWING' : 'NOPE'"></td>
-    <th th:if="${board.type == 'helper'}" th:text="${board.count}"></th>
 
-</tr>
-</tbody>
+<!--<th:block th:with="logged_user=${#authentication.principal.user}">-->
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+    <h2>게시물 상세조회</h2>
+    <div>
+        <div th:text="'작성자: ' + ${board.name}" ></div>
+        <!--    이거 날짜와 시간 넣을때 개인적으로 연도하고 분, 초는 필요가 없다고 생각함.-->
+        <div th:text="${#temporals.format(board.createdat,  'yyyy-MM-dd HH:mm:ss')} + ' 작성'"></div>
+    </div>
+    <div>
+        <span th:text="${board.title}"></span>
+    </div>
 
-<!--post_tag-->
-<div th:if="${board.type == 'guest'}">
-    <span>태그 목록</span>
-    <ul>
-        <li th:each="tag : ${board.post_tag}" th:text="${tag.name}"></li>
-    </ul>
-</div>
+    <div>
+        <span th:text="${board.content}"></span>
+    </div>
+<table>
+    <div>
+        <form th:if="${board.follow}" th:action="@{/board/follow/delete}" method="post">
+            <input type="hidden" name="followingUserId" th:value="${board.user_id}" />
+            <button type="submit">언팔로우</button>
+        </form>
 
-<!--user_tag-->
-<div th:if="${board.type == 'helper'}">
-    <span>태그 목록</span>
-    <ul>
-        <li th:each="tag : ${board.user_tag}" th:text="${tag.name}"></li>
-    </ul>
-</div>
-<td th:if="${board.type == 'helper'}"
-    th:text="${board.follow} == true ? 'FOLLOWING' : 'NOPE'"></td>
-<th th:if="${board.type == 'helper'}" th:text="${board.count}"></th>
+        <form th:if="${!board.follow}" th:action="@{/board/follow/insert}" method="post">
+            <input type="hidden" name="followingUserId" th:value="${board.user_id}" />
+            <button type="submit">팔로우</button>
+        </form>
+    </div>
+</table>
+    <!--post_tag-->
+    <div th:if="${board.type == 'guest'}">
+        <span>태그 목록</span>
+        <ul>
+            <li th:each="tag : ${board.post_tag}" th:text="${tag.name}"></li>
+        </ul>
+    </div>
+    <div th:if="${board.type == 'helper'}">
+        <span>태그 목록</span>
+        <ul>
+            <li th:each="tag : ${board.user_tag}" th:text="${tag.name}"></li>
+        </ul>
+    </div>
 
-<div>
-    <button><a th:href="@{'/board/list'}">목록</a></button>
-</div>
-<div>
-    <button><a th:href="@{'/board/update/' + ${board.id}}">수정하기</a></button>
-</div>
-<div>
-    <form th:action="@{'/board/delete'}" method="post">
-        <input type="hidden" name="id" th:value="${board.id}" />
-        <button type="submit">삭제</button>
-    </form>
-</div>
-</body>
+
+
+
+    <div>
+        <button><a th:href="@{'/board/list'}">목록</a></button>
+    </div>
+    <div>
+        <button th:if="${session.id} == ${board.user_id}">
+            <a th:href="@{'/board/update/' + ${board.id}}">수정하기</a>
+        </button>
+
+    </div>
+    <div>
+        <form th:action="@{'/board/delete'}" method="post">
+            <input type="hidden" name="id" th:value="${board.id}" />
+            <button th:if="${session.id} == ${board.user_id}">삭제하기</button>
+        </form>
+
+        <!--신고-->
+        <form th:action="@{'/board/warning'}" method="post">
+<!--            <input type="hidden" name="id" th:value="${logged_user.id}">-->
+            <input type="hidden" name="postId" th:value="${board.id}" />
+
+
+            <div id="reasonBox" style="display: none;">
+                <label for="reason">신고 사유</label>
+                <textarea name="reason" id="reason" ></textarea>
+                <button type="submit">신고 접수</button>
+            </div>
+
+            <button type="button" onclick="document.getElementById('reasonBox').style.display = 'block'">
+                신고하기
+            </button>
+        </form>
+
+    </div>
+
+    </body>
+
 </html>

@@ -38,10 +38,10 @@ public class CustomLoginSuccessHandler extends SavedRequestAwareAuthenticationSu
                     authorities: %s
                 """.formatted(
 //                        getClientIp(request),
-                userDetails.getUsername(),
-                userDetails.getName(),
-                userDetails.getPassword(),
-                userDetails.getAuthorities())
+                        userDetails.getUsername(),
+                        userDetails.getName(),
+                        userDetails.getPassword(),
+                        userDetails.getAuthorities())
         );
 
 
@@ -50,12 +50,13 @@ public class CustomLoginSuccessHandler extends SavedRequestAwareAuthenticationSu
 
 
         //사용자의 login 이력 저장
-       User user = userService.findByUsername(userDetails.getUsername());
-       int cnt = userService.saveUserLoginHistory(user.getId());
-       if(cnt > 0) {
-           System.out.println("\t" + user.getUsername() + " 로그인 이력 저장");
-       }
+        User user = userService.findByUsername(userDetails.getUsername());
+        int cnt = userService.saveUserLoginHistory(user.getId());
+        if(cnt > 0) {
+            System.out.println("\t" + user.getUsername() + " 로그인 이력 저장");
+        }
 
+        request.getSession().setAttribute("id", user.getId());
 //        request.getSession().setAttribute("loginTime", loginTime);
 
         //로그인 직전 url 로 redirect 함

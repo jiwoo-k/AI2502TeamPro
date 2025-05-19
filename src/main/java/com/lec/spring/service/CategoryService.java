@@ -18,7 +18,7 @@ public interface CategoryService {
 
     Category findByName(String name);
 
-    List<Category> findAll();
+    List<Category> list();
 
 
 

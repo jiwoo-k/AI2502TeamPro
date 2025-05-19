@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>신고 결과</title>
+</head>
+<!--삭제 할때 굳이 삭제 실패를 넣을 필요가 없을 거 같아서 confirm 만 만들고 삭제하기를 선택할 수 있게 만들었음-->
+<body>
+<script th:inline="javascript" th:if="${result != null}">
+
+    confirm("신고하시겠습니까??");
+    location.href = "/board/list";
+
+</script>
+</body>
+</html>

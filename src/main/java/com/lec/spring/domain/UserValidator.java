@@ -30,7 +30,6 @@ public class UserValidator implements Validator {
         User user = (User) target;
         String username = user.getUsername();
         String name = user.getName();
-//        String juminNo = user.getJuminNo();
 
         //username 검증
         if(username == null || username.trim().isEmpty()){

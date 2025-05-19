@@ -2,11 +2,17 @@ package com.lec.spring.controller;
 
 import com.lec.spring.domain.Post;
 import com.lec.spring.domain.Tag;
+import com.lec.spring.domain.User;
+import com.lec.spring.domain.UserWarning;
 import com.lec.spring.service.BoardService;
 import com.lec.spring.service.UserFollowingService;
+import com.lec.spring.service.UserService;
+import com.lec.spring.service.UserWarningService;
 import com.lec.spring.vaildator.BoardValidator;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,6 +22,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -23,10 +30,14 @@ import java.util.List;
 public class BoardController {
     private final BoardService boardService;
     private final UserFollowingService userFollowingService;
-    public BoardController(BoardService boardService, UserFollowingService userFollowingService) {
+    private final UserWarningService userWarningService;
+    private final UserService userService;
+    public BoardController(BoardService boardService, UserFollowingService userFollowingService, UserWarningService userWarningService, UserService userService) {
         System.out.println("일단 생성");
         this.boardService = boardService;
         this.userFollowingService = userFollowingService;
+        this.userWarningService = userWarningService;
+        this.userService = userService;
     }
 // 수정, 추가. 삭제의 경우 attr name을 result 로 하였음
     @GetMapping("/write")
@@ -37,8 +48,10 @@ public class BoardController {
     public String write (@Valid Post post,
                          BindingResult bindingResult,
                          Model model,
-                         RedirectAttributes redirectAttributes
+                         RedirectAttributes redirectAttributes,
+                         HttpSession session
     ) {
+
         // vaildator
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("title", post.getTitle());
@@ -61,14 +74,12 @@ public class BoardController {
         }
         List<Post> posts = boardService.listByType(type);
         boolean followFlag = (follow != null) ? follow : false;
-        // 팔로우 여부
+        // 팔로우 여부 2
         Long loginUserId = 1L; // 고정 id
         for (Post post : posts) {
             boolean isFollowed = userFollowingService.isFollowing(loginUserId, post.getUser_id());
             post.setFollow(isFollowed);
         }
-
-
 
         model.addAttribute("follow", followFlag);
         model.addAttribute("board", posts);
@@ -84,7 +95,8 @@ public class BoardController {
     public String detail(@PathVariable Long id,
                          Model model,
                          @RequestParam(required = false) String type,
-                         @RequestParam(required = false) Boolean follow) {
+                         @RequestParam(required = false) Boolean follow
+    ) {
 
         if (type == null || type.isBlank()) {
             type = "guest";
@@ -107,8 +119,55 @@ public class BoardController {
         model.addAttribute("follow", (follow != null) ? follow : false);
         model.addAttribute("selectedType", type);
 
+        // User 객체 가져오기
+        User PostUser = userService.findByName(post.getName());
+        model.addAttribute("user", PostUser);
+
         return "board/detail";
     }
+
+    // 팔로우하기
+    @PostMapping("/follow/insert")
+    public String insertFollow(@RequestParam("followingUserId") Long followingUserId,
+                               Principal principal) {
+        if (principal == null) {
+            return "redirect:/user/login";
+        }
+        String username = principal.getName();
+        User loginUser = userService.findByName(username);
+
+        System.out.println("followingUserId: " + followingUserId);
+        User followedUser = userService.findByUSerId(followingUserId);
+        System.out.println("followedUser: " + followedUser);
+
+        if (followedUser == null) {
+            System.out.println("팔로우하려는 사용자가 존재하지 않습니다.");
+            return "redirect:/board/list";
+        }
+        userFollowingService.follow(loginUser, followedUser);
+        return "redirect:/board/detail/" + followingUserId;
+    }
+
+
+    // 언팔로우하기 ㅇㅇㅇㅇ
+    @PostMapping("/follow/delete")
+    public String deleteFollow(@RequestParam("followingUserId") Long followingUserId,
+                               Principal principal) {
+        if (principal == null) {
+            return "redirect:/user/login";
+        }
+        String username = principal.getName();
+        User loginUser = userService.findByName(username);
+        User followedUser = userService.findByUSerId(followingUserId);
+        if (followedUser == null) {
+            System.out.println("팔로우하려는 사용자가 존재하지 않습니다.");
+            return "redirect:/board/list";
+        }
+        userFollowingService.unfollow(loginUser, followedUser);
+        return "redirect:/board/detail/" + followingUserId;
+    }
+
+
 
     @GetMapping("/update/{id}")
     public String update(Model model, @PathVariable Long id){
@@ -134,13 +193,30 @@ public class BoardController {
         return "board/updateOk" ;
     }
     @PostMapping("/delete")
-    public String delete(Long id, Model model){
+    public String delete(  Long id, Model model){
         System.out.println("삭제결과" + boardService.delete(id));
         model.addAttribute("result", boardService.delete(id));
         return "board/deleteOk";
     }
 
-    @InitBinder
+    @PostMapping("/warning")
+    public String warning(UserWarning warning, Model model, @AuthenticationPrincipal(expression = "user") User loginUser
+    ) {
+
+        if (loginUser == null) {
+            // 로그인 안된 상태 처리 (예: 로그인 페이지로 리다이렉트)
+            return "redirect:/user/login";
+        }
+        warning.setComplaintUserId(loginUser.getId());
+
+        model.addAttribute("result", warning);
+        System.out.println("warning " + warning);
+        userWarningService.report(warning);
+        return "board/warning";
+    }
+
+
+    @InitBinder("post")
     public void initBinder(WebDataBinder binder){
         System.out.println("호출 성공");
         binder.setValidator(new BoardValidator());

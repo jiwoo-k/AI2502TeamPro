@@ -45,7 +45,7 @@ public class UserController {
     }
 
     @GetMapping("/register")
-    public void resgister() {
+    public void register(){
 
     }
 
@@ -60,6 +60,7 @@ public class UserController {
         if(result.hasErrors()){
             redirectAttributes.addFlashAttribute("username", user.getUsername());
             redirectAttributes.addFlashAttribute("name", user.getName());
+//            redirectAttributes.addFlashAttribute("juminNo", user.getJuminNo());
 
 
             List<FieldError> errList = result.getFieldErrors();

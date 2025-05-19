@@ -86,5 +86,4 @@
         <result column="t_category_id" property="category_id"/>
         <result column="t_name" property="name"/>
     </resultMap>
-
 </mapper>

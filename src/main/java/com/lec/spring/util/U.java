@@ -41,6 +41,7 @@ public class U {
         return user;
     }
 
+
     // 현재 로그인 한 사용자 ID (Long) 가져오기
     public static Long getUserId() {
         User loggedUser = getLoggedUser();
