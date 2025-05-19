@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>나의 게시글 조회</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<!-- 공통 헤더 삽입 -->
+<th:block th:replace="~{common/header :: header-fragment}"></th:block>
+
+<main style="padding: 40px; max-width: 800px; margin: auto;">
+    <h2 style="text-align: center; margin-bottom: 30px;">나의 게시글 조회</h2>
+    <!-- 게시판 유형 선택  -->
+    <form method="get" th:action="@{/mypage/myPosts}" style="margin-bottom: 20px;">
+        <select name="selectedType" onchange="this.form.submit()">
+            <option value="guest" th:selected="${selectedType == 'guest'}">손님 게시판</option>
+            <option value="helper" th:selected="${selectedType == 'helper'}">도우미 게시판</option>
+        </select>
+    </form>
+    <table style="width:100%; border-collapse: collapse;">
+        <thead>
+        <tr>
+            <th>번호</th>
+            <th>제목</th>
+            <th>작성일시</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="post, stat : ${posts.content}">
+            <td th:text="${stat.index + 1 + posts.number * posts.size}">1</td>
+            <td><a th:href="@{|/posts/${post.id}|}" th:text="${post.title}">Post Title</a></td>
+            <td th:text="${#dates.format(post.createdAt, 'yyyy-MM-dd HH:mm')}">2025-05-08 10:00</td>
+        </tr>
+        </tbody>
+    </table>
+    <div style="margin-top: 20px;">
+        <a th:if="${posts.hasPrevious()}" th:href="@{/mypage/myPosts(selectedType=${selectedType},page=${posts.number -1})}">Previous</a>
+        <span th:text="'Page ' + (${posts.number + 1}) + ' / ' + ${posts.totalPages}"></span>
+        <a th:if="${posts.hasNext()}" th:href="@{/mypage/myPosts(selectedType=${selectedType},page=${posts.number + 1})}">Next</a>
+    </div>
+</main>
+</body>
+</html>
