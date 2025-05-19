@@ -39,7 +39,7 @@ var lat, lng, areaName;
 
 $(function() {
 
-    const api_key = "xxxxxxxxxxx"
+    const api_key = "xxxxxxxxxx"
 
     $('button#getLocation').click(function (){
         navigator.geolocation.getCurrentPosition(
