@@ -13,7 +13,7 @@
         WHERE 1 = 1
     </sql>
 
-    <select id="findAll" parameterType="com.lec.spring.domain.Category">
+    <select id="findAll" resultType="com.lec.spring.domain.Category">
         select id,
                name,
                color
@@ -59,7 +59,7 @@
         from category c, tag t
         where c.id = t.category_id
         group by category_id
-        order by tagCount desc;
+        order by tag_count desc;
     </select>
 
     <resultMap id="mapCategory" type="com.lec.spring.domain.Category">

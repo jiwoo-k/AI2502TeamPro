@@ -20,6 +20,6 @@ public interface CategoryRepository {
     //5. 특정 카테고리 삭제
     int delete(Long id);
 
-    //6. 카테고리 전체 목록 불러오기
+    //6. 카테고리 전체 목록 + 태그 개수 불러오기
     List<Category> list();
 }
