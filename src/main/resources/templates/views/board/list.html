@@ -12,7 +12,7 @@
         width: 60%;
         height: 100px;
         border: 1px solid black;
-        padding: 10px;
+        padding: 15px;
         display: flex;
         margin: auto;
         position: relative;
@@ -40,6 +40,7 @@
         position: absolute;
         left: 200px;
         top: 80px;
+
     }
     .day{
         position: absolute;
@@ -57,6 +58,14 @@
         left: 60%;
         top: 40px;
     }
+    .tagName{
+        border: 1px solid black;
+        border-radius: 50px;
+        padding: 3px;
+        margin-left: 10px;
+        font-size: 7px;
+    }
+
 </style>
 <body>
 
@@ -83,10 +92,10 @@
 
 <!--            태그 보여주기-->
             <div class="tagType" th:if="${board.type == 'guest'}">
-                    <span th:each="tag : ${board.post_tag}" th:text="${tag.name}"></span>
+                    <span class="tagName" th:each="tag : ${board.post_tag}" th:text=" '# ' + ${tag.name} + '  '"></span>
             </div>
             <div class="tagType" th:if="${board.type == 'helper'}">
-                    <span th:each="tag : ${board.user_tag}" th:text=" '#' + ${tag.name} + ' , '"></span>
+                    <span class="tagName" th:each="tag : ${board.user_tag}" th:text=" '# ' + ${tag.name} + '  '"></span>
             </div>
         </div>
 

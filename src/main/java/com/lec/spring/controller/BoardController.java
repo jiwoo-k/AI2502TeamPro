@@ -67,24 +67,33 @@ public class BoardController {
     }
     // listBytype (손님, 도우미 선택 가능 => findAll 은 혹시 몰라서 일부러 놔뒀음)
     @GetMapping("/list")
-    public String list(@RequestParam(required = false) String type, Model model,@RequestParam(required = false) Boolean follow) {
-        // 손님, 도우미 타입 설정
+    public String list(@RequestParam(required = false) String type,
+                       Model model,
+                       @RequestParam(required = false) Boolean follow,
+                       Principal principal) {
+
         if (type == null || type.isBlank()) {
             type = "guest";
         }
+
         List<Post> posts = boardService.listByType(type);
-        boolean followFlag = (follow != null) ? follow : false;
-        // 팔로우 여부 2
-        Long loginUserId = 1L; // 고정 id
+
+        // 로그인 사용자 ID 추출
+        Long loginUserId = null;
+        if (principal != null) {
+            String username = principal.getName();
+            User loginUser = userService.findByName(username);
+            loginUserId = loginUser.getId();
+        }
+
         for (Post post : posts) {
-            boolean isFollowed = userFollowingService.isFollowing(loginUserId, post.getUser_id());
+            boolean isFollowed = loginUserId != null && userFollowingService.isFollowing(loginUserId, post.getUser_id());
             post.setFollow(isFollowed);
         }
 
-        model.addAttribute("follow", followFlag);
+        model.addAttribute("follow", (follow != null) ? follow : false);
         model.addAttribute("board", posts);
         model.addAttribute("selectedType", type);
-        System.out.println("과연!" + posts + followFlag + type);
 
         return "board/list";
     }
@@ -95,24 +104,29 @@ public class BoardController {
     public String detail(@PathVariable Long id,
                          Model model,
                          @RequestParam(required = false) String type,
-                         @RequestParam(required = false) Boolean follow
-    ) {
+                         @RequestParam(required = false) Boolean follow,
+                         Principal principal) {
 
         if (type == null || type.isBlank()) {
             type = "guest";
         }
 
-        Long loginUserId = 1L;
+        Long loginUserId = null;
+        if (principal != null) {
+            String username = principal.getName();
+            User loginUser = userService.findByName(username);
+            loginUserId = loginUser.getId();
+        }
 
         List<Post> posts = boardService.listByType(type);
         for (Post p : posts) {
-            boolean isFollowed = userFollowingService.isFollowing(loginUserId, p.getUser_id());
+            boolean isFollowed = loginUserId != null && userFollowingService.isFollowing(loginUserId, p.getUser_id());
             p.setFollow(isFollowed);
         }
         model.addAttribute("postList", posts);
 
         Post post = boardService.detail(id);
-        boolean isFollowed = userFollowingService.isFollowing(loginUserId, post.getUser_id());
+        boolean isFollowed = loginUserId != null && userFollowingService.isFollowing(loginUserId, post.getUser_id());
         post.setFollow(isFollowed);
         model.addAttribute("board", post);
 
@@ -120,8 +134,8 @@ public class BoardController {
         model.addAttribute("selectedType", type);
 
         // User 객체 가져오기
-        User PostUser = userService.findByName(post.getName());
-        model.addAttribute("user", PostUser);
+        User postUser = userService.findByName(post.getName());
+        model.addAttribute("user", postUser);
 
         return "board/detail";
     }
