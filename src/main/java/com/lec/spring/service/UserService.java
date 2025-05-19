@@ -29,6 +29,8 @@ public interface UserService {
     List<Authority> selectAuthoritiesByUserId(Long id);
 
     int saveUserLoginHistory(Long id);
+
+    int updateLocation(User user);
 }
 
 
