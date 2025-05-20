@@ -1,9 +1,11 @@
 insert into user(username, name, password, juminNo)
 values ('USER1', '회원1', '$2a$10$6gVaMy7.lbezp8bGRlV2fOArmA3WAk2EHxSKxncnzs28/m3DXPyA2', '0009254222222')
+;
 
 insert into user (username, name, password, juminNo)
 values ('USER2', '회원2', '1234', '9201021333333'),
        ('USER3', '회원3', '1234', '0402023444444');
+
 
 
 insert into user(username, name, password, juminNo)

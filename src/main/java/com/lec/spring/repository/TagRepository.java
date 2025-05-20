@@ -13,7 +13,7 @@ public interface TagRepository {
     int addTag(Tag tag);
 
     //2. 특정 태그가 존재한다면 불러오기
-    Tag searchTag(String name, Long category_id);
+    Tag searchTag(Long categoryId, String tagName);
 
     //3. 담은 태그 목록에 해당하는 게시글(들) 불러오기
     List<Post> findPostsByTags(List<Tag> tags, String postType);

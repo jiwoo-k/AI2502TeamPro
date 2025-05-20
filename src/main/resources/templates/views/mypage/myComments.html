@@ -16,7 +16,7 @@
         <tbody>
         <tr th:each="comment, iterStat : ${comments}">
             <td th:text="${iterStat.index + 1}">1</td>
-            <td th:text="${#dates.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}">2025-05-08  11:00</td>
+            <td th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}">2025-05-08  11:00</td>
             <td><a th:href="@{|/posts/${comment.postId}|}" th:text="${comment.postTitle}">Post Title</a></td>
             <td>
                 <span th:if="${comment.picked}">O</span>
