@@ -30,7 +30,7 @@
         <tr th:each="post, stat : ${posts.content}">
             <td th:text="${stat.index + 1 + posts.number * posts.size}">1</td>
             <td><a th:href="@{|/posts/${post.id}|}" th:text="${post.title}">Post Title</a></td>
-            <td th:text="${#dates.format(post.createdAt, 'yyyy-MM-dd HH:mm')}">2025-05-08 10:00</td>
+            <td th:text="${#temporals.format(post.createdat, 'yyyy-MM-dd HH:mm')}">2025-05-08 10:00</td>
         </tr>
         </tbody>
     </table>
