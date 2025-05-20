@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,9 +39,7 @@ public class MyPageController {
 
     /** 1) 마이페이지 메인 **/
     @GetMapping("/mypage/myPageMain")
-    public String myPageMain(Model model) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        PrincipalDetails principal = (PrincipalDetails) auth.getPrincipal();
+    public String myPageMain(@AuthenticationPrincipal PrincipalDetails principal, Model model) {
         Long userId = principal.getUser().getId();
 
         User user = mypageService.getUserById(userId);

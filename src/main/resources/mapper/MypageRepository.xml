@@ -6,14 +6,14 @@
 
     <!-- ▶ Post 도메인 컬럼–필드 매핑을 위한 resultMap -->
     <resultMap id="PostResultMap" type="com.lec.spring.domain.Post">
-        <id     property="id"        column="id"/>
-        <result property="userId"    column="user_id"/>
-        <result property="type"      column="type"/>
-        <result property="title"     column="title"/>
-        <result property="content"   column="content"/>
-        <result property="createdAt" column="createdat"/>
-        <result property="isDeleted" column="isdeleted"/>
-        <result property="deletedAt" column="deletedat"/>
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="type" column="type"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="createdat" column="createdat"/>
+        <result property="isdeleted" column="isdeleted"/>
+        <result property="deletedat" column="deletedat"/>
     </resultMap>
 
     <!-- 1) 회원 정보 조회 -->
@@ -21,14 +21,14 @@
             parameterType="long"
             resultType="com.lec.spring.domain.User">
         SELECT u.id,
-               u.username,
-               u.name,
-               u.password,
-               u.juminNo,
-               u.createdAt                       AS createdAt,
-               u.latitude,
-               u.longitude,
-               u.status
+        u.username,
+        u.name,
+        u.password,
+        u.juminNo,
+        u.createdAt AS createdAt,
+        u.latitude,
+        u.longitude,
+        u.status
         FROM user u
         WHERE u.id = #{userId}
     </select>
@@ -38,14 +38,14 @@
             parameterType="long"
             resultMap="PostResultMap">
         SELECT
-            id,
-            user_id       AS userId,
-            type,
-            title,
-            content,
-            createdat     AS createdAt,
-            isdeleted     AS isDeleted,
-            deletedat     AS deletedAt
+        id,
+        user_id AS userId,
+        type,
+        title,
+        content,
+        createdat AS createdat,
+        isdeleted AS isdeleted,
+        deletedat AS deletedat
         FROM post
         WHERE user_id = #{userId}
         ORDER BY createdat DESC
@@ -57,13 +57,13 @@
             resultMap="PostResultMap">
         SELECT
         id,
-        user_id       AS userId,
+        user_id AS userId,
         type,
         title,
         content,
-        createdat     AS createdAt,
-        isdeleted     AS isDeleted,
-        deletedat     AS deletedAt
+        createdat AS createdat,
+        isdeleted AS isdeleted,
+        deletedat AS deletedat
         FROM post
         WHERE user_id = #{userId}
         <if test="selectedType != null and selectedType != ''">
@@ -74,9 +74,9 @@
     </select>
 
     <!-- 2-3) 내가 쓴 게시글 총건수 조회 -->
-    <select id="countMyPosts"
-            parameterType="long"
-            resultType="int">
+    <select id="countMyPostsFiltered"
+            parameterType="map"
+            resultType="long">
         SELECT COUNT(*)
         FROM post
         WHERE user_id = #{userId}
@@ -91,13 +91,13 @@
             parameterType="map"
             resultType="com.lec.spring.domain.Comment">
         SELECT
-            id,
-            user_id      AS userId,
-            post_id      AS postId,
-            parent_id    AS parentId,
-            content,
-            createdat    AS createdAt,
-            ispicked     AS isPicked
+        id,
+        user_id AS userId,
+        post_id AS postId,
+        parent_id AS parentId,
+        content,
+        createdat AS createdAt,
+        ispicked AS isPicked
         FROM comment
         WHERE user_id = #{userId}
         ORDER BY createdat DESC
@@ -118,11 +118,11 @@
             parameterType="long"
             resultType="com.lec.spring.domain.User">
         SELECT u.id,
-               u.username,
-               u.name,
-               (SELECT COUNT(*) FROM user_follow uf WHERE uf.following_userid = u.id) AS followersCount
+        u.username,
+        u.name,
+        (SELECT COUNT(*) FROM user_follow uf WHERE uf.following_userid = u.id) AS followersCount
         FROM user_follow f
-                 JOIN user u ON f.followed_userid = u.id
+        JOIN user u ON f.followed_userid = u.id
         WHERE f.following_userid = #{userId}
         ORDER BY u.name ASC
     </select>
@@ -131,8 +131,8 @@
     <select id="selectProfileUpdateForm"
             parameterType="long"
             resultType="com.lec.spring.domain.ProfileUpdateForm">
-        SELECT id          AS userId,
-               name        AS name
+        SELECT id AS userId,
+        name AS name
         FROM user
         WHERE id = #{userId}
     </select>
@@ -142,8 +142,8 @@
             parameterType="com.lec.spring.domain.User">
         UPDATE user
         SET
-            name     = #{name},
-            password = #{password}
+        name = #{name},
+        password = #{password}
         WHERE id = #{id}
     </update>
 

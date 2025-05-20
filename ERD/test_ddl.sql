@@ -9,8 +9,8 @@ DROP TABLE IF EXISTS tag;
 DROP TABLE IF EXISTS post;
 DROP TABLE IF EXISTS category;
 DROP TABLE IF EXISTS authority;
-DROP TABLE IF EXISTS loginhistory;
 DROP TABLE IF EXISTS user;
+DROP TABLE IF EXISTS loginhistory;
 
 
 CREATE TABLE attachment
@@ -50,7 +50,7 @@ CREATE TABLE comment
   PRIMARY KEY (id)
 ) COMMENT '댓글';
 
-CREATE TABLE login_history
+CREATE TABLE loginhistory
 (
   user_id INT      NOT NULL,
   loginat DATETIME NOT NULL     DEFAULT now(),
@@ -241,8 +241,8 @@ ALTER TABLE user_follow
     ON DELETE CASCADE
 ;
 
-ALTER TABLE login_history
-  ADD CONSTRAINT FK_user_TO_login_history
+ALTER TABLE loginhistory
+  ADD CONSTRAINT FK_user_TO_loginhistory
     FOREIGN KEY (user_id)
     REFERENCES user (id)
     ON UPDATE RESTRICT
@@ -263,8 +263,8 @@ ALTER TABLE warning
 
 
 
-insert into user_follow (
-    following_userid ,
-    followed_userid
-)  values
-    (2,2)
+# insert into user_follow (
+#     following_userid ,
+#     followed_userid
+# )  values
+#     (2,2)
