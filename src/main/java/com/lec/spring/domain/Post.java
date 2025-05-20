@@ -18,7 +18,7 @@ public class Post {
     private String title;
     private String content;
     private LocalDateTime createdat;
-    private User user;
+    private Long user_id = 1L;
     private String type;
     private Boolean isdeleted;
     private LocalDateTime deletedat;

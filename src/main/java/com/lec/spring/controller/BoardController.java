@@ -97,6 +97,8 @@ public class BoardController {
         model.addAttribute("follow", (follow != null) ? follow : false);
         model.addAttribute("board", posts);
         model.addAttribute("selectedType", type);
+        model.addAttribute("posts", posts);
+
 
         return "board/list";
     }
@@ -108,7 +110,8 @@ public class BoardController {
                          Model model,
                          @RequestParam(required = false, name = "type") String type,
                          @RequestParam(required = false) Boolean follow,
-                         Principal principal) {
+                         Principal principal
+    ) {
 
         if (type == null || type.isBlank()) {
             type = "guest";
@@ -133,6 +136,10 @@ public class BoardController {
         post.setFollow(isFollowed);
         model.addAttribute("board", post);
 
+        //  신고 횟수
+        int warningCount = userWarningService.postWarningCount(id); // id는 게시물 id
+        model.addAttribute("postWarningCount", warningCount);
+
         model.addAttribute("follow", (follow != null) ? follow : false);
         model.addAttribute("selectedType", type);
 
@@ -140,9 +147,15 @@ public class BoardController {
         User postUser = userService.findByName(post.getName());
         model.addAttribute("user", postUser);
 
+        // 이미 신고한 게시물이면 더이상 신고하지 못하게 하기
+        final Long userId = loginUserId;
+        List <UserWarning> warnings = userWarningService.getWarningsByPostId(id);
+        boolean hasReported = warnings.stream()
+                .anyMatch(w -> w.getComplaintUserId().equals(userId));
+        model.addAttribute("hasReported", hasReported);
+
         return "board/detail";
     }
-
 
 
 
@@ -174,23 +187,16 @@ public class BoardController {
         return "board/updateOk" ;
     }
     @PostMapping("/delete")
-    public String delete(  Long id, Model model, @AuthenticationPrincipal(expression = "user") User loginUser) {
-
-        System.out.println("삭제결과" + boardService.delete(id));
-        int result = boardService.delete(id);
-        model.addAttribute("result", result);
-
+    public String delete(Long id, Model model, @AuthenticationPrincipal(expression = "user") User loginUser) {
+        boardService.deleteTime(id);
+        model.addAttribute("result", 1);
         return "board/deleteOk";
     }
+
 
     @PostMapping("/warning")
     public String warning(UserWarning warning, Model model, @AuthenticationPrincipal(expression = "user") User loginUser
     ) {
-
-        if (loginUser == null) {
-            // 로그인 안된 상태 처리 (예: 로그인 페이지로 리다이렉트)
-            return "redirect:/user/login";
-        }
         warning.setComplaintUserId(loginUser.getId());
 
         model.addAttribute("result", warning);
