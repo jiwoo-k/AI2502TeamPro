@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 
+import java.time.LocalDateTime;
 import java.util.List;
 @Service
 public class BoardServiceImpl implements BoardService {
@@ -75,6 +76,9 @@ public class BoardServiceImpl implements BoardService {
             result = postRepository.deleteById(id);
         }
         return result;
+
+        // 삭제 여부 삭제 날짜 저장하기
+
     }
     // 태그 선택 기능 추가
     @Override
@@ -101,6 +105,14 @@ public class BoardServiceImpl implements BoardService {
 
         return posts;
     }
+
+    @Transactional
+    public void deleteTime(Long id) {
+        // 삭제한건 값이 1
+        postRepository.isDelete(id);
+        postRepository.deletedAt(id, LocalDateTime.now());
+    }
+
 
 
 

@@ -19,4 +19,7 @@ public interface UserWarningRepository {
 
     // 특정 사용자가 신고한 신고 정보들을 조회합니다.
     List<UserWarning> findByComplaintUserId(Long complaintUserId);
+
+    // 한 게시물의 신고 횟수 count
+    int postWarningCount(Long postId);
 }

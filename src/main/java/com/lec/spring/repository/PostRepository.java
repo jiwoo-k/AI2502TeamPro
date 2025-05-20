@@ -4,6 +4,7 @@ package com.lec.spring.repository;
 import com.lec.spring.domain.Post;
 import com.lec.spring.domain.Tag;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface PostRepository {
@@ -39,4 +40,10 @@ public interface PostRepository {
 
     // 신고하기
     int warningOn(Boolean warning);
+
+    // 삭제 여부
+    int isDelete (Long id);
+
+    // 삭제 날짜
+    int deletedAt (Long id, LocalDateTime now);
 }

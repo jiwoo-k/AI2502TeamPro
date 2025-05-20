@@ -4,70 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-<!--일단 필요한 name, title, 날짜, type 만 놔뒀음. 나중에 post_tag, user_tag 도 손님, 도우미 타입으로 바꿀떄 마다 같이 변경 되게 구현해야 함-->
     <title>Title</title>
+    <link rel="stylesheet" href="/css/list.css">
 </head>
-<style>
-    #board{
-        width: 60%;
-        height: 100px;
-        border: 1px solid black;
-        padding: 15px;
-        display: flex;
-        margin: auto;
-        position: relative;
-        margin-bottom: 10px;
-
-    }
-    a{
-        text-decoration: none;
-        color: black;
-    }
-    .title{
-        font-size: 20px;
-        font-weight: bold;
-        position: absolute;
-        left: 200px;
-    }
-    .name{
-        font-size: 10px;
-        position: absolute;
-        left: 200px;
-        top: 40px;
-        color: orchid;
-    }
-    .tagType{
-        position: absolute;
-        left: 200px;
-        top: 80px;
-
-    }
-    .day{
-        position: absolute;
-        left: 80%;
-        display: flex;
-        align-items: center;
-    }
-    .follow{
-        position: absolute;
-        left: 60%;
-        border: 1px solid black;
-        border-radius: 50px;
-        padding:3px ;
-    }
-    .followCount{
-        position: absolute;
-        left: 60%;
-        top: 45px;
-    }
-    .tagName{
-        border-radius: 50px;
-        padding: 3px;
-        margin-left: 10px;
-        font-size: 7px;
-    }
-
-</style>
 <body>
 
 <h2>게시판 목록</h2>
@@ -81,28 +20,35 @@
 <button><a th:href="@{/board/write}">작성하기</a></button>
 
 
-<div th:each="board: ${board}" id="board" th:attr="data-id=${board.id}" onclick="location.href='/board/detail/' + this.getAttribute('data-id')" style="cursor:pointer;">
-<!--            첨부파일 들어갈 곳-->
-            <div class="attachment"></div>
-            <a class="title" th:text="${board.title}"></a>
-            <a class="name" th:text="${board.name}" ></a>
-            <!--    이거 날짜와 시간 넣을때 개인적으로 연도하고 분, 초는 필요가 없다고 생각함.-->
-            <a class="day" th:text="${#temporals.format(board.createdat, 'yy년 M월 dd일 HH시')}"></a>
-            <div th:unless="${session.id} == ${board.user_id}">
-                <a class="follow" th:if="${board.type == 'helper'}" th:text="${board.follow} == true ? '팔로우 중' : '팔로우X'"></a>
-            </div>
-                <a class="followCount" th:if="${board.type == 'helper'}" th:text="'팔로우 ' + ${board.followCount} + '명'"></a>
-<!--            태그 보여주기-->
-            <div class="tagType"    th:if="${board.type == 'guest'}">
-                <span class="tagName" th:each="tag : ${board.post_tag}" th:text=" '# ' + ${tag.name} + '  '" th:style="'color:' + ${tag.color} + '; border: 1px solid ' + ${tag.color}"></span>
-            </div>
-            <div class="tagType" th:if="${board.type == 'helper'}">
-                    <span class="tagName" th:each="tag : ${board.user_tag}" th:text=" '# ' + ${tag.name} + '  '" th:style="'color:' + ${tag.color} + '; border: 1px solid ' + ${tag.color}"></span>
-            </div>
+<div th:each="board: ${board}" id="board" th:attr="data-id=${board.id}"
+     onclick="location.href='/board/detail/' + this.getAttribute('data-id')" style="cursor:pointer;">
+    <!--            첨부파일 들어갈 곳-->
+    <div class="attachment"></div>
+    <div id="text-area">
+        <a class="title" th:text="${board.title}"></a>
+        <div class="name-wapper">
+            <a class="name" th:text="${board.name}"></a>
+            <a class="followCount" th:if="${board.type == 'helper'}" th:text="'팔로우 ' + ${board.followCount} + '명'"></a>
         </div>
+        <a class="content" th:text="${board.content}"></a>
+        <div th:unless="${session.id} == ${board.user_id}">
+            <a class="follow" th:if="${board.type == 'helper'}"
+               th:text="${board.follow} == true ? 'FOLLOWING' : 'NOPE'"></a>
+        </div>
+        <!--            태그 보여주기-->
+        <div class="tagType" th:if="${board.type == 'guest'}">
+            <span class="tagName" th:each="tag : ${board.post_tag}" th:text=" '# ' + ${tag.name} + '  '"
+                  th:style="'color:' + ${tag.color} + '; border: 1px solid ' + ${tag.color}"></span>
+        </div>
+        <div class="tagType" th:if="${board.type == 'helper'}">
+            <span class="tagName" th:each="tag : ${board.user_tag}" th:text=" '# ' + ${tag.name} + '  '"
+                  th:style="'color:' + ${tag.color} + '; border: 1px solid ' + ${tag.color}"></span>
+        </div>
+    </div>
+    <!--    이거 날짜와 시간 넣을때 개인적으로 분, 초는 필요가 없다고 생각함.-->
+    <a class="day"
+       th:text="${#temporals.format(board.createdat, board.createdat.monthValue >= 10 ? 'yy년 MM월 dd일 HH시' : 'yy년 M월 d일 H시')}"></a>
 
-
-
-
+</div>
 </body>
 </html>
