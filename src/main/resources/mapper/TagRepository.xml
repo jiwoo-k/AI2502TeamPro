@@ -9,10 +9,10 @@
         VALUES (#{category_id}, #{name});
     </insert>
 
-    <select id="searchTag" resultType="com.lec.spring.domain.Tag">
+    <select id="searchTag" parameterType="com.lec.spring.domain.Tag" resultType="com.lec.spring.domain.Tag">
        select id, category_id, name
        from tag
-       where category_id = #{categoryId} and name = #{tagName}
+       where category_id = #{category_id} and name = #{name}
     </select>
 
     <select id="findPostsByTags" parameterType="arrayList" resultMap="mapPost">
