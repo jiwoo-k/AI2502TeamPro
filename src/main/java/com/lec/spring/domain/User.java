@@ -18,7 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class User{
+public class User {
 
     private Long id;
 
@@ -47,6 +47,25 @@ public class User{
     private Integer age;
     private String gender;
 
+    private int followersCount;
+    private int reportCount;
+
+    private List<String> tags;
+
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags;
+    }
+
+    public String getTagsAsString() {
+        if (tags == null || tags.isEmpty()) return "";
+        return String.join(",", tags);
+    }
+
+
     public int getAge() {
         if (juminNo == null || juminNo.length() != 13) return -1;
         int birthYear = Integer.parseInt(juminNo.substring(0, 2));
@@ -72,7 +91,7 @@ public class User{
 
 //       return Period.between(birth, LocalDate.now()).getYears(); // 만나이
 //       return diff; // 연나이
-       return diff + 1; // 세는나이
+        return diff + 1; // 세는나이
     }
 
 
