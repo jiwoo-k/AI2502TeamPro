@@ -27,6 +27,12 @@ spring:
               - email
               - profile
 
+  servlet:
+    multipart:
+      # 파일 크기 제한 설정
+      max-file-size: 5MB
+      max-request-size: 10MB
+
 mybatis:
   mapper-locations: classpath:mapper/**/*.xml
 

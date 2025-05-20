@@ -41,4 +41,9 @@ public class UserWarningServiceImpl implements UserWarningService {
         return repository.findByComplaintUserId(complaintUserId);
     }
 
+    @Override
+    public int postWarningCount(Long postId) {
+        return 0;
+    }
+
 }

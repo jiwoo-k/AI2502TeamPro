@@ -1,7 +1,7 @@
 package com.lec.spring.domain;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 public class ProfileUpdateForm {
     @NotBlank(message = "닉네임은 반드시 입력해야 합니다.")
