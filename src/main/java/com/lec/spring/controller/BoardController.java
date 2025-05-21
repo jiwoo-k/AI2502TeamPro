@@ -27,7 +27,6 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/board")
-
 public class BoardController {
     private final BoardService boardService;
     private final UserFollowingService userFollowingService;
@@ -41,12 +40,9 @@ public class BoardController {
         this.userWarningService = userWarningService;
         this.userService = userService;
     }
-
-
-    // 수정, 추가. 삭제의 경우 attr name을 result 로 하였음
+// 수정, 추가. 삭제의 경우 attr name을 result 로 하였음
     @GetMapping("/write")
-    public void write() {
-    }
+    public void write (){}
 
 
     @PostMapping("/write")
@@ -96,6 +92,7 @@ public class BoardController {
             User loginUser = userService.findByUsername(username);
             loginUserId = loginUser.getId();
         }
+        model.addAttribute("id", loginUserId);
 
         for (Post post : posts) {
             boolean isFollowed = loginUserId != null && userFollowingService.isFollowing(loginUserId, post.getUser_id());
@@ -151,6 +148,7 @@ public class BoardController {
     }
 
 
+
     @GetMapping("/detail/{id}")
     public String detail(@PathVariable Long id,
                          Model model,
@@ -169,6 +167,8 @@ public class BoardController {
             User loginUser = userService.findByUsername(username);
             loginUserId = loginUser.getId();
         }
+        model.addAttribute("id", loginUserId);
+
 
         List<Post> posts = boardService.listByType(type);
         for (Post p : posts) {
@@ -181,7 +181,6 @@ public class BoardController {
         boolean isFollowed = loginUserId != null && userFollowingService.isFollowing(loginUserId, post.getUser_id());
         post.setFollow(isFollowed);
         model.addAttribute("board", post);
-
 
         //  신고 횟수
         int warningCount = userWarningService.postWarningCount(id); // id는 게시물 id
@@ -205,12 +204,12 @@ public class BoardController {
     }
 
 
+
     @GetMapping("/update/{id}")
-    public String update(Model model, @PathVariable Long id) {
+    public String update(Model model, @PathVariable Long id){
         model.addAttribute("board", boardService.detail(id));
         return "board/update";
     }
-
     @PostMapping("/update")
     public String update(@Valid Post post,
                          BindingResult bindingResult,
@@ -231,7 +230,7 @@ public class BoardController {
         model.addAttribute("result", result);
 
 
-        return "board/updateOk";
+        return "board/updateOk" ;
     }
 
     @PostMapping("/delete")
@@ -242,20 +241,10 @@ public class BoardController {
     }
 
 
-    @PostMapping("/warning")
-    public String warning(UserWarning warning, Model model, @AuthenticationPrincipal(expression = "user") User loginUser
-    ) {
-        warning.setComplaintUserId(loginUser.getId());
-
-        model.addAttribute("result", warning);
-        System.out.println("warning " + warning);
-        userWarningService.report(warning);
-        return "board/warning";
-    }
 
 
     @InitBinder("post")
-    public void initBinder(WebDataBinder binder) {
+    public void initBinder(WebDataBinder binder){
         System.out.println("호출 성공");
         binder.setValidator(new BoardValidator());
     }

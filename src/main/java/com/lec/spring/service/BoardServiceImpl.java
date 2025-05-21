@@ -27,13 +27,13 @@ import java.util.Map;
 @Service
 public class BoardServiceImpl implements BoardService {
 
-    @Value("${app.upload.path}")
+    @Value("upload")
     private String uploadDir;
 
-    @Value("${app.pagination.write_pages}")
+    @Value("10")
     private int WRITE_PAGES;
 
-    @Value("${app.pagination.page_rows}")
+    @Value("10")
     private int PAGE_ROWS;
 
     private final PostRepository postRepository;
@@ -91,7 +91,7 @@ public class BoardServiceImpl implements BoardService {
 
            int cnt = postRepository.save(post);   // 글 먼저 저장 (그래야 AI 된 PK값(id) 를 받아온다.
 
-           // 첨부파일 추가.
+           // 첨부파일 추가
            addFiles(files, post.getId());
 
            return cnt;
