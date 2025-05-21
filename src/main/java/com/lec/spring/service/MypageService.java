@@ -14,8 +14,13 @@ public interface MypageService {
     User getUserById(Long userId);
     Page<Post> getMyPosts(Long userId, String selectedType, Pageable pageable);
     Page<Comment> getMyComments(Long userId, Pageable pageable);
-    List<User> getMyFollowing(Long userId);
+
+    Page<User> getMyFollowing(Long userId, Pageable pageable);
+
     void updateUser(User user);
     void updateUserProfile(User user);
     ProfileUpdateForm getProfileUpdateForm(Long userId);
+
+    void followUser(Long userId, Long followedUserId);
+    void unfollowUser(Long userId, Long followedUserId);
 }

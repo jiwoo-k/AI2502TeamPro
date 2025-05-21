@@ -33,6 +33,40 @@ select * from post_tag where tag_id=1;
 select * from post;
 select * from post_tag;
 
+
 select * from user;
+
+-- 파라미터: 보고 싶은 사용자의 아이디 또는 아래 예시처럼 username
+SELECT
+    u.id       AS userId,
+    u.username,
+    u.name
+FROM user_follow uf
+         JOIN user u
+              ON uf.followed_userid = u.id
+WHERE uf.following_userid = (
+    SELECT id
+    FROM user
+    WHERE username = 'user1'
+);
+
+-- 파라미터: 보고 싶은 사용자의 아이디 또는 아래 예시처럼 username
+SELECT
+    c.id        AS commentId,
+    p.id        AS postId,
+    p.title     AS postTitle,
+    c.content,
+    c.createdat
+FROM comment c
+         JOIN post p
+              ON c.post_id = p.id
+WHERE c.user_id = (
+    SELECT id
+    FROM user
+    WHERE username = 'user1'
+)
+ORDER BY c.createdat DESC;
+
+
 
 select * from attachment;
