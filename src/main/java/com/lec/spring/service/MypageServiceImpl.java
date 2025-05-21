@@ -38,16 +38,16 @@ public class MypageServiceImpl implements MypageService {
     @Override
     public Page<Post> getMyPosts(Long userId, String selectedType, Pageable pageable) {
         int offset = (int) pageable.getOffset();
-        int limit  = pageable.getPageSize();
+        int limit = pageable.getPageSize();
 
-        Map<String,Object> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<>();
         params.put("userId", userId);
         params.put("selectedType", selectedType);
-        params.put("pageSize", limit);
+        params.put("limit", limit);
         params.put("offset", offset);
 
-        List<Post> posts     = repo.selectMyPostsPaged(params);
-        long      totalCount = repo.countMyPostsFiltered(params);
+        List<Post> posts = repo.selectMyPostsPaged(params);
+        long totalCount = repo.countMyPostsFiltered(params);
         return new PageImpl<>(posts, pageable, totalCount);
     }
 
@@ -55,22 +55,35 @@ public class MypageServiceImpl implements MypageService {
     @Override
     public Page<Comment> getMyComments(Long userId, Pageable pageable) {
         int offset = (int) pageable.getOffset();
-        int limit  = pageable.getPageSize();
+        int limit = pageable.getPageSize();
 
-        Map<String,Object> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<>();
         params.put("userId", userId);
-        params.put("pageSize", limit);
+        params.put("limit", limit);
         params.put("offset", offset);
 
-        List<Comment> comments  = repo.selectMyCommentsPaged(params);
-        long           totalCnt = repo.countMyComments(params);
+        List<Comment> comments = repo.selectMyCommentsPaged(params);
+        long totalCnt = repo.countMyComments(params);
         return new PageImpl<>(comments, pageable, totalCnt);
     }
 
+    // service 구현부
     @Override
-    public List<User> getMyFollowing(Long userId) {
-        return repo.selectMyFollowing(userId);
+    public Page<User> getMyFollowing(Long userId, Pageable pageable) {
+        // 1) 파라미터 맵 구성: userId, limit, offset
+        Map<String,Object> params = new HashMap<>();
+        params.put("userId", userId);
+        params.put("limit",  pageable.getPageSize());
+        params.put("offset", (int)pageable.getOffset());  // MyBatis 매퍼의 #{offset}이 int 타입이라면 캐스팅 필요
+
+        // 2) 호출
+        List<User> list = repo.selectMyFollowingPaged(params);
+        long total    = repo.countMyFollowing(userId);
+
+        // 3) PageImpl 생성
+        return new PageImpl<>(list, pageable, total);
     }
+
 
     @Override
     public void updateUser(User user) {
@@ -80,5 +93,15 @@ public class MypageServiceImpl implements MypageService {
     @Override
     public void updateUserProfile(User user) {
         repo.updateProfile(user);
+    }
+
+    @Override
+    public void followUser(Long userId, Long followedUserId) {
+        repo.insertFollow(userId, followedUserId);
+    }
+
+    @Override
+    public void unfollowUser(Long userId, Long followedUserId) {
+        repo.deleteFollow(userId, followedUserId);
     }
 }

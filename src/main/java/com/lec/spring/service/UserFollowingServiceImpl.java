@@ -70,8 +70,8 @@ public class UserFollowingServiceImpl implements UserFollowingService {
 
     @Override
     public Boolean isFollowing(Long followingUserId, Long followedUserId) {
-        System.out.println("👀 followingUserId = " + followingUserId);
-        System.out.println("👀 followedUserId  = " + followedUserId);
+//        System.out.println("👀 followingUserId = " + followingUserId);
+//        System.out.println("👀 followedUserId  = " + followedUserId);
 
         return repository
                 .findByFollow(followingUserId, followedUserId) !=null;

@@ -10,7 +10,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class MvcConfig implements WebMvcConfigurer {
     @Bean
     public PasswordEncoder encoder(){
-        System.out.println("PasswordEncoder bean 생성");
+//        System.out.println("[CREATED] PasswordEncoder bean");
         return new BCryptPasswordEncoder();
     }
 }

@@ -43,7 +43,7 @@ public class BoardServiceImpl implements BoardService {
     private final TagRepository tagRepository;
 
     public BoardServiceImpl(SqlSession sqlSession) {
-        System.out.println("boardServiceImpl");
+        System.out.println("[ACTIVE] BoardServiceImpl");
         this.postRepository = sqlSession.getMapper(PostRepository.class);
         this.userRepository = sqlSession.getMapper(UserRepository.class);
         this.userFollowingRepository = sqlSession.getMapper(UserFollowingRepository.class);
@@ -255,8 +255,8 @@ public class BoardServiceImpl implements BoardService {
         }
 
         attachment = Attachment.builder()
-                .filename(fileName)  // 저장된 이름
-                .sourcename(sourceName)  // 원본 이름.
+                .fileName(fileName)  // 저장된 이름
+                .sourceName(sourceName)  // 원본 이름.
                 .build();
 
         return attachment;
@@ -266,7 +266,7 @@ public class BoardServiceImpl implements BoardService {
     private void delfile(Attachment file) {
         String saveDirectory = new File(uploadDir).getAbsolutePath();
 
-        File f = new File(saveDirectory, file.getFilename());
+        File f = new File(saveDirectory, file.getFileName());
         System.out.println("삭제시도 -->" + f.getAbsolutePath());
         if(f.exists()) {
             if (f.delete())

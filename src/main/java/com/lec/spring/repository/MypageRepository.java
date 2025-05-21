@@ -13,7 +13,7 @@ import java.util.Map;
 @Mapper
 public interface MypageRepository {
 
-    ProfileUpdateForm selectProfileUpdateForm(Long userId);
+    ProfileUpdateForm selectProfileUpdateForm(@Param("userId") Long userId);
 
     User selectUserById(@Param("userId") Long userId);
 
@@ -23,7 +23,11 @@ public interface MypageRepository {
 
     long countMyComments(Map<String, Object> params);
 
-    List<User> selectMyFollowing(Long userId);
+    List<User> selectMyFollowing(@Param("userId") Long userId);
+    List<User> selectMyFollowingPaged(Map<String,Object> params);
+
+
+    long countMyFollowing(@Param("userId") Long userId);
 
     void updateUser(User user);
 
@@ -34,4 +38,11 @@ public interface MypageRepository {
     long countMyPostsFiltered(Map<String, Object> params);
 
     int countMyPosts(long userId);
+
+    void insertFollow(@Param("userId") Long userId,
+                      @Param("followedUserId") Long followedUserId);
+
+    void deleteFollow(@Param("userId") Long userId,
+                      @Param("followedUserId") Long followedUserId);
+
 }

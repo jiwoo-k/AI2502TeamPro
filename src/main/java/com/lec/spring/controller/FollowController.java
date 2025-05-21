@@ -16,7 +16,7 @@ public class FollowController {
     private final UserFollowingService userFollowingService;
     private final UserService userService;
     public FollowController( UserFollowingService userFollowingService,  UserService userService) {
-        System.out.println("일단 생성");
+        System.out.println("[ACTIVE] FollowController");
         this.userFollowingService = userFollowingService;
         this.userService = userService;
     }

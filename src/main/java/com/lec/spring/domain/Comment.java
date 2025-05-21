@@ -26,5 +26,7 @@ public class Comment {
 
     // 해당 댓글에 달린 답글 목록을 담을 필드
     private List<Comment> replies;
+    /** 댓글이 달린 게시글의 제목 */
+    private String postTitle;
 
 }

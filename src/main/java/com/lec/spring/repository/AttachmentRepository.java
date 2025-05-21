@@ -14,7 +14,7 @@ public interface AttachmentRepository {
      * 특정 글(postId)에 첨부파일(들) 추가 INSERT
      * 글 insert, update 시 사용됨.
      * @param list Map<String, Object> 들의 List
-     *             예: <"sourcename", 원본파일명>, <"filename", 저장된파일명>
+     *             예: <"sourceName", 원본파일명>, <"fileName", 저장된파일명>
      * @param postId 첨부될 글 ID
      * @return DML 수행 결과값
      */
