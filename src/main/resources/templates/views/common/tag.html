@@ -11,23 +11,25 @@
 <th:block th:fragment="tag-fragment">
 
     <div>
-        <!--태그 검색창-->
+        <!--form1: 태그 검색하고 목록에 담기-->
         <form th:action="@{/tag}" method="post">
             <div id="tagSearch">
                 <!--태그 검색 및 추가-->
                 <div id="searchZone">
                     <input type="text" name="name" placeholder="태그 검색 (# 제외)" th:value="${name}">
                     <input type="hidden" name="category_id" th:value="${submittedCategoryId}">
-<!--                    <input type="hidden" name="tagColor" th:value="${tagColor}">-->
+                    <!--                    <input type="hidden" name="tagColor" th:value="${tagColor}">-->
                     <input name="existError" type="hidden" th:value="${error_isExist}">
                     <input name="sizeOverError" type="hidden" th:value="${error_sizeOver}">
                     <button type="submit" id="tagSearchButton">검색</button>
-                    <button th:if="${error_id != null} or ${searchedTag != null}" type="button" id="tagAddButton">추가</button>
+                    <button th:if="${error_id != null} or ${searchedTag != null}" type="button" id="tagAddButton">추가
+                    </button>
 
                     <div class="searchSucceed" th:if="${searchedTag != null}" th:text="'검색 성공! 목록에 추가 가능합니다.'">
 
                     </div>
-<!--                    <input id="addSearchedTag" name="addedTagName" type="hidden" th:value="${searchedTag != null ? searchedTag.name : ''}">-->
+                    <!--                    <input id="addSearchedTag" name="addedTagName" type="hidden" th:value="${searchedTag != null ? searchedTag.name : ''}">-->
+                </div>
 
                 <!--카테고리 보여주기-->
                 <div id="categoryZone">
@@ -39,19 +41,19 @@
                          class="categoryBox"
                          th:id="${category.id}"
                          th:classappend="${submittedCategoryId != null and category.id == submittedCategoryId} ? 'selected' : ''">
-
-                    </div>
                     </div>
                 </div>
 
                 <!--validation 문구-->
                 <div>
                     <div class="showError"><span th:if="${error_name}" th:utext="${error_name}"></span></div>
-                    <div class="showError"><span th:if="${error_category_id}" th:utext="${error_category_id}"></span></div>
+                    <div class="showError"><span th:if="${error_category_id}" th:utext="${error_category_id}"></span>
+                    </div>
                     <div class="showError"><span th:if="${error_id}" th:utext="${error_id}"></span></div>
                 </div>
 
-                <p>내가 담은 태그</p>
+                <!--담은 태그 목록-->
+                <p>담은 태그 목록</p>
                 <div id="tagList">
                     <div th:each="tag : ${selectedTags}" class="selectedTag">
                         <input name="deleteTagName" type="hidden" th:value="${tag.name}">
@@ -64,24 +66,19 @@
             </div>
         </form>
 
-        <form th:action="@{/board/list}" name="tagForm">
-            <!--담은 태그 목록창-->
-            <div id="tagChoice">
+        <!--form2: 게시글 목록으로 갈 때 및 user_tag, post_tag 에 저장-->
+        <form th:action="@{/board/list}" name="tagForm" method="post">
+            <!--radio 와 버튼-->
+            <div id="optionButtons">
+                <p>게시글 조회</p>
+                <input type="radio" name="type" value="guest" id="guest" checked>
+                <label for="guest">손님</label>
+                <input type="radio" name="type" value="helper" id="helper">
+                <label for="guest">도우미</label>
 
-                <br>
-
-                <!--radio 와 버튼-->
-                <div id="optionButtons">
-                    <input type="radio" name="type" value="guest" id="guest" checked>
-                    <label for="guest">손님</label>
-                    <input type="radio" name="type" value="helper" id="helper">
-                    <label for="guest">도우미</label>
-
-                    <button id="deleteAll" type="button">초기화</button>
-                    <button id="postSearch" type="submit">조회</button>
-                    <button id="saveTagList" type="button">확인</button>
-                </div>
+                <button id="postSearch" type="submit">조회</button>
             </div>
+            <button id="saveTagList" type="button">목록 저장</button>
         </form>
     </div>
 </th:block>
