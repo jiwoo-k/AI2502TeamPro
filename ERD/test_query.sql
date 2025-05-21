@@ -17,6 +17,8 @@ where c.id = t.category_id
 group by category_id
 order by count(*) desc;
 
+select * from attachment;
+
 select c.id "c_id",
        c.name "c_name",
        c.color "c_color",

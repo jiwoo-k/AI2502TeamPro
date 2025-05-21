@@ -45,7 +45,7 @@ public class BoardServiceImpl implements BoardService {
     private final AttachmentRepository attachmentRepository;
 
     public BoardServiceImpl(SqlSession sqlSession) {
-        System.out.println("boardServiceImpl");
+        System.out.println("[ACTIVE] BoardServiceImpl");
         this.postRepository = sqlSession.getMapper(PostRepository.class);
         this.userRepository = sqlSession.getMapper(UserRepository.class);
         this.userFollowingRepository = sqlSession.getMapper(UserFollowingRepository.class);
@@ -58,7 +58,7 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public Post detail(Long id) {
-        System.out.println("잠깐만" + id);
+        System.out.println("PostId : " + id);
         Post post = postRepository.findById(id);
         if (post != null) {
             // post)tag 주입
@@ -141,7 +141,7 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public int delete(Long id) {
         int result = 0;
-        System.out.println("잠깐만 " + id);
+        System.out.println("PostId : " + id);
         Post post = postRepository.findById(id);
         if (post != null) {
             result = postRepository.deleteById(id);

@@ -20,10 +20,12 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/board")
@@ -34,23 +36,27 @@ public class BoardController {
     private final UserService userService;
 
     public BoardController(BoardService boardService, UserFollowingService userFollowingService, UserWarningService userWarningService, UserService userService) {
-        System.out.println("일단 생성");
+        System.out.println("[ACTIVE] BoardController");
         this.boardService = boardService;
         this.userFollowingService = userFollowingService;
         this.userWarningService = userWarningService;
         this.userService = userService;
     }
-// 수정, 추가. 삭제의 경우 attr name을 result 로 하였음
+
+    // 수정, 추가. 삭제의 경우 attr name을 result 로 하였음
     @GetMapping("/write")
-    public void write (){}
+    public void write() {
+    }
 
 
     @PostMapping("/write")
-    public String write (@Valid Post post,
-                         BindingResult bindingResult,
-                         Model model,
-                         RedirectAttributes redirectAttributes,
-                         @AuthenticationPrincipal(expression = "user") User loginUser
+    public String write(
+            @RequestParam Map<String, MultipartFile> files,
+            @Valid Post post,
+            BindingResult bindingResult,
+            Model model,
+            RedirectAttributes redirectAttributes,
+            @AuthenticationPrincipal(expression = "user") User loginUser
     ) {
 
         // vaildator
@@ -58,7 +64,7 @@ public class BoardController {
             redirectAttributes.addFlashAttribute("title", post.getTitle());
             redirectAttributes.addFlashAttribute("content", post.getContent());
             for (FieldError error : bindingResult.getFieldErrors()) {
-                redirectAttributes.addFlashAttribute("error_" +  error.getField(),error.getDefaultMessage());
+                redirectAttributes.addFlashAttribute("error_" + error.getField(), error.getDefaultMessage());
             }
             return "redirect:/board/write";
         }
@@ -67,8 +73,9 @@ public class BoardController {
         post.setUser_id(loginUser.getId());
         int result = boardService.write(post);
         model.addAttribute("result", result);
-        return "board/write";
+        return "board/writeOk";
     }
+
     // listBytype (손님, 도우미 선택 가능 => findAll 은 혹시 몰라서 일부러 놔뒀음)
     @GetMapping("/list")
     public String list(@RequestParam(required = false) String type,
@@ -103,7 +110,6 @@ public class BoardController {
 
         return "board/list";
     }
-
 
 
     @GetMapping("/detail/{id}")
@@ -150,7 +156,7 @@ public class BoardController {
 
         // 이미 신고한 게시물이면 더이상 신고하지 못하게 하기
         final Long userId = loginUserId;
-        List <UserWarning> warnings = userWarningService.getWarningsByPostId(id);
+        List<UserWarning> warnings = userWarningService.getWarningsByPostId(id);
         boolean hasReported = warnings.stream()
                 .anyMatch(w -> w.getComplaintUserId().equals(userId));
         model.addAttribute("hasReported", hasReported);
@@ -159,12 +165,12 @@ public class BoardController {
     }
 
 
-
     @GetMapping("/update/{id}")
-    public String update(Model model, @PathVariable Long id){
+    public String update(Model model, @PathVariable Long id) {
         model.addAttribute("board", boardService.detail(id));
         return "board/update";
     }
+
     @PostMapping("/update")
     public String update(@Valid Post post,
                          BindingResult bindingResult,
@@ -185,7 +191,7 @@ public class BoardController {
         model.addAttribute("result", result);
 
 
-        return "board/updateOk" ;
+        return "board/updateOk";
     }
 
     @PostMapping("/delete")
@@ -209,7 +215,7 @@ public class BoardController {
 
 
     @InitBinder("post")
-    public void initBinder(WebDataBinder binder){
+    public void initBinder(WebDataBinder binder) {
         System.out.println("호출 성공");
         binder.setValidator(new BoardValidator());
     }
