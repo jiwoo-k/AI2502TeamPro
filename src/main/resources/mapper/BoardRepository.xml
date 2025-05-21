@@ -75,8 +75,8 @@
         delete from post where id = #{id}
     </delete>
 <!--    손님 태그-->
-    <select id="findByPostTag" resultType="com.lec.spring.domain.Tag">
-        SELECT t.name, post.id, c.color
+    <select id="findTagsByPostId" resultType="com.lec.spring.domain.Tag">
+        SELECT t.name "name", t.id "id", c.id "category_id",c.color "color"
         FROM tag t
                  JOIN post_tag pt ON pt.tag_id = t.id
                  JOIN post ON pt.post_id = post.id
@@ -84,7 +84,7 @@
         WHERE pt.post_id = #{id}
     </select>
 <!--도우미 태그-->
-    <select id="findByUserTag" resultType="com.lec.spring.domain.Tag">
+    <select id="findTagsByUserId" resultType="com.lec.spring.domain.Tag">
         SELECT
             t.id AS id,
             t.category_id AS category_id,

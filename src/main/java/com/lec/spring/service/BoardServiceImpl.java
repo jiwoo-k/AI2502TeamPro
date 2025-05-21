@@ -4,10 +4,7 @@ import com.lec.spring.domain.Attachment;
 import com.lec.spring.domain.Post;
 import com.lec.spring.domain.Tag;
 import com.lec.spring.domain.User;
-import com.lec.spring.repository.AttachmentRepository;
-import com.lec.spring.repository.PostRepository;
-import com.lec.spring.repository.UserFollowingRepository;
-import com.lec.spring.repository.UserRepository;
+import com.lec.spring.repository.*;
 import com.lec.spring.util.U;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,6 +40,7 @@ public class BoardServiceImpl implements BoardService {
     private final UserRepository userRepository;
     private final UserFollowingRepository userFollowingRepository;
     private final AttachmentRepository attachmentRepository;
+    private final TagRepository tagRepository;
 
     public BoardServiceImpl(SqlSession sqlSession) {
         System.out.println("boardServiceImpl");
@@ -50,6 +48,7 @@ public class BoardServiceImpl implements BoardService {
         this.userRepository = sqlSession.getMapper(UserRepository.class);
         this.userFollowingRepository = sqlSession.getMapper(UserFollowingRepository.class);
         this.attachmentRepository = sqlSession.getMapper(AttachmentRepository.class);
+        this.tagRepository = sqlSession.getMapper(TagRepository.class);
     }
     @Override
     public int write(Post post) {
@@ -58,15 +57,15 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public Post detail(Long id) {
-        System.out.println("잠깐만" + id);
+        System.out.println("PostId : " + id);
         Post post = postRepository.findById(id);
         if (post != null) {
             // post)tag 주입
-            List<Tag> postTag = postRepository.findByPostTag(id);
+            List<Tag> postTag = postRepository.findTagsByPostId(id);
             post.setPost_tag(postTag);
             // user_tag 주입
             if ("helper".equals(post.getType())) {
-                List <Tag> usertag = postRepository.findByUserTag(id);
+                List <Tag> usertag = postRepository.findTagsByUserId(id);
                 System.out.println("usertag" + usertag);
                 post.setUser_tag(usertag);
 
@@ -141,7 +140,7 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public int delete(Long id) {
         int result = 0;
-        System.out.println("잠깐만 " + id);
+        System.out.println("PostId : " + id);
         Post post = postRepository.findById(id);
         if (post != null) {
             result = postRepository.deleteById(id);
@@ -157,12 +156,12 @@ public class BoardServiceImpl implements BoardService {
             Long postId = post.getId();
 
             // post_tag 주입
-            List<Tag> postTags = postRepository.findByPostTag(postId);
+            List<Tag> postTags = postRepository.findTagsByPostId(postId);
             post.setPost_tag(postTags);
 
             // user_tag는 helper만 조회
             if ("helper".equals(post.getType())) {
-                List<Tag> userTags = postRepository.findByUserTag(postId);
+                List<Tag> userTags = postRepository.findTagsByUserId(postId);
                 post.setUser_tag(userTags);
             }
 
@@ -279,5 +278,9 @@ public class BoardServiceImpl implements BoardService {
         }
     }
 
-
+    @Override
+    public List<Tag> postTagList(Long post_id) {
+        //특정 게시물의 태그목록을 가져오자
+       return postRepository.findTagsByPostId(post_id);
+    }
 }
