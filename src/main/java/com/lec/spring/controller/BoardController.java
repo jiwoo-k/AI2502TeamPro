@@ -1,9 +1,6 @@
 package com.lec.spring.controller;
 
-import com.lec.spring.domain.Post;
-import com.lec.spring.domain.Tag;
-import com.lec.spring.domain.User;
-import com.lec.spring.domain.UserWarning;
+import com.lec.spring.domain.*;
 import com.lec.spring.service.BoardService;
 import com.lec.spring.service.UserFollowingService;
 import com.lec.spring.service.UserService;
@@ -29,6 +26,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/board")
+
 public class BoardController {
     private final BoardService boardService;
     private final UserFollowingService userFollowingService;
@@ -42,6 +40,7 @@ public class BoardController {
         this.userWarningService = userWarningService;
         this.userService = userService;
     }
+
 
     // 수정, 추가. 삭제의 경우 attr name을 result 로 하였음
     @GetMapping("/write")
@@ -142,6 +141,7 @@ public class BoardController {
         boolean isFollowed = loginUserId != null && userFollowingService.isFollowing(loginUserId, post.getUser_id());
         post.setFollow(isFollowed);
         model.addAttribute("board", post);
+
 
         //  신고 횟수
         int warningCount = userWarningService.postWarningCount(id); // id는 게시물 id
