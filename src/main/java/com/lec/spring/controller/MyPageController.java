@@ -38,7 +38,7 @@ public class MyPageController {
     }
 
     /** 1) 마이페이지 메인 **/
-    @GetMapping("/mypage/myPageMain")
+    @GetMapping("/mypage")
     public String myPageMain(@AuthenticationPrincipal PrincipalDetails principal, Model model) {
         Long userId = principal.getUser().getId();
 
@@ -48,7 +48,7 @@ public class MyPageController {
     }
 
     /** 2) 내가 쓴 글 (페이징 + type 필터링) **/
-    @GetMapping("/mypage/myPosts")
+    @GetMapping("/mypage/post")
     public String myPosts(
             @RequestParam(value = "selectedType", required = false) String selectedType,
             Model model,
@@ -65,7 +65,7 @@ public class MyPageController {
     }
 
     /** 3) 내가 쓴 댓글 (페이징) **/
-    @GetMapping("/mypage/myComments")
+    @GetMapping("/mypage/comment")
     public String myComments(
             Model model,
             @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
@@ -80,7 +80,7 @@ public class MyPageController {
     }
 
     /** 4) 내가 팔로잉한 사용자 목록 **/
-    @GetMapping("/mypage/myFollowing")
+    @GetMapping("/mypage/follow")
     public String myFollowing(Model model) {
         Long userId = ((PrincipalDetails)
                 SecurityContextHolder.getContext().getAuthentication().getPrincipal())
@@ -92,7 +92,7 @@ public class MyPageController {
     }
 
     /** 5) 프로필 수정 폼 **/
-    @GetMapping("/mypage/editProfile")
+    @GetMapping("/mypage/edit")
     public String editProfile(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         PrincipalDetails principal = (PrincipalDetails) auth.getPrincipal();
@@ -104,7 +104,7 @@ public class MyPageController {
     }
 
     /** 6) 프로필 업데이트 **/
-    @PostMapping("/mypage/updateProfile")
+    @PostMapping("/mypage/update")
     public String updateProfile(
             @Validated @ModelAttribute("form") ProfileUpdateForm form,
             BindingResult bindingResult
