@@ -48,8 +48,13 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public int write(Post post) {
-        return write(post, null);  // 파일 없음으로 호출
+        return postRepository.save(post);
     }
+
+//    @Override
+//    public int write(Post post) {
+//        return write(post, null);  // 파일 없음으로 호출
+//    }
 
     @Override
        public int write(Post post, Map<String, MultipartFile> files) {
@@ -108,7 +113,6 @@ public class BoardServiceImpl implements BoardService {
        }
 
 
-
     @Override
     public int delete(Long id) {
         int result = 0;
@@ -151,7 +155,6 @@ public class BoardServiceImpl implements BoardService {
         postRepository.isDelete(id);
         postRepository.deletedAt(id, LocalDateTime.now());
     }
-
 
 
 

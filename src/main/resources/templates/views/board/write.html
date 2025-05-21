@@ -20,7 +20,7 @@
 <body>
 <h2>게시물 작성</h2>
 
-<form th:action="@{/board/write}" method="post">
+<form th:action="@{/board/write}" method="post" enctype="multipart/form-data">
     <div>
         <span>제목을 입력하세요</span>
         <input type="text" th:value="${title}" placeholder="제목을 입력하세요" name="title">
