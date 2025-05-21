@@ -69,3 +69,4 @@ ORDER BY c.createdat DESC;
 
 
 
+select * from attachment;

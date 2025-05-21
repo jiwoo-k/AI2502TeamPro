@@ -93,4 +93,13 @@ $(function(){
         }
     });
 
+    $('button#saveTagList').click(function(){
+        if(confirm('저장하시겠습니까?')){
+            let tagList = $('div.selectedTag');
+            //TODO: 저장 로직 작성
+
+            alert('저장 성공');
+        }
+    });
+
 });

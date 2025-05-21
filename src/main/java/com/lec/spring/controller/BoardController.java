@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -105,6 +106,45 @@ public class BoardController {
         model.addAttribute("board", posts);
         model.addAttribute("selectedType", type);
         model.addAttribute("posts", posts);
+
+
+        return "board/list";
+    }
+
+    //태그 form 통해 들어오는 /board/list
+    @PostMapping("/list")
+    public String list(String type, HttpSession httpSession, Model model) {
+        //일단 특정 유형의 게시글 모두 들고오기
+        List<Post> allPosts = boardService.listByType(type);
+
+        //태그 검색 필터에 만족하는 게시글들 담을 것.
+        List<Post> filteredPosts = new ArrayList<>();
+
+        //세션에 있는 태그목록 가져오기
+        List<Tag> selectedTags = (List<Tag>) httpSession.getAttribute("selectedTags");
+
+        if(selectedTags.isEmpty()){
+            model.addAttribute("board", allPosts);
+        }
+        else {
+            for(Post post : allPosts) {
+                //게시글마다 태그 정보 뽑아오기
+                List<Tag> tags = post.getPost_tag();
+
+                for(Tag tag : selectedTags) {
+                    if(tags.contains(tag)) {
+                        filteredPosts.add(post);
+                        break;
+                    }
+                }
+            }
+
+            model.addAttribute("board", filteredPosts);
+        }
+
+        model.addAttribute("selectedType", type);
+
+        //TODO: 이외에 다른 매커니즘 혹시 필요하면 추가 바랍니다
 
 
         return "board/list";

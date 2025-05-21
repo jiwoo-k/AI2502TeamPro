@@ -1,11 +1,9 @@
 package com.lec.spring.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import com.lec.spring.domain.Tag;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -33,5 +31,12 @@ public class Post {
     // 팔로우
     private Boolean follow;
     private Integer followCount;
+
+
+    // 첨부파일 정보.
+
+    @ToString.Exclude
+    @Builder.Default
+    private List<Attachment> fileList = new ArrayList<>();
 
 }
