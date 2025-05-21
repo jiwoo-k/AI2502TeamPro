@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,10 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -79,17 +77,45 @@ public class MyPageController {
         return "mypage/myComments";
     }
 
-    /** 4) 내가 팔로잉한 사용자 목록 **/
+    /** 4) 내가 팔로잉한 사용자 목록 (페이징) **/
     @GetMapping("/mypage/follow")
-    public String myFollowing(Model model) {
+    public String myFollowing(
+            Model model,
+            @PageableDefault(size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable
+    ) {
         Long userId = ((PrincipalDetails)
                 SecurityContextHolder.getContext().getAuthentication().getPrincipal())
                 .getUser().getId();
 
-        List<User> following = mypageService.getMyFollowing(userId);
-        model.addAttribute("following", following);
+        Page<User> page = mypageService.getMyFollowing(userId, pageable);
+        model.addAttribute("following", page);
         return "mypage/myFollowing";
     }
+
+    // 팔로우
+    @PostMapping("/mypage/follow")
+    @ResponseStatus(HttpStatus.OK)
+    public void follow(
+            @RequestParam Long userId,
+            @AuthenticationPrincipal PrincipalDetails principal
+    ) {
+        Long me = principal.getUser().getId();
+        mypageService.followUser(me, userId);
+    }
+
+    // 언팔로우
+    @PostMapping("/mypage/unfollow")
+    @ResponseStatus(HttpStatus.OK)
+    public void unfollow(
+            @RequestParam Long userId,
+            @AuthenticationPrincipal PrincipalDetails principal
+    ) {
+        Long me = principal.getUser().getId();
+        mypageService.unfollowUser(me, userId);
+    }
+
+
+
 
     /** 5) 프로필 수정 폼 **/
     @GetMapping("/mypage/edit")
@@ -99,14 +125,14 @@ public class MyPageController {
         Long userId = principal.getUser().getId();
 
         ProfileUpdateForm form = mypageService.getProfileUpdateForm(userId);
-        model.addAttribute("form", form);
+        model.addAttribute("profileUpdateForm", form);
         return "mypage/editProfile";
     }
 
     /** 6) 프로필 업데이트 **/
     @PostMapping("/mypage/update")
     public String updateProfile(
-            @Validated @ModelAttribute("form") ProfileUpdateForm form,
+            @Validated @ModelAttribute("profileUpdateForm") ProfileUpdateForm form,
             BindingResult bindingResult
     ) {
         if (bindingResult.hasErrors()) {
