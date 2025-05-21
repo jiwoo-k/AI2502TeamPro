@@ -50,6 +50,8 @@ public class User {
     private int followersCount;
     private int reportCount;
 
+    private Boolean following;
+
     private List<String> tags;
 
     public List<String> getTags() {

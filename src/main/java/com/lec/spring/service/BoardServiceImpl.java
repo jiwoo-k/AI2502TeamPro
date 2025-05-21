@@ -58,7 +58,7 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public Post detail(Long id) {
-        System.out.println("잠깐만" + id);
+        System.out.println("PostId : " + id);
         Post post = postRepository.findById(id);
         if (post != null) {
             // post)tag 주입
@@ -141,7 +141,7 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public int delete(Long id) {
         int result = 0;
-        System.out.println("잠깐만 " + id);
+        System.out.println("Post" + id);
         Post post = postRepository.findById(id);
         if (post != null) {
             result = postRepository.deleteById(id);

@@ -125,4 +125,21 @@ insert into warning (post_id, complaint_user_id, reason)values
                                                 (2,2, '그냥 신고하고 싶음');
 
 
-select *  from warning
+
+INSERT INTO user_follow (following_userid, followed_userid)
+VALUES (
+           (SELECT id FROM user WHERE username = 'user1'),
+           (SELECT id FROM user WHERE username = 'user4')
+       );
+
+INSERT INTO comment (user_id, post_id, content)
+VALUES (
+           -- user 테이블에서 username='user1'인 행 중 하나만 가져오기
+           (SELECT id FROM user WHERE username = 'user1' LIMIT 1),
+
+           -- post 테이블에서 title='title1'인 행 중 하나만 가져오기
+           (SELECT id FROM post WHERE title = 'title1' LIMIT 1),
+
+           '테스트 댓글입니다.'
+       );
+
