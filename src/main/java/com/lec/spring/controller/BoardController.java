@@ -32,6 +32,7 @@ public class BoardController {
     private final UserFollowingService userFollowingService;
     private final UserWarningService userWarningService;
     private final UserService userService;
+
     public BoardController(BoardService boardService, UserFollowingService userFollowingService, UserWarningService userWarningService, UserService userService) {
         System.out.println("일단 생성");
         this.boardService = boardService;

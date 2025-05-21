@@ -22,8 +22,8 @@ public class Post {
     private Boolean isdeleted;
     private LocalDateTime deletedat;
     private String name;
+    private User user;
 
-    @Builder.Default
     private Long user_id;
 
     // 태그 검색
