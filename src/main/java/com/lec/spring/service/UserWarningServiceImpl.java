@@ -13,6 +13,7 @@ public class UserWarningServiceImpl implements UserWarningService {
 
     private final UserWarningRepository repository;
     private final PostRepository postRepository;
+
     /**
      * 생성자에서 SqlSession 을 주입받고, 이를 통해 MyBatis Mapper b 로부터
      * UserWarningRepository 구현체를 획득
@@ -38,7 +39,12 @@ public class UserWarningServiceImpl implements UserWarningService {
 
     @Override
     public List<UserWarning> getWarningsByComplaintUserId(Long complaintUserId) {
-        return repository.findByComplaintUserId(complaintUserId);
+        return List.of();
     }
 
+    @Override
+    public int postWarningCount(Long postId) {
+        return repository.postWarningCount(postId);
+    }
 }
+

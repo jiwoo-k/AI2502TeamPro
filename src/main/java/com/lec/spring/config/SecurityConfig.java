@@ -43,7 +43,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/user/my_page/**", "/board/write", "/board/update/**"
+                                "/user/my_page/**", "/board/write", "/board/update/**" , "board/follow/**", "board/warning/**"
                         ).authenticated()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().permitAll()
@@ -73,9 +73,9 @@ public class SecurityConfig {
                                 .userService(principalOauth2UserService) //userService(Oauth2UserService<Oauth2UserRequest, Oauth2User>)
                         )
                         .successHandler(new CustomLoginSuccessHandler("/home", userService)
-                        ));
+                ));
 
-        return http.build();
+                return http.build();
     }
 
 }

@@ -14,3 +14,5 @@ public class LocationInfo {
     Double lng;
     String areaName;
 }
+
+// stash teset

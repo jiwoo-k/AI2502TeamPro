@@ -32,6 +32,7 @@ public class BoardController {
     private final UserFollowingService userFollowingService;
     private final UserWarningService userWarningService;
     private final UserService userService;
+
     public BoardController(BoardService boardService, UserFollowingService userFollowingService, UserWarningService userWarningService, UserService userService) {
         System.out.println("일단 생성");
         this.boardService = boardService;
@@ -49,7 +50,7 @@ public class BoardController {
                          BindingResult bindingResult,
                          Model model,
                          RedirectAttributes redirectAttributes,
-                         HttpSession session
+                         @AuthenticationPrincipal(expression = "user") User loginUser
     ) {
 
         // vaildator
@@ -61,30 +62,44 @@ public class BoardController {
             }
             return "redirect:/board/write";
         }
+
+        // user_id 가지고 오기
+        post.setUser_id(loginUser.getId());
         int result = boardService.write(post);
         model.addAttribute("result", result);
         return "board/write";
     }
     // listBytype (손님, 도우미 선택 가능 => findAll 은 혹시 몰라서 일부러 놔뒀음)
     @GetMapping("/list")
-    public String list(@RequestParam(required = false) String type, Model model,@RequestParam(required = false) Boolean follow) {
-        // 손님, 도우미 타입 설정
+    public String list(@RequestParam(required = false) String type,
+                       Model model,
+                       @RequestParam(required = false) Boolean follow,
+                       Principal principal) {
+
         if (type == null || type.isBlank()) {
             type = "guest";
         }
+
         List<Post> posts = boardService.listByType(type);
-        boolean followFlag = (follow != null) ? follow : false;
-        // 팔로우 여부 2
-        Long loginUserId = 1L; // 고정 id
+
+        // 로그인 사용자 ID 추출
+        Long loginUserId = null;
+        if (principal != null) {
+            String username = principal.getName();
+            User loginUser = userService.findByUsername(username);
+            loginUserId = loginUser.getId();
+        }
+
         for (Post post : posts) {
-            boolean isFollowed = userFollowingService.isFollowing(loginUserId, post.getUser_id());
+            boolean isFollowed = loginUserId != null && userFollowingService.isFollowing(loginUserId, post.getUser_id());
             post.setFollow(isFollowed);
         }
 
-        model.addAttribute("follow", followFlag);
+        model.addAttribute("follow", (follow != null) ? follow : false);
         model.addAttribute("board", posts);
         model.addAttribute("selectedType", type);
-        System.out.println("과연!" + posts + followFlag + type);
+        model.addAttribute("posts", posts);
+
 
         return "board/list";
     }
@@ -94,77 +109,53 @@ public class BoardController {
     @GetMapping("/detail/{id}")
     public String detail(@PathVariable Long id,
                          Model model,
-                         @RequestParam(required = false) String type,
-                         @RequestParam(required = false) Boolean follow
+                         @RequestParam(required = false, name = "type") String type,
+                         @RequestParam(required = false) Boolean follow,
+                         Principal principal
     ) {
 
         if (type == null || type.isBlank()) {
             type = "guest";
         }
 
-        Long loginUserId = 1L;
+        Long loginUserId = null;
+        if (principal != null) {
+            String username = principal.getName();
+            User loginUser = userService.findByUsername(username);
+            loginUserId = loginUser.getId();
+        }
 
         List<Post> posts = boardService.listByType(type);
         for (Post p : posts) {
-            boolean isFollowed = userFollowingService.isFollowing(loginUserId, p.getUser_id());
+            boolean isFollowed = loginUserId != null && userFollowingService.isFollowing(loginUserId, p.getUser_id());
             p.setFollow(isFollowed);
         }
         model.addAttribute("postList", posts);
 
         Post post = boardService.detail(id);
-        boolean isFollowed = userFollowingService.isFollowing(loginUserId, post.getUser_id());
+        boolean isFollowed = loginUserId != null && userFollowingService.isFollowing(loginUserId, post.getUser_id());
         post.setFollow(isFollowed);
         model.addAttribute("board", post);
+
+        //  신고 횟수
+        int warningCount = userWarningService.postWarningCount(id); // id는 게시물 id
+        model.addAttribute("postWarningCount", warningCount);
 
         model.addAttribute("follow", (follow != null) ? follow : false);
         model.addAttribute("selectedType", type);
 
         // User 객체 가져오기
-        User PostUser = userService.findByName(post.getName());
-        model.addAttribute("user", PostUser);
+        User postUser = userService.findByName(post.getName());
+        model.addAttribute("user", postUser);
+
+        // 이미 신고한 게시물이면 더이상 신고하지 못하게 하기
+        final Long userId = loginUserId;
+        List <UserWarning> warnings = userWarningService.getWarningsByPostId(id);
+        boolean hasReported = warnings.stream()
+                .anyMatch(w -> w.getComplaintUserId().equals(userId));
+        model.addAttribute("hasReported", hasReported);
 
         return "board/detail";
-    }
-
-    // 팔로우하기
-    @PostMapping("/follow/insert")
-    public String insertFollow(@RequestParam("followingUserId") Long followingUserId,
-                               Principal principal) {
-        if (principal == null) {
-            return "redirect:/user/login";
-        }
-        String username = principal.getName();
-        User loginUser = userService.findByName(username);
-
-        System.out.println("followingUserId: " + followingUserId);
-        User followedUser = userService.findByUSerId(followingUserId);
-        System.out.println("followedUser: " + followedUser);
-
-        if (followedUser == null) {
-            System.out.println("팔로우하려는 사용자가 존재하지 않습니다.");
-            return "redirect:/board/list";
-        }
-        userFollowingService.follow(loginUser, followedUser);
-        return "redirect:/board/detail/" + followingUserId;
-    }
-
-
-    // 언팔로우하기 ㅇㅇㅇㅇ
-    @PostMapping("/follow/delete")
-    public String deleteFollow(@RequestParam("followingUserId") Long followingUserId,
-                               Principal principal) {
-        if (principal == null) {
-            return "redirect:/user/login";
-        }
-        String username = principal.getName();
-        User loginUser = userService.findByName(username);
-        User followedUser = userService.findByUSerId(followingUserId);
-        if (followedUser == null) {
-            System.out.println("팔로우하려는 사용자가 존재하지 않습니다.");
-            return "redirect:/board/list";
-        }
-        userFollowingService.unfollow(loginUser, followedUser);
-        return "redirect:/board/detail/" + followingUserId;
     }
 
 
@@ -178,7 +169,8 @@ public class BoardController {
     public String update(@Valid Post post,
                          BindingResult bindingResult,
                          Model model,
-                         RedirectAttributes redirectAttributes
+                         RedirectAttributes redirectAttributes,
+                         @AuthenticationPrincipal(expression = "user") User loginUser
     ) {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("title", post.getTitle());
@@ -188,25 +180,25 @@ public class BoardController {
             }
             return "redirect:/board/update/" + post.getId();
         }
+        post.setUser_id(loginUser.getId());
         int result = boardService.update(post);
         model.addAttribute("result", result);
+
+
         return "board/updateOk" ;
     }
+
     @PostMapping("/delete")
-    public String delete(  Long id, Model model){
-        System.out.println("삭제결과" + boardService.delete(id));
-        model.addAttribute("result", boardService.delete(id));
+    public String delete(Long id, Model model, @AuthenticationPrincipal(expression = "user") User loginUser) {
+        boardService.deleteTime(id);
+        model.addAttribute("result", 1);
         return "board/deleteOk";
     }
+
 
     @PostMapping("/warning")
     public String warning(UserWarning warning, Model model, @AuthenticationPrincipal(expression = "user") User loginUser
     ) {
-
-        if (loginUser == null) {
-            // 로그인 안된 상태 처리 (예: 로그인 페이지로 리다이렉트)
-            return "redirect:/user/login";
-        }
         warning.setComplaintUserId(loginUser.getId());
 
         model.addAttribute("result", warning);

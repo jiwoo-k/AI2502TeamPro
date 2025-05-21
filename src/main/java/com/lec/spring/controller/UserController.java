@@ -45,7 +45,7 @@ public class UserController {
     }
 
     @GetMapping("/register")
-    public void register(){
+    public void resgister() {
 
     }
 
@@ -54,17 +54,16 @@ public class UserController {
             @Valid User user,
             BindingResult result,
             Model model,
-            RedirectAttributes redirectAttributes)
-    {
+            RedirectAttributes redirectAttributes) {
         //검증 에러가 있었다면 redirect 한다
-        if(result.hasErrors()){
+        if (result.hasErrors()) {
             redirectAttributes.addFlashAttribute("username", user.getUsername());
             redirectAttributes.addFlashAttribute("name", user.getName());
-//            redirectAttributes.addFlashAttribute("juminNo", user.getJuminNo());
+            redirectAttributes.addFlashAttribute("juminNo", user.getJuminNo());
 
 
             List<FieldError> errList = result.getFieldErrors();
-            for(FieldError err : errList) {
+            for (FieldError err : errList) {
                 redirectAttributes.addFlashAttribute("error", err.getCode());  // 가장 처음에 발견된 에러를 담아 보낸다
                 break;
             }
@@ -84,7 +83,7 @@ public class UserController {
     UserValidator userValidator;
 
     @InitBinder
-    public void initBinder(WebDataBinder binder){
+    public void initBinder(WebDataBinder binder) {
         binder.setValidator(userValidator);
     }
 }

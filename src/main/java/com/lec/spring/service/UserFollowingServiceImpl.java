@@ -21,21 +21,18 @@ public class UserFollowingServiceImpl implements UserFollowingService {
     @Override
     @Transactional // **[추가됨]** 팔로우 작업은 데이터베이스에 쓰기(INSERT) 작업을 포함하므로 트랜잭션 관리가 필요
     public int follow(User followingUser, User followedUser) {
-        if (followingUser == null || followedUser == null) {
-            System.out.println("follow 메서드 호출 시 사용자 객체가 null입니다.");
-            return 0;
-        }
-
         // (추가 고려 사항)
-        // 1. 자기 자신 팔로우 X
-        if (followedUser.getId().equals(followingUser.getId())) {
-            return 0;
-        }
+        // 1. 팔로우 대상이 본인인지 확인하는 로직을 추가할 수 있습니다.
+        // if (followingUser.getId().equals(followedUser.getId())) {
+        //    // 자신을 팔로우할 수 없음
+        //    return 0; // 또는 throw new IllegalArgumentException("자신을 팔로우할 수 없습니다.");
+        // }
 
-        // 2. 이미 팔로우 중이면 X
-        if (repository.findByFollow(followingUser.getId(), followedUser.getId()) != null) {
-            return 0;
-        }
+        // 2. 이미 팔로우 중인지 확인하는 로직을 추가할 수 있습니다. (Repository 에 해당 메소드 필요)
+        // if (repository.countByFollowingUserIdAndFollowedUserId(followingUser.getId(), followedUser.getId()) > 0) {
+        //    // 이미 팔로우 중임
+        //    return 0; // 또는 throw new IllegalStateException("이미 팔로우 중입니다.");
+        // }
 
         // 두 User 객체의 ID를 기반으로 UserFollowing 객체를 생성 (빌더 패턴 사용)
         UserFollowing uf = UserFollowing.builder()
@@ -56,7 +53,7 @@ public class UserFollowingServiceImpl implements UserFollowingService {
                 .followedUserId(followedUser.getId())
                 .build();
         // Repository 를 통해 DELETE 작업 수행
-        return repository.delete(uf.getFollowingUserId(), uf.getFollowedUserId());
+        return repository.delete(uf);
     }
 
     @Override

@@ -36,6 +36,13 @@ ALTER TABLE tag
     AUTO_INCREMENT = 1;
 
 
+
+DELETE
+FROM user_tag;
+ALTER TABLE user_tag
+    AUTO_INCREMENT = 1;
+
+
 DELETE
 FROM user_follow;
 -- (user_authorities, user_hate, user_tag 등 복합키 테이블은 AUTO_INCREMENT 없음)
@@ -139,4 +146,39 @@ FROM tag t
          JOIN post_tag pt ON pt.tag_id = t.id join post on pt.post_id = post.id
 WHERE pt.post_id =1
 
-select * from user_follow
+delete from post where id = 45
+
+delete from category;
+
+select * from category
+
+insert into category (name, color) values
+                                       ('음식', '#FF6347'),
+                                       ('운동', '#6B8E23'),
+                                       ('빵', '#D2B48C');
+
+
+insert into tag (category_id, name) values
+                                        (1, '아 몰라'),
+                                        (2,'귀찮아'),
+                                        (3, '눈 아파'),
+                                        (2,'그렇구나'),
+                                        (1, '어쩌라고');
+
+select * from tag
+
+delete from user_tag;
+
+insert into user_tag (user_id, tag_id) VALUE
+(1,1),
+    (1,2),
+    (1,3),
+    (2,1),
+    (2,2)
+,(3,3)
+
+select * from post;
+
+insert into post_tag (post_id, tag_id)
+values (14, 2),
+        (15, 1);

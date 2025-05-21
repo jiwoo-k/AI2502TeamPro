@@ -1,10 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>나의 댓글 조회</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-
+<th:block th:replace="~{common/header :: header-fragment}"/>
+<main style="padding: 40px; max-width: 800px; margin: auto;">
+    <h2 style="text-align: center; margin-bottom: 30px;">나의 댓글 조회</h2>
+    <table style="width:100%; border-collapse: collapse;">
+        <thead>
+        <tr><th>번호</th><th>작성일시</th><th>게시물 제목</th><th>픽 여부</th></tr>
+        </thead>
+        <tbody>
+        <tr th:each="comment, iterStat : ${comments}">
+            <td th:text="${iterStat.index + 1}">1</td>
+            <td th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}">2025-05-08  11:00</td>
+            <td><a th:href="@{|/posts/${comment.postId}|}" th:text="${comment.postTitle}">Post Title</a></td>
+            <td>
+                <span th:if="${comment.picked}">O</span>
+                <span th:unless="${comment.picked}">X</span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div style="margin-top: 20px;">
+        <a th:if="${!comments.first}" th:href="@{/mypage/myComments(page=${comments.number - 1})}">Previous</a>
+        <span th:text="'Page ' + (${comments.number + 1}) + ' / ' + ${comments.totalPages}"></span>
+        <a th:if="${!comments.last}" th:href="@{/mypage/myComments(page=${comments.number + 1})}">Next</a>
+    </div>
+</main>
 </body>
 </html>

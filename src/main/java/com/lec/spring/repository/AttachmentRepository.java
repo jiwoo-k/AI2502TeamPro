@@ -18,6 +18,7 @@ public interface AttachmentRepository {
      * @param postId 첨부될 글 ID
      * @return DML 수행 결과값
      */
+
     int insert(@Param("list") List<Map<String, Object>> list,
                @Param("postId") Long postId);
 

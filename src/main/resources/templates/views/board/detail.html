@@ -25,17 +25,22 @@
         <span th:text="${board.content}"></span>
     </div>
 <table>
-    <div>
+    <div th:unless="${session.id} == ${board.user_id}">
         <form th:if="${board.follow}" th:action="@{/board/follow/delete}" method="post">
             <input type="hidden" name="followingUserId" th:value="${board.user_id}" />
+            <input type="hidden" name="followedUserId" th:value="${board.user_id}" />
+            <input type="hidden" name="id" th:value="${board.id}">
             <button type="submit">언팔로우</button>
         </form>
 
-        <form th:if="${!board.follow}" th:action="@{/board/follow/insert}" method="post">
+        <form th:unless="${board.follow}" th:action="@{/board/follow/insert}" method="post">
             <input type="hidden" name="followingUserId" th:value="${board.user_id}" />
+            <input type="hidden" name="followedUserId" th:value="${board.user_id}" />
+            <input type="hidden" name="id" th:value="${board.id}">
             <button type="submit">팔로우</button>
         </form>
     </div>
+    <span th:text="'신고' + ${postWarningCount} + '개'"></span>
 </table>
     <!--post_tag-->
     <div th:if="${board.type == 'guest'}">
@@ -70,8 +75,8 @@
         </form>
 
         <!--신고-->
-        <form th:action="@{'/board/warning'}" method="post">
-<!--            <input type="hidden" name="id" th:value="${logged_user.id}">-->
+        <form th:action="@{/board/warning}" method="post"
+              th:if="${session.id} != ${board.user_id} and !${hasReported} and ${session.id != null} ">
             <input type="hidden" name="postId" th:value="${board.id}" />
 
 
@@ -85,6 +90,7 @@
                 신고하기
             </button>
         </form>
+
 
     </div>
 
