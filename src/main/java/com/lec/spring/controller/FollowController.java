@@ -33,7 +33,7 @@ public class FollowController {
 
 
         System.out.println("followingUserId: " + followedUserId);
-        User followedUser = userService.findByUSerId(followedUserId);
+        User followedUser = userService.findByUserId(followedUserId);
         System.out.println("followedUser: " + followedUser);
 
         if (followedUser == null) {
@@ -53,7 +53,7 @@ public class FollowController {
                                @RequestParam("id") Long postId
     ) {
 
-        User followedUser = userService.findByUSerId(followingUserId);
+        User followedUser = userService.findByUserId(followingUserId);
 
         if (followedUser == null) {
             System.out.println("팔로우하려는 사용자가 존재하지 않습니다.");

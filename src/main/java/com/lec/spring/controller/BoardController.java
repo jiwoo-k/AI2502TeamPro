@@ -186,6 +186,7 @@ public class BoardController {
 
         return "board/updateOk" ;
     }
+
     @PostMapping("/delete")
     public String delete(Long id, Model model, @AuthenticationPrincipal(expression = "user") User loginUser) {
         boardService.deleteTime(id);
