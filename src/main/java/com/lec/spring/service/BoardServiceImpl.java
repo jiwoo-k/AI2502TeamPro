@@ -1,55 +1,30 @@
 package com.lec.spring.service;
 
-import com.lec.spring.domain.Attachment;
 import com.lec.spring.domain.Post;
 import com.lec.spring.domain.Tag;
-import com.lec.spring.domain.User;
-import com.lec.spring.repository.AttachmentRepository;
 import com.lec.spring.repository.PostRepository;
 import com.lec.spring.repository.UserFollowingRepository;
 import com.lec.spring.repository.UserRepository;
-import com.lec.spring.util.U;
 import org.apache.ibatis.session.SqlSession;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
-import java.util.Map;
-
 @Service
 public class BoardServiceImpl implements BoardService {
-
-    @Value("${app.upload.path}")
-    private String uploadDir;
-
-    @Value("${app.pagination.write_pages}")
-    private int WRITE_PAGES;
-
-    @Value("${app.pagination.page_rows}")
-    private int PAGE_ROWS;
-    
-
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final UserFollowingRepository userFollowingRepository;
-    private final AttachmentRepository attachmentRepository;
-
     public BoardServiceImpl(SqlSession sqlSession) {
         System.out.println("boardServiceImpl");
         this.postRepository = sqlSession.getMapper(PostRepository.class);
         this.userRepository = sqlSession.getMapper(UserRepository.class);
         this.userFollowingRepository = sqlSession.getMapper(UserFollowingRepository.class);
-        this.attachmentRepository = sqlSession.getMapper(AttachmentRepository.class);
+    }
+    @Override
+    public int write(Post post) {
+        return postRepository.save(post);
     }
 
     @Override
@@ -97,6 +72,7 @@ public class BoardServiceImpl implements BoardService {
     // 이거 혹시 몰라서 남겨둠
     @Override
     public List<Post> list() {
+
         return postRepository.findAll();
     }
 
@@ -147,12 +123,35 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public List<Post> listByType(String type) {
         List<Post> posts = postRepository.findByType(type);
+
         for (Post post : posts) {
+            Long postId = post.getId();
+
+            // post_tag 주입
+            List<Tag> postTags = postRepository.findByPostTag(postId);
+            post.setPost_tag(postTags);
+
+            // user_tag는 helper만 조회
+            if ("helper".equals(post.getType())) {
+                List<Tag> userTags = postRepository.findByUserTag(postId);
+                post.setUser_tag(userTags);
+            }
+
+            // 팔로우 수 주입
             Integer followCount = userFollowingRepository.followCount(post.getUser_id());
             post.setFollowCount(followCount);
         }
+
         return posts;
     }
+
+    @Transactional
+    public void deleteTime(Long id) {
+        // 삭제한건 값이 1
+        postRepository.isDelete(id);
+        postRepository.deletedAt(id, LocalDateTime.now());
+    }
+
 
 
 

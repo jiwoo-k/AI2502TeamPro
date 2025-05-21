@@ -10,4 +10,13 @@
         values (#{complaintUserId}, #{reason}, #{postId})
     </insert>
 
+    <select id="postWarningCount" parameterType="long" resultType="int">
+        SELECT COUNT(*) FROM warning WHERE post_id = #{postId}
+    </select>
+
+    <select id="findByPostId" resultType="com.lec.spring.domain.UserWarning">
+        select complaint_user_id AS complaintUserId , post_id from warning where post_id = #{postId}
+    </select>
+
+
 </mapper>

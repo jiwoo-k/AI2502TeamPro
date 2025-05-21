@@ -43,7 +43,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/user/my_page/**", "/board/write", "/board/update/**" , "board/follow/**"
+                                "/user/my_page/**", "/board/write", "/board/update/**" , "board/follow/**", "board/warning/**"
                         ).authenticated()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().permitAll()
