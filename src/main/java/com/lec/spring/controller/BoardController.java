@@ -71,7 +71,7 @@ public class BoardController {
 
         // user_id 가지고 오기
         post.setUser_id(loginUser.getId());
-        int result = boardService.write(post);
+        int result = boardService.write(post, files);
         model.addAttribute("result", result);
         return "board/writeOk";
     }
