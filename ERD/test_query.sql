@@ -35,3 +35,4 @@ select * from post_tag;
 
 select * from user;
 
+select * from attachment;
