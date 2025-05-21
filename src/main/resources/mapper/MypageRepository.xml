@@ -24,7 +24,6 @@
         u.username,
         u.name,
         u.password,
-        u.juminNo,
         u.createdAt AS createdAt,
         u.latitude,
         u.longitude,
