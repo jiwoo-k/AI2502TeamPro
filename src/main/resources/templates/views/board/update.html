@@ -37,7 +37,7 @@
         <div id="delFiles"></div> <!--삭제할 file 의 id 값들을 담기 위함-->
         <div class="mb-3 mt-3">
             <label>기존 첨부파일:</label>
-            <div class="input-group mb-2" th:each="attachment : ${post.fileList}">
+            <div class="input-group mb-2" th:each="attachment : ${board.fileList}">
                 <input class="form-control col-xs-3" type="text" readonly th:value="${attachment.sourcename }">
                 <button type="button" class="btn btn-outline-danger" th:data-fileid-del="${attachment.id}">삭제</button>
             </div>

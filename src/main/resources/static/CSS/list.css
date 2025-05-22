@@ -3,7 +3,7 @@ body {
     width: 1400px;
     margin: 0 auto;
     padding-top: 100px;
-    background-color: #f1f1f1;
+    background-color: #fddcdc;
 
 }
 #button{
@@ -59,7 +59,7 @@ body {
     transition: box-shadow 0.2s ease-in-out;
 }
 #board:hover{
-    box-shadow: 2px 4px 10px rgba(255, 149, 149, 0.5);
+    box-shadow: 2px 4px 10px rgba(248, 0, 0, 0.5);
 }
 .attachment{
     border: 1px solid black;

@@ -1,10 +1,8 @@
 package com.lec.spring.controller;
 
 import com.lec.spring.domain.*;
-import com.lec.spring.service.BoardService;
-import com.lec.spring.service.UserFollowingService;
-import com.lec.spring.service.UserService;
-import com.lec.spring.service.UserWarningService;
+import com.lec.spring.repository.TagRepository;
+import com.lec.spring.service.*;
 import com.lec.spring.vaildator.BoardValidator;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -32,13 +30,24 @@ public class BoardController {
     private final UserFollowingService userFollowingService;
     private final UserWarningService userWarningService;
     private final UserService userService;
+    private final CategoryService categoryService;
+    private final TagRepository tagRepository;
 
-    public BoardController(BoardService boardService, UserFollowingService userFollowingService, UserWarningService userWarningService, UserService userService) {
+
+    public BoardController(BoardService boardService,
+                           UserFollowingService userFollowingService,
+                           UserWarningService userWarningService,
+                           UserService userService,
+                           CategoryService categoryService,
+                           TagRepository tagRepository
+    ) {
         System.out.println("[ACTIVE] BoardController");
         this.boardService = boardService;
         this.userFollowingService = userFollowingService;
         this.userWarningService = userWarningService;
         this.userService = userService;
+        this.categoryService = categoryService;
+        this.tagRepository = tagRepository;
     }
 // 수정, 추가. 삭제의 경우 attr name을 result 로 하였음
     @GetMapping("/write")
@@ -49,6 +58,7 @@ public class BoardController {
     public String write(
             @RequestParam Map<String, MultipartFile> files,
             @Valid Post post,
+            @Valid Tag tag,
             BindingResult bindingResult,
             Model model,
             RedirectAttributes redirectAttributes,
@@ -59,11 +69,27 @@ public class BoardController {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("title", post.getTitle());
             redirectAttributes.addFlashAttribute("content", post.getContent());
+            redirectAttributes.addFlashAttribute("name", tag.getName());
+
+            // 카테고리 검색 validator
+            List<Category> categoryList = categoryService.list();
+            redirectAttributes.addFlashAttribute("categoryList", categoryList);
+            redirectAttributes.addFlashAttribute("submittedCategoryId", tag.getCategory_id());
+
+
             for (FieldError error : bindingResult.getFieldErrors()) {
                 redirectAttributes.addFlashAttribute("error_" + error.getField(), error.getDefaultMessage());
             }
             return "redirect:/board/write";
         }
+
+        // 태그 추가
+        //유효성 검사 경우의 수에 따라 이게 null 이 될 일은 없긴함 ..
+        Tag searchedTag = tagRepository.searchTag(tag);
+
+        // 태그 색깔 가져와야한다.
+        String color = categoryService.findById(searchedTag.getCategory_id()).getColor();
+        searchedTag.setColor(color);
 
         // user_id 가지고 오기
         post.setUser_id(loginUser.getId());

@@ -36,7 +36,7 @@ public interface PostRepository {
     List<Tag> findTagsByPostId(Long post_id);
 
     // 선택한 태그들 가져오기 (도우미)
-    List<Tag> findTagsByUserId(Long user_id);
+//    List<Tag> findTagsByUserId(Long user_id);
 
     // 신고하기
     int warningOn(Boolean warning);

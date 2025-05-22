@@ -65,7 +65,7 @@ public class BoardServiceImpl implements BoardService {
             post.setPost_tag(postTag);
             // user_tag 주입
             if ("helper".equals(post.getType())) {
-                List <Tag> usertag = postRepository.findTagsByUserId(id);
+                List <Tag> usertag = postRepository.findTagsByPostId(id);
                 System.out.println("usertag" + usertag);
                 post.setUser_tag(usertag);
 
@@ -158,12 +158,12 @@ public class BoardServiceImpl implements BoardService {
             // post_tag 주입
             List<Tag> postTags = postRepository.findTagsByPostId(postId);
             post.setPost_tag(postTags);
-
-            // user_tag는 helper만 조회
-            if ("helper".equals(post.getType())) {
-                List<Tag> userTags = postRepository.findTagsByUserId(postId);
-                post.setUser_tag(userTags);
-            }
+//
+//            // user_tag는 helper만 조회
+//            if ("helper".equals(post.getType())) {
+//                List<Tag> userTags = postRepository.findTagsByUserId(postId);
+//                post.setUser_tag(userTags);
+//            }
 
             // 팔로우 수 주입
             Integer followCount = userFollowingRepository.followCount(post.getUser_id());
