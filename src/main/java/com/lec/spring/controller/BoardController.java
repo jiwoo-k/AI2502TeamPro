@@ -1,10 +1,10 @@
 package com.lec.spring.controller;
 
-import com.lec.spring.domain.*;
-import com.lec.spring.service.BoardService;
-import com.lec.spring.service.UserFollowingService;
-import com.lec.spring.service.UserService;
-import com.lec.spring.service.UserWarningService;
+import com.lec.spring.domain.Post;
+import com.lec.spring.domain.Tag;
+import com.lec.spring.domain.User;
+import com.lec.spring.domain.UserWarning;
+import com.lec.spring.service.*;
 import com.lec.spring.vaildator.BoardValidator;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -21,7 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -32,17 +31,21 @@ public class BoardController {
     private final UserFollowingService userFollowingService;
     private final UserWarningService userWarningService;
     private final UserService userService;
+    private final AttachmentService attachmentService;
 
-    public BoardController(BoardService boardService, UserFollowingService userFollowingService, UserWarningService userWarningService, UserService userService) {
+    public BoardController(BoardService boardService, UserFollowingService userFollowingService, UserWarningService userWarningService, UserService userService, AttachmentService attachmentService) {
         System.out.println("[ACTIVE] BoardController");
         this.boardService = boardService;
         this.userFollowingService = userFollowingService;
         this.userWarningService = userWarningService;
         this.userService = userService;
+        this.attachmentService = attachmentService;
     }
-// 수정, 추가. 삭제의 경우 attr name을 result 로 하였음
+
+    // 수정, 추가. 삭제의 경우 attr name을 result 로 하였음
     @GetMapping("/write")
-    public void write (){}
+    public void write() {
+    }
 
 
     @PostMapping("/write")
@@ -92,7 +95,6 @@ public class BoardController {
             User loginUser = userService.findByUsername(username);
             loginUserId = loginUser.getId();
         }
-        model.addAttribute("id", loginUserId);
 
         for (Post post : posts) {
             boolean isFollowed = loginUserId != null && userFollowingService.isFollowing(loginUserId, post.getUser_id());
@@ -107,46 +109,6 @@ public class BoardController {
 
         return "board/list";
     }
-
-    //태그 form 통해 들어오는 /board/list
-    @PostMapping("/list")
-    public String list(String type, HttpSession httpSession, Model model) {
-        //일단 특정 유형의 게시글 모두 들고오기
-        List<Post> allPosts = boardService.listByType(type);
-
-        //태그 검색 필터에 만족하는 게시글들 담을 것.
-        List<Post> filteredPosts = new ArrayList<>();
-
-        //세션에 있는 태그목록 가져오기
-        List<Tag> selectedTags = (List<Tag>) httpSession.getAttribute("selectedTags");
-
-        if(selectedTags.isEmpty()){
-            model.addAttribute("board", allPosts);
-        }
-        else {
-            for(Post post : allPosts) {
-                //게시글마다 태그 정보 뽑아오기
-                List<Tag> tags = post.getPost_tag();
-
-                for(Tag tag : selectedTags) {
-                    if(tags.contains(tag)) {
-                        filteredPosts.add(post);
-                        break;
-                    }
-                }
-            }
-
-            model.addAttribute("board", filteredPosts);
-        }
-
-        model.addAttribute("selectedType", type);
-
-        //TODO: 이외에 다른 매커니즘 혹시 필요하면 추가 바랍니다
-
-
-        return "board/list";
-    }
-
 
 
     @GetMapping("/detail/{id}")
@@ -167,8 +129,6 @@ public class BoardController {
             User loginUser = userService.findByUsername(username);
             loginUserId = loginUser.getId();
         }
-        model.addAttribute("id", loginUserId);
-
 
         List<Post> posts = boardService.listByType(type);
         for (Post p : posts) {
@@ -204,12 +164,12 @@ public class BoardController {
     }
 
 
-
     @GetMapping("/update/{id}")
-    public String update(Model model, @PathVariable Long id){
+    public String update(Model model, @PathVariable Long id) {
         model.addAttribute("board", boardService.detail(id));
         return "board/update";
     }
+
     @PostMapping("/update")
     public String update(@Valid Post post,
                          BindingResult bindingResult,
@@ -230,7 +190,7 @@ public class BoardController {
         model.addAttribute("result", result);
 
 
-        return "board/updateOk" ;
+        return "board/updateOk";
     }
 
     @PostMapping("/delete")
@@ -241,10 +201,20 @@ public class BoardController {
     }
 
 
+    @PostMapping("/warning")
+    public String warning(UserWarning warning, Model model, @AuthenticationPrincipal(expression = "user") User loginUser
+    ) {
+        warning.setComplaintUserId(loginUser.getId());
+
+        model.addAttribute("result", warning);
+        System.out.println("warning " + warning);
+        userWarningService.report(warning);
+        return "board/warning";
+    }
 
 
     @InitBinder("post")
-    public void initBinder(WebDataBinder binder){
+    public void initBinder(WebDataBinder binder) {
         System.out.println("호출 성공");
         binder.setValidator(new BoardValidator());
     }

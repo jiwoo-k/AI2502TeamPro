@@ -4,7 +4,10 @@ import com.lec.spring.domain.Attachment;
 import com.lec.spring.domain.Post;
 import com.lec.spring.domain.Tag;
 import com.lec.spring.domain.User;
-import com.lec.spring.repository.*;
+import com.lec.spring.repository.AttachmentRepository;
+import com.lec.spring.repository.PostRepository;
+import com.lec.spring.repository.UserFollowingRepository;
+import com.lec.spring.repository.UserRepository;
 import com.lec.spring.util.U;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,20 +30,19 @@ import java.util.Map;
 @Service
 public class BoardServiceImpl implements BoardService {
 
-    @Value("upload")
+    @Value("${app.upload.path}")
     private String uploadDir;
 
-    @Value("10")
+    @Value("${app.pagination.write_pages}")
     private int WRITE_PAGES;
 
-    @Value("10")
+    @Value("${app.pagination.page_rows}")
     private int PAGE_ROWS;
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final UserFollowingRepository userFollowingRepository;
     private final AttachmentRepository attachmentRepository;
-    private final TagRepository tagRepository;
 
     public BoardServiceImpl(SqlSession sqlSession) {
         System.out.println("[ACTIVE] BoardServiceImpl");
@@ -48,7 +50,6 @@ public class BoardServiceImpl implements BoardService {
         this.userRepository = sqlSession.getMapper(UserRepository.class);
         this.userFollowingRepository = sqlSession.getMapper(UserFollowingRepository.class);
         this.attachmentRepository = sqlSession.getMapper(AttachmentRepository.class);
-        this.tagRepository = sqlSession.getMapper(TagRepository.class);
     }
     @Override
     public int write(Post post) {
@@ -60,14 +61,14 @@ public class BoardServiceImpl implements BoardService {
         System.out.println("PostId : " + id);
         Post post = postRepository.findById(id);
         if (post != null) {
-            // post)tag 주입
-            List<Tag> postTag = postRepository.findTagsByPostId(id);
+            // postTag 주입
+            List<Tag> postTag = postRepository.findByPostTag(id);
             post.setPost_tag(postTag);
             // user_tag 주입
             if ("helper".equals(post.getType())) {
-                List <Tag> usertag = postRepository.findTagsByUserId(id);
-                System.out.println("usertag" + usertag);
-                post.setUser_tag(usertag);
+                List <Tag> userTag = postRepository.findByUserTag(id);
+                System.out.println("userTag" + userTag);
+                post.setUser_tag(userTag);
 
             }
         }
@@ -89,9 +90,9 @@ public class BoardServiceImpl implements BoardService {
            user = userRepository.findById(user.getId());
            post.setUser(user);  // 글 작성자 세팅.
 
-           int cnt = postRepository.save(post);   // 글 먼저 저장 (그래야 AI 된 PK값(id) 를 받아온다.
+           int cnt = postRepository.save(post);   // 글 먼저 저장 - 그래야 AI 된 PK값(id) 를 받아온다.
 
-           // 첨부파일 추가
+           // 첨부파일 추가.
            addFiles(files, post.getId());
 
            return cnt;
@@ -117,17 +118,17 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-       public int update(Post post, Map<String, MultipartFile> files, Long[] delfile) {
+       public int update(Post post, Map<String, MultipartFile> files, Long[] delFile) {
            int result = 0;
            result = postRepository.update(post);
 
            addFiles(files, post.getId());
 
-           if(delfile != null){
-               for(Long fileId : delfile){
+           if(delFile != null){
+               for(Long fileId : delFile){
                    Attachment file = attachmentRepository.findById(fileId);
                    if(file != null){
-                       delfile(file);
+                       delFiles(file);
                        attachmentRepository.delete(file);
                    }
                }
@@ -156,12 +157,12 @@ public class BoardServiceImpl implements BoardService {
             Long postId = post.getId();
 
             // post_tag 주입
-            List<Tag> postTags = postRepository.findTagsByPostId(postId);
+            List<Tag> postTags = postRepository.findByPostTag(postId);
             post.setPost_tag(postTags);
 
             // user_tag는 helper만 조회
             if ("helper".equals(post.getType())) {
-                List<Tag> userTags = postRepository.findTagsByUserId(postId);
+                List<Tag> userTags = postRepository.findByUserTag(postId);
                 post.setUser_tag(userTags);
             }
 
@@ -263,7 +264,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     // 특정 첨부파일을 물리적으로 삭제
-    private void delfile(Attachment file) {
+    private void delFiles(Attachment file) {
         String saveDirectory = new File(uploadDir).getAbsolutePath();
 
         File f = new File(saveDirectory, file.getFileName());
@@ -278,9 +279,5 @@ public class BoardServiceImpl implements BoardService {
         }
     }
 
-    @Override
-    public List<Tag> postTagList(Long post_id) {
-        //특정 게시물의 태그목록을 가져오자
-       return postRepository.findTagsByPostId(post_id);
-    }
+
 }
