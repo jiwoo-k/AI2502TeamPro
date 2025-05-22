@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.lec.spring.repository.MypageRepository">
+<mapper namespace="com.lec.spring.repository.MyPageRepository">
 
     <!-- ▶ Post 도메인 컬럼–필드 매핑을 위한 resultMap -->
     <resultMap id="PostResultMap" type="com.lec.spring.domain.Post">

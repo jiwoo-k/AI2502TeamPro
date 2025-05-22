@@ -8,9 +8,8 @@ import com.lec.spring.domain.Comment;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import java.util.List;
 
-public interface MypageService {
+public interface MyPageService {
     User getUserById(Long userId);
     Page<Post> getMyPosts(Long userId, String selectedType, Pageable pageable);
     Page<Comment> getMyComments(Long userId, Pageable pageable);

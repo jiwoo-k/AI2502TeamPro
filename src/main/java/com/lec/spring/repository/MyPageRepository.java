@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 @Mapper
-public interface MypageRepository {
+public interface MyPageRepository {
 
     ProfileUpdateForm selectProfileUpdateForm(@Param("userId") Long userId);
 

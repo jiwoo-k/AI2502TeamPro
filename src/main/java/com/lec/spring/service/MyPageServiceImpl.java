@@ -1,11 +1,11 @@
-// src/main/java/com/lec/spring/service/MypageServiceImpl.java
+// src/main/java/com/lec/spring/service/MyPageServiceImpl.java
 package com.lec.spring.service;
 
 import com.lec.spring.domain.ProfileUpdateForm;
 import com.lec.spring.domain.User;
 import com.lec.spring.domain.Post;
 import com.lec.spring.domain.Comment;
-import com.lec.spring.repository.MypageRepository;
+import com.lec.spring.repository.MyPageRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -16,11 +16,11 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class MypageServiceImpl implements MypageService {
+public class MyPageServiceImpl implements MyPageService {
 
-    private final MypageRepository repo;
+    private final MyPageRepository repo;
 
-    public MypageServiceImpl(MypageRepository repo) {
+    public MyPageServiceImpl(MyPageRepository repo) {
         this.repo = repo;
     }
 
