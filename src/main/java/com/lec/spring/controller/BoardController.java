@@ -3,6 +3,11 @@ package com.lec.spring.controller;
 import com.lec.spring.domain.*;
 import com.lec.spring.repository.TagRepository;
 import com.lec.spring.service.*;
+import com.lec.spring.domain.Post;
+import com.lec.spring.domain.Tag;
+import com.lec.spring.domain.User;
+import com.lec.spring.domain.UserWarning;
+import com.lec.spring.service.*;
 import com.lec.spring.vaildator.BoardValidator;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -32,26 +37,23 @@ public class BoardController {
     private final UserService userService;
     private final CategoryService categoryService;
     private final TagRepository tagRepository;
+    private final AttachmentService attachmentService;
 
-
-    public BoardController(BoardService boardService,
-                           UserFollowingService userFollowingService,
-                           UserWarningService userWarningService,
-                           UserService userService,
-                           CategoryService categoryService,
-                           TagRepository tagRepository
-    ) {
+    public BoardController(BoardService boardService, UserFollowingService userFollowingService, UserWarningService userWarningService, UserService userService, AttachmentService attachmentService) {
         System.out.println("[ACTIVE] BoardController");
         this.boardService = boardService;
         this.userFollowingService = userFollowingService;
         this.userWarningService = userWarningService;
         this.userService = userService;
+        this.attachmentService = attachmentService;
         this.categoryService = categoryService;
         this.tagRepository = tagRepository;
     }
-// 수정, 추가. 삭제의 경우 attr name을 result 로 하였음
+
+    // 수정, 추가. 삭제의 경우 attr name을 result 로 하였음
     @GetMapping("/write")
-    public void write (){}
+    public void write() {
+    }
 
 
     @PostMapping("/write")
@@ -230,12 +232,12 @@ public class BoardController {
     }
 
 
-
     @GetMapping("/update/{id}")
-    public String update(Model model, @PathVariable Long id){
+    public String update(Model model, @PathVariable Long id) {
         model.addAttribute("board", boardService.detail(id));
         return "board/update";
     }
+
     @PostMapping("/update")
     public String update(@Valid Post post,
                          BindingResult bindingResult,
@@ -256,7 +258,7 @@ public class BoardController {
         model.addAttribute("result", result);
 
 
-        return "board/updateOk" ;
+        return "board/updateOk";
     }
 
     @PostMapping("/delete")
@@ -266,11 +268,8 @@ public class BoardController {
         return "board/deleteOk";
     }
 
-
-
-
     @InitBinder("post")
-    public void initBinder(WebDataBinder binder){
+    public void initBinder(WebDataBinder binder) {
         System.out.println("호출 성공");
         binder.setValidator(new BoardValidator());
     }

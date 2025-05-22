@@ -60,14 +60,14 @@ public class BoardServiceImpl implements BoardService {
         System.out.println("PostId : " + id);
         Post post = postRepository.findById(id);
         if (post != null) {
-            // post)tag 주입
+            // postTag 주입
             List<Tag> postTag = postRepository.findTagsByPostId(id);
             post.setPost_tag(postTag);
             // user_tag 주입
             if ("helper".equals(post.getType())) {
-                List <Tag> usertag = postRepository.findTagsByPostId(id);
-                System.out.println("usertag" + usertag);
-                post.setUser_tag(usertag);
+                List <Tag> userTag = postRepository.findTagsByUserId(id);
+                System.out.println("userTag" + userTag);
+                post.setUser_tag(userTag);
 
             }
         }
@@ -89,9 +89,9 @@ public class BoardServiceImpl implements BoardService {
            user = userRepository.findById(user.getId());
            post.setUser(user);  // 글 작성자 세팅.
 
-           int cnt = postRepository.save(post);   // 글 먼저 저장 (그래야 AI 된 PK값(id) 를 받아온다.
+           int cnt = postRepository.save(post);   // 글 먼저 저장 - 그래야 AI 된 PK값(id) 를 받아온다.
 
-           // 첨부파일 추가
+           // 첨부파일 추가.
            addFiles(files, post.getId());
 
            return cnt;
@@ -117,17 +117,17 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-       public int update(Post post, Map<String, MultipartFile> files, Long[] delfile) {
+       public int update(Post post, Map<String, MultipartFile> files, Long[] delFile) {
            int result = 0;
            result = postRepository.update(post);
 
            addFiles(files, post.getId());
 
-           if(delfile != null){
-               for(Long fileId : delfile){
+           if(delFile != null){
+               for(Long fileId : delFile){
                    Attachment file = attachmentRepository.findById(fileId);
                    if(file != null){
-                       delfile(file);
+                       delFiles(file);
                        attachmentRepository.delete(file);
                    }
                }

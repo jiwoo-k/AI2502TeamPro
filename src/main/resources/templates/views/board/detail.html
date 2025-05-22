@@ -20,9 +20,9 @@
     <span th:text="${board.title}"></span>
 </div>
 
-<div>
-    <span th:text="${board.content}"></span>
-</div>
+    <div>
+        <span th:text="${board.content}"></span>
+    </div>
 
     <!-- 첨부파일목록 -->
             <div class="container mt-3 mb-3 border rounded">
@@ -44,17 +44,17 @@
 
 
 <table>
-    <div th:unless="${id} == ${board.user_id}">
+    <div th:unless="${session.id} == ${board.user_id}">
         <form th:if="${board.follow}" th:action="@{/board/follow/delete}" method="post">
-            <input type="hidden" name="followingUserId" th:value="${board.user_id}"/>
-            <input type="hidden" name="followedUserId" th:value="${board.user_id}"/>
+            <input type="hidden" name="followingUserId" th:value="${board.user_id}" />
+            <input type="hidden" name="followedUserId" th:value="${board.user_id}" />
             <input type="hidden" name="id" th:value="${board.id}">
-            <button type="submit">UNFOLLOW</button>
+            <button type="submit">언팔로우</button>
         </form>
 
         <form th:unless="${board.follow}" th:action="@{/board/follow/insert}" method="post">
-            <input type="hidden" name="followingUserId" th:value="${board.user_id}"/>
-            <input type="hidden" name="followedUserId" th:value="${board.user_id}"/>
+            <input type="hidden" name="followingUserId" th:value="${board.user_id}" />
+            <input type="hidden" name="followedUserId" th:value="${board.user_id}" />
             <input type="hidden" name="id" th:value="${board.id}">
             <button type="submit">FOLLOW</button>
         </form>
@@ -106,24 +106,6 @@
 
 </div>
 
-<!--&lt;!&ndash; 댓글 영역 START &ndash;&gt;-->
-<!--&lt;!&ndash; comment.html 프래그먼트를 불러옵니다 &ndash;&gt;-->
-<!--<th:block th:replace="~{views/board/comment :: comment-fragment}"/>-->
-
-<!--&lt;!&ndash; AJAX 댓글 스크립트에 필요한 전역 변수 세팅 &ndash;&gt;-->
-<!--<script th:inline="javascript">-->
-<!--    /*<![CDATA[*/-->
-<!--    // 현재 보고 있는 게시글 ID-->
-<!--    window.postId = /*[[${board.id}]]*/ 0;-->
-<!--    // 게시글 작성자 ID-->
-<!--    window.postAuthorId = /*[[${board.user_id}]]*/ 0;-->
-<!--    // 로그인된 사용자 ID (로그인 안 했으면 null)-->
-<!--    /*]]>*/-->
-<!--</script>-->
-<!--&lt;!&ndash; 댓글 로직 JS &ndash;&gt;-->
-<!--<script th:src="@{/js/comment.js}"></script>-->
-<!--&lt;!&ndash; 댓글 영역 END &ndash;&gt;-->
-
-</body>
+    </body>
 
 </html>

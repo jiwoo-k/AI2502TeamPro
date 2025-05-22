@@ -28,7 +28,7 @@
 
 <div th:each="board: ${board}" id="board" th:attr="data-id=${board.id}"
      onclick="location.href='/board/detail/' + this.getAttribute('data-id')" style="cursor:pointer;">
-    <!--            첨부파일 들어갈 곳-->
+    <!--첨부파일 들어갈 곳-->
     <div class="attachment"></div>
     <div id="text-area">
         <!--        이름, 게시물 제목-->
@@ -42,7 +42,7 @@
             <a class="follow" th:if="${board.type == 'helper'}"
                th:text="${board.follow} == true ? 'FOLLOWING' : 'NOPE'"></a>
         </div>
-        <!--            태그 보여주기-->
+        <!--태그 보여주기-->
         <div class="tagType" th:if="${board.type == 'guest'}">
             <span class="tagName" th:each="tag : ${board.post_tag}" th:text=" '# ' + ${tag.name} + '  '"
                   th:style="'color:' + ${tag.color} + '; border: 1px solid ' + ${tag.color}"></span>
