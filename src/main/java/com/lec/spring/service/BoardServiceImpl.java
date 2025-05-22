@@ -218,39 +218,31 @@ public class BoardServiceImpl implements BoardService {
         }
     }
 
-    // 물리적으로 서버에 파일 저장.  중복된 파일 이름 -> rename 처리.
     private Attachment upload(MultipartFile multipartFile) {
         Attachment attachment = null;
 
-        // 담긴 파일이 없으면 pass
         String originalFilename = multipartFile.getOriginalFilename();
         if (originalFilename == null || originalFilename.isEmpty()) return null;
 
-        // 원본 파일명
         String sourceName = StringUtils.cleanPath(originalFilename);
 
-        // 저장할 파일 명
-        String fileName = sourceName;
+        // 현재 시각 timestamp
+        String timestamp = LocalDateTime.now()
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss"));
 
-        // 파일이 중복되는지 확인
-        File file = new File(uploadDir, fileName);
-        if (file.exists()) {
-            int pos = fileName.lastIndexOf(".");
-            String timestamp = LocalDateTime.now()
-                    .format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss"));
-
-            if (pos > -1) {
-                String name = fileName.substring(0, pos);
-                String ext = fileName.substring(pos); // includes the dot
-                fileName = name + "-" + timestamp + ext;
-            } else {
-                fileName = fileName + "-" + timestamp;
-            }
+        // 확장자 분리
+        String fileName;
+        int pos = sourceName.lastIndexOf(".");
+        if (pos > -1) {
+            String name = sourceName.substring(0, pos);
+            String ext = sourceName.substring(pos); // includes the dot
+            fileName = name + "-" + timestamp + ext;
+        } else {
+            fileName = sourceName + "-" + timestamp;
         }
-        // 저장될 파일명
+
         System.out.println("\tfileName = " + fileName);
 
-        // java.io.*  => java.nio.*
         Path copyOfLocation = Paths.get(new File(uploadDir, fileName).getAbsolutePath());
         System.out.println("\t" + copyOfLocation);
 
@@ -258,19 +250,20 @@ public class BoardServiceImpl implements BoardService {
             Files.copy(
                     multipartFile.getInputStream(),
                     copyOfLocation,
-                    StandardCopyOption.REPLACE_EXISTING   // 기본에 존재하면 덮어쓰기.
+                    StandardCopyOption.REPLACE_EXISTING
             );
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
         attachment = Attachment.builder()
-                .fileName(fileName)  // 저장된 이름
-                .sourceName(sourceName)  // 원본 이름.
+                .fileName(fileName)         // 저장된 이름
+                .sourceName(sourceName)     // 원본 이름
                 .build();
 
         return attachment;
     }
+
 
     // 특정 첨부파일을 물리적으로 삭제
     private void delFiles(Attachment file) {
