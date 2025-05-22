@@ -10,6 +10,8 @@
     <link rel="stylesheet" th:href="@{/css/detail.css}">
 </head>
 <body>
+
+<th:block th:replace="~{common/header :: header-fragment}"></th:block>
 <h2>게시물 상세조회</h2>
 <div>
     <div th:text="'작성자: ' + ${board.name}"></div>
@@ -106,6 +108,20 @@
 
 </div>
 
-    </body>
+<!-- 댓글 섹션 추가 -->
+<div th:replace="board/comment :: comment-fragment"></div>
+
+<!-- 댓글 로직용 전역 변수 -->
+<script th:inline="javascript">
+    window.postId = [[${board.id}]];
+    window.loggedUserId = [[${id}]];
+    window.postAuthorId = [[${board.user_id}]];
+</script>
+<!-- 댓글 JS 로직 로드 -->
+<script th:src="@{/js/comment.js}"></script>
+
+
+
+</body>
 
 </html>
