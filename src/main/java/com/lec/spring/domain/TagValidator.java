@@ -30,6 +30,7 @@ public class TagValidator implements Validator {
     @Override
     public void validate(Object target, Errors errors) {
         Tag tag = (Tag) target;
+        tag.setName(tag.getName().trim());
         Long id = tag.getCategory_id();
         String tagName = tag.getName();
 

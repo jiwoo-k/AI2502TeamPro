@@ -108,50 +108,86 @@ public class BoardController {
     public String list(@RequestParam(required = false) String type,
                        Model model,
                        @RequestParam(required = false) Boolean follow,
-                       Principal principal) {
+                       Principal principal,
+                       HttpSession httpSession) {
+
+        // 로그인 사용자 ID 추출
+        Long loginUserId = null;
+        User loginUser;
+
+        //위도, 경도
+        Double lat1, lng1;
+
+        if (principal != null) {
+            String username = principal.getName();
+            loginUser = userService.findByUsername(username);
+            loginUserId = loginUser.getId();
+
+            //로그인한 사용자 위치검증
+            if(loginUser.getLatitude() == null || loginUser.getLongitude() == null) {
+                model.addAttribute("locationMissing", "위치 정보 없음");
+                return "board/list";
+            }
+            else{
+                lat1 = loginUser.getLatitude();
+                lng1 = loginUser.getLongitude();
+            }
+        }
+        else{
+            //로그인 안한 사용자 위치검증
+            lat1 = (Double) httpSession.getAttribute("lat");
+            lng1 = (Double) httpSession.getAttribute("lng");
+
+            if(lat1 == null || lng1 == null){
+                model.addAttribute("locationMissing", "위치 정보 없음");
+                return "board/list";
+            }
+        }
+
+        //1. 사용자 3km 이내 보여주기
+        List<User> allUsers = userService.findNearUsers();
+        List<User> filteredUsers = new ArrayList<>();
+        for(User user : allUsers){
+            Double lat2 = user.getLatitude();
+            Double lng2 = user.getLongitude();
+
+            if(lat2 == null || lng2 == null) continue;
+
+            double distance = calcDistance(lat1, lat2, lng1, lng2);
+            if(distance <= 3){
+                filteredUsers.add(user);
+            }
+        }
+
+        List<Post> allPosts = boardService.listByTypeLocation(type, filteredUsers);
+
+        model.addAttribute("id", loginUserId);
 
         if (type == null || type.isBlank()) {
             type = "guest";
         }
 
-        List<Post> posts = boardService.listByType(type);
+//        List<Post> allPosts = boardService.listByType(type);
 
-        // 로그인 사용자 ID 추출
-        Long loginUserId = null;
-        if (principal != null) {
-            String username = principal.getName();
-            User loginUser = userService.findByUsername(username);
-            loginUserId = loginUser.getId();
-        }
-        model.addAttribute("id", loginUserId);
-
-        for (Post post : posts) {
+        for (Post post : allPosts) {
             boolean isFollowed = loginUserId != null && userFollowingService.isFollowing(loginUserId, post.getUser_id());
             post.setFollow(isFollowed);
         }
 
-        model.addAttribute("follow", (follow != null) ? follow : false);
-        model.addAttribute("board", posts);
-        model.addAttribute("selectedType", type);
-
-
-        return "board/list";
-    }
-
-    //태그 form 통해 들어오는 /board/list
-    @PostMapping("/list")
-    public String list(String type, HttpSession httpSession, Model model) {
-        //일단 특정 유형의 게시글 모두 들고오기
-        List<Post> allPosts = boardService.listByType(type);
-
         //태그 검색 필터에 만족하는 게시글들 담을 것.
         List<Post> filteredPosts = new ArrayList<>();
 
-        //세션에 있는 태그목록 가져오기
         List<Tag> selectedTags = (List<Tag>) httpSession.getAttribute("selectedTags");
+
+        if(selectedTags == null) {
+            selectedTags = new ArrayList<>();
+            httpSession.setAttribute("selectedTags", selectedTags);
+        }
 
         if (selectedTags.isEmpty()) {
             model.addAttribute("board", allPosts);
+
+
         } else {
             for (Post post : allPosts) {
                 //게시글마다 태그 정보 뽑아오기
@@ -168,6 +204,9 @@ public class BoardController {
             model.addAttribute("board", filteredPosts);
         }
 
+
+
+        model.addAttribute("follow", (follow != null) ? follow : false);
         model.addAttribute("selectedType", type);
 
         //TODO: 이외에 다른 매커니즘 혹시 필요하면 추가 바랍니다
@@ -176,6 +215,24 @@ public class BoardController {
         return "board/list";
     }
 
+    private double calcDistance(Double lat1, Double lat2, Double lng1, Double lng2) {
+        double distance;
+        int radius = 6371;
+        double radian = Math.PI / 180;
+
+        double deltaLat = Math.abs(lat1 - lat2) * radian;
+        double deltaLng = Math.abs(lng1 - lng2) * radian;
+
+        double sinDeltaLat = Math.sin(deltaLat / 2);
+        double sinDeltaLng = Math.sin(deltaLng / 2);
+        double squareRoot = Math.sqrt(
+                sinDeltaLat * sinDeltaLat +
+                        Math.cos(lng1 * radian) * Math.cos(lng2 * radian) * sinDeltaLng * sinDeltaLng);
+
+        distance = 2 * radius * Math.asin(squareRoot);
+
+        return distance;
+    }
 
     @GetMapping("/detail/{id}")
     public String detail(@PathVariable Long id,
