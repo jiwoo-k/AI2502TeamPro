@@ -68,6 +68,7 @@ public class BoardController {
             @RequestParam Map<String, MultipartFile> files,
             @Valid Post post,
             @Valid Tag tag,
+            @RequestParam(required = false) String type,
             BindingResult bindingResult,
             Model model,
             RedirectAttributes redirectAttributes,
@@ -98,6 +99,7 @@ public class BoardController {
         post.setUser_id(loginUser.getId());
         int result = boardService.write(post, files);
         model.addAttribute("result", result);
+        model.addAttribute("type", type );
         return "board/writeOk";
     }
 
@@ -131,7 +133,6 @@ public class BoardController {
         model.addAttribute("follow", (follow != null) ? follow : false);
         model.addAttribute("board", posts);
         model.addAttribute("selectedType", type);
-        model.addAttribute("posts", posts);
 
 
         return "board/list";

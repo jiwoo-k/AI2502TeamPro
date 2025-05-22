@@ -46,21 +46,27 @@
 
 
 <table>
-    <div th:unless="${id} == ${board.user_id}">
-        <form th:if="${board.follow}" th:action="@{/board/follow/delete}" method="post">
+    <input type="hidden" th:value="${id}" id="loginUserId">
+    <div th:if="${id} != ${board.user_id}" >
+        <form th:if="${board.follow}" th:action="@{/board/follow/delete}" method="post" onsubmit="return checkLogin()">
             <input type="hidden" name="followingUserId" th:value="${board.user_id}" />
             <input type="hidden" name="followedUserId" th:value="${board.user_id}" />
             <input type="hidden" name="id" th:value="${board.id}">
-            <button type="submit">언팔로우</button>
+            <input type="hidden" name="userId" th:value="${board.user_id}">
+            <button type="submit">UNFOLLOW</button>
         </form>
 
-        <form th:unless="${board.follow}" th:action="@{/board/follow/insert}" method="post">
+        <form th:unless="${board.follow}" th:action="@{/board/follow/insert}" method="post" onsubmit="return checkLogin()">
             <input type="hidden" name="followingUserId" th:value="${board.user_id}" />
             <input type="hidden" name="followedUserId" th:value="${board.user_id}" />
             <input type="hidden" name="id" th:value="${board.id}">
+            <input type="hidden" name="userId" th:value="${board.user_id}">
             <button type="submit">FOLLOW</button>
         </form>
     </div>
+    <!--    팔로우 수-->
+    <a class="followCount" th:if="${board.type == 'helper'}" th:text="'팔로워 : ' + ${board.followCount} "></a>
+
     <span th:text="'신고' + ${postWarningCount} + '개'"></span>
 </table>
 <!--            태그 보여주기-->
@@ -75,7 +81,9 @@
 
 
 <div>
-    <button><a th:href="@{'/board/list'}">목록</a></button>
+    <button>
+        <a th:href="@{'/board/list?type=' + ${board.type}}">목록</a>
+    </button>
 </div>
 <div>
     <button th:if="${id} == ${board.user_id}">
@@ -108,6 +116,20 @@
 
 </div>
 
+<script>
+    function checkLogin() {
+        const loginUserId = document.getElementById('loginUserId').value;
+        if (!loginUserId) {
+            alert("로그인 하셔야 합니다");
+            location.href = "/user/login";
+            return false;
+        }
+        return true;
+    }
+</script>
+
+
+    </body>
 <!-- 댓글 섹션 추가 -->
 <div th:replace="board/comment :: comment-fragment"></div>
 
