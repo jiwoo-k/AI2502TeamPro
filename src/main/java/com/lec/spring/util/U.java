@@ -3,6 +3,7 @@ import com.lec.spring.config.PrincipalDetails;
 import com.lec.spring.domain.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.security.core.Authentication;
@@ -36,9 +37,25 @@ public class U {
     // 현재 로그인 한 사용자 User 객체 가져오기
     public static User getLoggedUser(){
         // 현재 로그인 한 사용자
-        PrincipalDetails userDetails = (PrincipalDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User user = userDetails.getUser();
-        return user;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null) {
+            return null;
+        }
+
+        // 2. 익명 사용자 토큰인 경우
+        if (authentication instanceof AnonymousAuthenticationToken) {
+            return null;
+        }
+
+        // 3. Principal이 UserDetails의 인스턴스인 경우
+        PrincipalDetails userDetails = (PrincipalDetails) authentication.getPrincipal();
+        if (userDetails != null) {
+            return userDetails.getUser();
+        }
+
+        // 그 외 예상치 못한 경우 (예: Principal이 String 타입의 "anonymousUser"인 경우 등)
+        return null;
     }
 
 

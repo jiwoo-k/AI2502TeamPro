@@ -4,6 +4,7 @@ import com.lec.spring.domain.Authority;
 import com.lec.spring.domain.User;
 import com.lec.spring.repository.AuthorityRepository;
 import com.lec.spring.repository.UserRepository;
+import com.lec.spring.util.U;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -84,5 +85,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public int updateLocation(User user) {
         return userRepository.updateLocation(user);
+    }
+
+    @Override
+    public List<User> findNearUsers() {
+        return userRepository.findNearUsers();
     }
 }

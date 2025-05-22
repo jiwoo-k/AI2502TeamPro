@@ -173,6 +173,25 @@ public class BoardServiceImpl implements BoardService {
         return posts;
     }
 
+    @Override
+    public List<Post> listByTypeLocation(String type, List<User> users) {
+        List<Post> posts = postRepository.findByTypeLocation(type, users);
+
+        for (Post post : posts) {
+            Long postId = post.getId();
+
+            // post_tag 주입
+            List<Tag> postTags = postRepository.findTagsByPostId(postId);
+            post.setPost_tag(postTags);
+
+            // 팔로우 수 주입
+            Integer followCount = userFollowingRepository.followCount(post.getUser_id());
+            post.setFollowCount(followCount);
+        }
+
+        return posts;
+    }
+
     @Transactional
     public void deleteTime(Long id) {
         // 삭제한건 값이 1
