@@ -65,7 +65,7 @@ public class BoardServiceImpl implements BoardService {
             post.setPost_tag(postTag);
             // user_tag 주입
             if ("helper".equals(post.getType())) {
-                List <Tag> userTag = postRepository.findTagsByUserId(id);
+                List <Tag> userTag = postRepository.findTagsByPostId(id);
                 System.out.println("userTag" + userTag);
                 post.setUser_tag(userTag);
 
@@ -263,7 +263,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     // 특정 첨부파일을 물리적으로 삭제
-    private void delfile(Attachment file) {
+    private void delFiles(Attachment file) {
         String saveDirectory = new File(uploadDir).getAbsolutePath();
 
         File f = new File(saveDirectory, file.getFileName());

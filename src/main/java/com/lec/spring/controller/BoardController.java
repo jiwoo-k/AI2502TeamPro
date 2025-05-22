@@ -39,7 +39,14 @@ public class BoardController {
     private final TagRepository tagRepository;
     private final AttachmentService attachmentService;
 
-    public BoardController(BoardService boardService, UserFollowingService userFollowingService, UserWarningService userWarningService, UserService userService, AttachmentService attachmentService) {
+    public BoardController(BoardService boardService,
+                           UserFollowingService userFollowingService,
+                           UserWarningService userWarningService,
+                           UserService userService,
+                           AttachmentService attachmentService,
+                           CategoryService categoryService,
+                           TagRepository tagRepository
+                           ) {
         System.out.println("[ACTIVE] BoardController");
         this.boardService = boardService;
         this.userFollowingService = userFollowingService;
@@ -148,16 +155,15 @@ public class BoardController {
         //세션에 있는 태그목록 가져오기
         List<Tag> selectedTags = (List<Tag>) httpSession.getAttribute("selectedTags");
 
-        if(selectedTags.isEmpty()){
+        if (selectedTags.isEmpty()) {
             model.addAttribute("board", allPosts);
-        }
-        else {
-            for(Post post : allPosts) {
+        } else {
+            for (Post post : allPosts) {
                 //게시글마다 태그 정보 뽑아오기
                 List<Tag> tags = post.getPost_tag();
 
-                for(Tag tag : selectedTags) {
-                    if(tags.contains(tag)) {
+                for (Tag tag : selectedTags) {
+                    if (tags.contains(tag)) {
                         filteredPosts.add(post);
                         break;
                     }
@@ -174,7 +180,6 @@ public class BoardController {
 
         return "board/list";
     }
-
 
 
     @GetMapping("/detail/{id}")

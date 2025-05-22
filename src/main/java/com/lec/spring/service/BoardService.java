@@ -1,6 +1,7 @@
 package com.lec.spring.service;
 
 import com.lec.spring.domain.Post;
+import com.lec.spring.domain.Tag;
 import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -37,6 +38,8 @@ public interface BoardService {
 
     // 삭제 정보 저장
     void deleteTime(Long id);
+
+    public List<Tag> postTagList(Long post_id);
 
 
 }
