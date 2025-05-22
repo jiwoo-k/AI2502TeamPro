@@ -67,6 +67,9 @@ public class BoardServiceImpl implements BoardService {
         System.out.println("PostId : " + id);
         Post post = postRepository.findById(id); // SELECT
 
+        Integer followCount = userFollowingRepository.followCount(post.getUser_id());
+        post.setFollowCount(followCount);
+
         if (post != null) {
             // 첨부파일(들) 정보 가져오기
             List<Attachment> fileList = attachmentRepository.findByPost(post.getId());

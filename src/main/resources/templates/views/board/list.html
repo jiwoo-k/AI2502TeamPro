@@ -22,8 +22,9 @@
     </select>
 </form>
 <!--버튼-->
-<div id="button">
-    <button class="writeBtn"><a th:href="@{/board/write}">게시물 작성하기</a></button>
+<input type="hidden" th:value="${id}" id="loginUserId">
+<div id="button" onclick="return checkLogin()">
+    <button class="writeBtn"><a th:href="@{/board/write}" >게시물 작성하기</a></button>
 </div>
 
 <div th:each="board: ${board}" id="board" th:attr="data-id=${board.id}"
@@ -53,11 +54,24 @@
         </div>
     </div>
     <!--    팔로우 수-->
-    <a class="followCount" th:if="${board.type == 'helper'}" th:text="'팔로우 : ' + ${board.followCount} "></a>
+    <a class="followCount" th:if="${board.type == 'helper'}" th:text="'팔로워 : ' + ${board.followCount} "></a>
     <!--    날짜-->
     <a class="day"
        th:text="${#temporals.format(board.createdat, board.createdat.monthValue >= 10 ? 'yy년 MM월 dd일 HH시' : 'yy년 M월 d일 H시')}"></a>
 
 </div>
+
+<script>
+    function checkLogin() {
+        const loginUserId = document.getElementById('loginUserId').value;
+        if (!loginUserId) {
+            alert("로그인 하셔야 합니다");
+            location.href = "/user/login";
+            return false;
+        }
+        return true;
+    }
+</script>
+
 </body>
 </html>
