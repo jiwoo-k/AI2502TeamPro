@@ -1,5 +1,6 @@
-package com.lec.spring.domain;
+package com.lec.spring.vaildator;
 
+import com.lec.spring.domain.User;
 import com.lec.spring.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

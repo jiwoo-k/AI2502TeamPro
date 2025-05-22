@@ -1,8 +1,8 @@
-package com.lec.spring.domain;
+package com.lec.spring.vaildator;
 
+import com.lec.spring.domain.Tag;
 import com.lec.spring.repository.TagRepository;
 import com.lec.spring.service.CategoryService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
