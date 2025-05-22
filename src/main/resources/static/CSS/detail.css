@@ -1,0 +1,264 @@
+/* 전체 스타일 초기화 및 기본 설정 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+body {
+    background-color: #f8dbe6;
+    color: #333;
+    line-height: 1.6;
+    padding: 20px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* 헤더 스타일 */
+h2 {
+    color: #2c3e50;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f32ead;
+    font-size: 24px;
+}
+
+/* 게시물 정보 영역 */
+div {
+    margin-bottom: 15px;
+}
+
+/* 작성자 및 작성일 스타일 */
+div:nth-of-type(1) {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #da6e95;
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: #4a5568;
+}
+
+/* 제목 스타일 */
+div:nth-of-type(2) {
+    margin: 20px 0;
+}
+
+div:nth-of-type(2) span {
+    font-size: 22px;
+    font-weight: bold;
+    color: #2c3e50;
+    display: block;
+    padding: 10px 0;
+}
+
+/* 내용 스타일 */
+div:nth-of-type(3) {
+    background-color: white;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    margin-bottom: 30px;
+    min-height: 200px;
+    line-height: 1.8;
+}
+
+/* 테이블 스타일 */
+table {
+    width: 100%;
+    margin: 20px 0;
+    border-collapse: collapse;
+}
+
+/* 팔로우/언팔로우 버튼 스타일 */
+button[type="submit"] {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+button[type="submit"]:hover {
+    background-color: #2980b9;
+}
+
+/* UNFOLLOW 버튼 스타일 */
+form:nth-of-type(1) button[type="submit"] {
+    background-color: #e74c3c;
+}
+
+form:nth-of-type(1) button[type="submit"]:hover {
+    background-color: #c0392b;
+}
+
+/* 신고 카운트 스타일 */
+span[th\:text*="신고"] {
+    color: #e74c3c;
+    font-size: 14px;
+    margin-left: 10px;
+}
+
+/* 태그 영역 스타일 */
+div[th\:if] {
+    margin: 20px 0;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border-left: 4px solid #3498db;
+}
+
+div[th\:if] span {
+    font-weight: bold;
+    color: #2c3e50;
+    display: block;
+    margin-bottom: 10px;
+}
+
+/* 태그 목록 스타일 */
+ul {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+
+/* 버튼 스타일 */
+button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 10px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
+/* 링크 스타일 */
+a {
+    color: white;
+    text-decoration: none;
+}
+
+/* 수정/삭제 버튼 컨테이너 */
+div:nth-last-of-type(3),
+div:nth-last-of-type(2),
+div:nth-last-of-type(1) {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+/* 목록 버튼 스타일 */
+div:nth-last-of-type(3) button {
+    background-color: #7f8c8d;
+}
+
+div:nth-last-of-type(3) button:hover {
+    background-color: #6a7778;
+}
+
+/* 수정 버튼 스타일 */
+div:nth-last-of-type(2) button {
+    background-color: #2ecc71;
+}
+
+div:nth-last-of-type(2) button:hover {
+    background-color: #27ae60;
+}
+
+/* 삭제 버튼 스타일 */
+div:nth-last-of-type(1) form:first-child button {
+    background-color: #e74c3c;
+}
+
+div:nth-last-of-type(1) form:first-child button:hover {
+    background-color: #c0392b;
+}
+
+/* 신고 버튼 및 양식 스타일 */
+#reasonBox {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 15px;
+    border: 1px solid #dfe6e9;
+}
+
+#reason {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin: 10px 0;
+    min-height: 100px;
+    resize: vertical;
+}
+
+label[for="reason"] {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+/* 신고 관련 버튼 스타일 */
+form[th\:action*="warning"] button[type="button"] {
+    background-color: #e74c3c;
+}
+
+form[th\:action*="warning"] button[type="button"]:hover {
+    background-color: #c0392b;
+}
+
+form[th\:action*="warning"] button[type="submit"] {
+    background-color: #e74c3c;
+    margin-top: 10px;
+}
+
+form[th\:action*="warning"] button[type="submit"]:hover {
+    background-color: #c0392b;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    body {
+        padding: 15px;
+    }
+
+    div:nth-of-type(1) {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    div:nth-of-type(1) div:last-child {
+        margin-top: 8px;
+    }
+
+    div:nth-last-of-type(3),
+    div:nth-last-of-type(2),
+    div:nth-last-of-type(1) {
+        display: block;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    button,
+    button[type="submit"] {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}
+

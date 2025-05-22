@@ -6,36 +6,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Title</title>
     <link rel="stylesheet" href="/css/list.css">
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Boldonse&family=Jua&family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=KoHo:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans+KR:wght@100..900&family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Oswald:wght@576&family=Sunflower:wght@300&display=swap"
+          rel="stylesheet">
+
 </head>
 <body>
 
-<h2>게시판 목록</h2>
+<!--header-->
+<header th:replace="common/header :: header-fragment"></header>
+
 <form method="get" action="/board/list">
-    <select name="type" onchange="this.form.submit()">
+    <select class="selectType" name="type" onchange="this.form.submit()">
         <option value="guest" th:selected="${selectedType == 'guest'}">손님</option>
         <option value="helper" th:selected="${selectedType == 'helper'}">도우미</option>
     </select>
 </form>
-<button><a th:href="@{/home}">홈</a></button>
-<button><a th:href="@{/board/write}">작성하기</a></button>
-
+<!--버튼-->
+<div id="button">
+    <button class="writeBtn"><a th:href="@{/board/write}">게시물 작성하기</a></button>
+</div>
 
 <div th:each="board: ${board}" id="board" th:attr="data-id=${board.id}"
      onclick="location.href='/board/detail/' + this.getAttribute('data-id')" style="cursor:pointer;">
-    <!--            첨부파일 들어갈 곳-->
+    <!--첨부파일 들어갈 곳-->
     <div class="attachment"></div>
     <div id="text-area">
+        <!--        이름, 게시물 제목-->
         <a class="title" th:text="${board.title}"></a>
         <div class="name-wapper">
             <a class="name" th:text="${board.name}"></a>
-            <a class="followCount" th:if="${board.type == 'helper'}" th:text="'팔로우 ' + ${board.followCount} + '명'"></a>
         </div>
+        <!--        일부 content보여주기-->
         <a class="content" th:text="${board.content}"></a>
-        <div th:unless="${session.id} == ${board.user_id}">
+        <div th:unless="${id} == ${board.user_id}">
             <a class="follow" th:if="${board.type == 'helper'}"
                th:text="${board.follow} == true ? 'FOLLOWING' : 'NOPE'"></a>
         </div>
-        <!--            태그 보여주기-->
+        <!--태그 보여주기-->
         <div class="tagType" th:if="${board.type == 'guest'}">
             <span class="tagName" th:each="tag : ${board.post_tag}" th:text=" '# ' + ${tag.name} + '  '"
                   th:style="'color:' + ${tag.color} + '; border: 1px solid ' + ${tag.color}"></span>
@@ -45,7 +52,9 @@
                   th:style="'color:' + ${tag.color} + '; border: 1px solid ' + ${tag.color}"></span>
         </div>
     </div>
-    <!--    이거 날짜와 시간 넣을때 개인적으로 분, 초는 필요가 없다고 생각함.-->
+    <!--    팔로우 수-->
+    <a class="followCount" th:if="${board.type == 'helper'}" th:text="'팔로우 : ' + ${board.followCount} "></a>
+    <!--    날짜-->
     <a class="day"
        th:text="${#temporals.format(board.createdat, board.createdat.monthValue >= 10 ? 'yy년 MM월 dd일 HH시' : 'yy년 M월 d일 H시')}"></a>
 

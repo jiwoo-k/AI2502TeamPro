@@ -27,13 +27,13 @@ import java.util.Map;
 @Service
 public class BoardServiceImpl implements BoardService {
 
-    @Value("${app.upload.path}")
+    @Value("upload")
     private String uploadDir;
 
-    @Value("${app.pagination.write_pages}")
+    @Value("10")
     private int WRITE_PAGES;
 
-    @Value("${app.pagination.page_rows}")
+    @Value("10")
     private int PAGE_ROWS;
 
     private final PostRepository postRepository;
@@ -60,14 +60,14 @@ public class BoardServiceImpl implements BoardService {
         System.out.println("PostId : " + id);
         Post post = postRepository.findById(id);
         if (post != null) {
-            // post)tag 주입
+            // postTag 주입
             List<Tag> postTag = postRepository.findTagsByPostId(id);
             post.setPost_tag(postTag);
             // user_tag 주입
             if ("helper".equals(post.getType())) {
-                List <Tag> usertag = postRepository.findTagsByUserId(id);
-                System.out.println("usertag" + usertag);
-                post.setUser_tag(usertag);
+                List <Tag> userTag = postRepository.findTagsByPostId(id);
+                System.out.println("userTag" + userTag);
+                post.setUser_tag(userTag);
 
             }
         }
@@ -89,7 +89,7 @@ public class BoardServiceImpl implements BoardService {
            user = userRepository.findById(user.getId());
            post.setUser(user);  // 글 작성자 세팅.
 
-           int cnt = postRepository.save(post);   // 글 먼저 저장 (그래야 AI 된 PK값(id) 를 받아온다.
+           int cnt = postRepository.save(post);   // 글 먼저 저장 - 그래야 AI 된 PK값(id) 를 받아온다.
 
            // 첨부파일 추가.
            addFiles(files, post.getId());
@@ -117,17 +117,17 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-       public int update(Post post, Map<String, MultipartFile> files, Long[] delfile) {
+       public int update(Post post, Map<String, MultipartFile> files, Long[] delFile) {
            int result = 0;
            result = postRepository.update(post);
 
            addFiles(files, post.getId());
 
-           if(delfile != null){
-               for(Long fileId : delfile){
+           if(delFile != null){
+               for(Long fileId : delFile){
                    Attachment file = attachmentRepository.findById(fileId);
                    if(file != null){
-                       delfile(file);
+                       delFiles(file);
                        attachmentRepository.delete(file);
                    }
                }
@@ -158,12 +158,12 @@ public class BoardServiceImpl implements BoardService {
             // post_tag 주입
             List<Tag> postTags = postRepository.findTagsByPostId(postId);
             post.setPost_tag(postTags);
-
-            // user_tag는 helper만 조회
-            if ("helper".equals(post.getType())) {
-                List<Tag> userTags = postRepository.findTagsByUserId(postId);
-                post.setUser_tag(userTags);
-            }
+//
+//            // user_tag는 helper만 조회
+//            if ("helper".equals(post.getType())) {
+//                List<Tag> userTags = postRepository.findTagsByUserId(postId);
+//                post.setUser_tag(userTags);
+//            }
 
             // 팔로우 수 주입
             Integer followCount = userFollowingRepository.followCount(post.getUser_id());
@@ -263,7 +263,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     // 특정 첨부파일을 물리적으로 삭제
-    private void delfile(Attachment file) {
+    private void delFiles(Attachment file) {
         String saveDirectory = new File(uploadDir).getAbsolutePath();
 
         File f = new File(saveDirectory, file.getFileName());

@@ -39,7 +39,7 @@ public interface BoardService {
     // 삭제 정보 저장
     void deleteTime(Long id);
 
-    //특정 게시물의 id 로 post_tag 목록 불러오기
-    List<Tag> postTagList(Long post_id);
+    public List<Tag> postTagList(Long post_id);
+
 
 }

@@ -1,13 +1,13 @@
 package com.lec.spring.controller;
 
+import com.lec.spring.domain.*;
+import com.lec.spring.repository.TagRepository;
+import com.lec.spring.service.*;
 import com.lec.spring.domain.Post;
 import com.lec.spring.domain.Tag;
 import com.lec.spring.domain.User;
 import com.lec.spring.domain.UserWarning;
-import com.lec.spring.service.BoardService;
-import com.lec.spring.service.UserFollowingService;
-import com.lec.spring.service.UserService;
-import com.lec.spring.service.UserWarningService;
+import com.lec.spring.service.*;
 import com.lec.spring.vaildator.BoardValidator;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -35,13 +35,26 @@ public class BoardController {
     private final UserFollowingService userFollowingService;
     private final UserWarningService userWarningService;
     private final UserService userService;
+    private final CategoryService categoryService;
+    private final TagRepository tagRepository;
+    private final AttachmentService attachmentService;
 
-    public BoardController(BoardService boardService, UserFollowingService userFollowingService, UserWarningService userWarningService, UserService userService) {
+    public BoardController(BoardService boardService,
+                           UserFollowingService userFollowingService,
+                           UserWarningService userWarningService,
+                           UserService userService,
+                           AttachmentService attachmentService,
+                           CategoryService categoryService,
+                           TagRepository tagRepository
+                           ) {
         System.out.println("[ACTIVE] BoardController");
         this.boardService = boardService;
         this.userFollowingService = userFollowingService;
         this.userWarningService = userWarningService;
         this.userService = userService;
+        this.attachmentService = attachmentService;
+        this.categoryService = categoryService;
+        this.tagRepository = tagRepository;
     }
 
     // 수정, 추가. 삭제의 경우 attr name을 result 로 하였음
@@ -54,6 +67,7 @@ public class BoardController {
     public String write(
             @RequestParam Map<String, MultipartFile> files,
             @Valid Post post,
+            @Valid Tag tag,
             BindingResult bindingResult,
             Model model,
             RedirectAttributes redirectAttributes,
@@ -64,11 +78,21 @@ public class BoardController {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("title", post.getTitle());
             redirectAttributes.addFlashAttribute("content", post.getContent());
+            redirectAttributes.addFlashAttribute("name", tag.getName());
+
+            // 카테고리 검색 validator
+            List<Category> categoryList = categoryService.list();
+            redirectAttributes.addFlashAttribute("categoryList", categoryList);
+            redirectAttributes.addFlashAttribute("submittedCategoryId", tag.getCategory_id());
+
+
             for (FieldError error : bindingResult.getFieldErrors()) {
                 redirectAttributes.addFlashAttribute("error_" + error.getField(), error.getDefaultMessage());
             }
             return "redirect:/board/write";
         }
+
+
 
         // user_id 가지고 오기
         post.setUser_id(loginUser.getId());
@@ -97,6 +121,7 @@ public class BoardController {
             User loginUser = userService.findByUsername(username);
             loginUserId = loginUser.getId();
         }
+        model.addAttribute("id", loginUserId);
 
         for (Post post : posts) {
             boolean isFollowed = loginUserId != null && userFollowingService.isFollowing(loginUserId, post.getUser_id());
@@ -124,16 +149,15 @@ public class BoardController {
         //세션에 있는 태그목록 가져오기
         List<Tag> selectedTags = (List<Tag>) httpSession.getAttribute("selectedTags");
 
-        if(selectedTags.isEmpty()){
+        if (selectedTags.isEmpty()) {
             model.addAttribute("board", allPosts);
-        }
-        else {
-            for(Post post : allPosts) {
+        } else {
+            for (Post post : allPosts) {
                 //게시글마다 태그 정보 뽑아오기
                 List<Tag> tags = post.getPost_tag();
 
-                for(Tag tag : selectedTags) {
-                    if(tags.contains(tag)) {
+                for (Tag tag : selectedTags) {
+                    if (tags.contains(tag)) {
                         filteredPosts.add(post);
                         break;
                     }
@@ -170,6 +194,8 @@ public class BoardController {
             User loginUser = userService.findByUsername(username);
             loginUserId = loginUser.getId();
         }
+        model.addAttribute("id", loginUserId);
+
 
         List<Post> posts = boardService.listByType(type);
         for (Post p : posts) {
@@ -240,19 +266,6 @@ public class BoardController {
         model.addAttribute("result", 1);
         return "board/deleteOk";
     }
-
-
-    @PostMapping("/warning")
-    public String warning(UserWarning warning, Model model, @AuthenticationPrincipal(expression = "user") User loginUser
-    ) {
-        warning.setComplaintUserId(loginUser.getId());
-
-        model.addAttribute("result", warning);
-        System.out.println("warning " + warning);
-        userWarningService.report(warning);
-        return "board/warning";
-    }
-
 
     @InitBinder("post")
     public void initBinder(WebDataBinder binder) {

@@ -15,51 +15,67 @@
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
 
     <script th:src="@{/js/write.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/write.css}">
 
 </head>
 <body>
 <h2>게시물 작성</h2>
 
-<form th:action="@{/board/write}" method="post" enctype="multipart/form-data">
-    <div>
-        <span>제목을 입력하세요</span>
-        <input type="text" th:value="${title}" placeholder="제목을 입력하세요" name="title">
-    </div>
-    <div th:if="${error_title}" th:text="${error_title}" style="color: red"></div>
+<!--header-->
+<header th:replace="common/header :: header-fragment"></header>
 
-    <div>
-        <span>내용을 입력하세요</span>
-        <textarea th:value="${content}" placeholder="글을 작성하세요" name="content"></textarea>
-    </div>
-    <div th:if="${error_content}" th:text="${error_content}" style="color: red"></div>
+<div id="writeBoard">
 
-
-    <!--  게시물 유형을 바꿀 수 있게 select로 구현 함 => 근데 태크도 나중에 같이 수정되게 만들어야 하고, 심지어 팔로우도 도우미에서만 보이게 해야 함-->
-    <!--  => 어떻게 하지...-->
-    <div>
-        <select name="type" placeholder="게시물 유형" th:value="${type}">
-            <option value="guest">손님</option>
-            <option value="helper">도우미</option>
-        </select>
-    </div>
-    <div>
-        <button type="submit">작성</button>
-        <a th:href="@{/board/write}"></a>
-    </div>
-    <button><a th:href="@{/board/list}">목록</a></button>
-
-    <!-- 첨부파일 -->
-    <div class="container mt-3 mb-3 border rounded">
-        <div class="mb-3 mt-3">
-            <label>첨부파일:</label>
-            <div id="files">
-
+    <!--title-->
+    <form th:action="@{/board/write}" method="post" enctype="multipart/form-data">
+        <div class="writeTitle">
+            <div>
+                <span>제목을 입력하세요</span>
+                <input type="text" th:value="${title}" placeholder="제목을 입력하세요" name="title">
             </div>
-            <button type="button" id="btnAdd" class="btn btn-secondary">추가</button>
+            <div th:if="${error_title}" th:text="${error_title}" style="color: red"></div>
         </div>
-    </div>
-    <!-- 첨부파일 -->
+        <!--title-->
+        <br><br><br>
+        <!--content-->
+        <div class="writeContent">
+            <span>내용을 입력하세요</span>
+            <textarea th:value="${content}" placeholder="글을 작성하세요" name="content"></textarea>
+            <div th:if="${error_content}" th:text="${error_content}" style="color: red"></div>
+        </div>
+        <!--content-->
 
-</form>
+        <!-- 첨부파일 -->
+        <div class="container mt-3 mb-3 border rounded">
+            <div class="mb-3 mt-3">
+                <label>첨부파일:</label>
+                <div id="files">
+                </div>
+                <button type="button" id="btnAdd" class="btn btn-secondary">추가</button>
+            </div>
+        </div>
+        <!-- 첨부파일 -->
+<!--        태그추가-->
+        <div></div>
+<!--        태그추가-->
+
+        <!-- 유형 선택 -->
+        <div class="select-wrapper">
+            <select class="selectType" name="type">
+                <option value="guest" th:selected="${selectedType == 'guest'}">손님</option>
+                <option value="helper" th:selected="${selectedType == 'helper'}">도우미</option>
+            </select>
+        </div>
+
+        <div class="button-wrapper">
+            <form th:action="@{/board/write}" method="post" enctype="multipart/form-data" style="display: inline;">
+                <button type="submit" class="writeBtn">작성</button>
+            </form>
+
+            <!-- 목록 버튼 -->
+            <a th:href="@{/board/list}" class="listBtn">목록</a>
+        </div>
+</div>
+</div>
 </body>
 </html>

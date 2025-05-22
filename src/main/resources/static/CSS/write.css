@@ -1,0 +1,118 @@
+body {
+    margin: 0;
+    width: 1400px;
+    margin: 0 auto;
+    padding-top: 100px;
+    background-color: #f1f1f1;
+    display: block;
+
+}
+#writeBoard{
+    background-position: center ;
+    width: 95%;
+    height: 1550px;
+    border-radius: 2px;
+    padding: 15px;
+    display: flex;
+    margin: auto;
+    position: relative;
+    margin-bottom: 10px;
+    background-color: #ffffff;
+    border: 1px solid #f8d1d1;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0);
+    transition: box-shadow 0.2s ease-in-out;
+}
+
+h2{
+    color: #101010;
+}
+.writeTitle span{
+    font-weight: bold;
+    font-size: 40px;
+}
+.writeTitle input{
+    border: none;
+    width: 1300px;
+    height: 40px;
+    font-size: 20px;
+    padding: 4px;
+    border-bottom: 1px solid #ffffff;
+}
+.writeTitle input:hover{
+    border-bottom: 1px solid #000000;
+}
+
+.writeContent span{
+    font-weight: bold;
+    font-size: 40px;
+}
+.writeContent textarea{
+    border: none;
+    width: 1300px;
+    height: 400px;
+    font-size: 20px;
+    padding: 4px;
+    border-bottom: 1px solid #ffffff;
+}
+.writeContent textarea:hover{
+    border: 1px solid #000000;
+    outline: none;
+}
+.select-wrapper{
+    width: 100px;
+    height: 30px;
+}
+
+.selectType option{
+    display: block;
+    text-align: center;
+
+}
+.button-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+    margin-right: 30px;
+}
+
+.second-button {
+    margin-top: -40px;
+    position: relative;
+    right: 130px;
+    top: 80%;
+}
+
+.writeBtn {
+    width: 150px;
+    height: 30px;
+    font-size: 15px;
+    border: none;
+    border-radius: 15px;
+    background-color: #ddefc5;
+    color: white;
+    transition: 0.5s ease-in-out;
+}
+
+.writeBtn:hover {
+    background-color: #b9df04;
+}
+
+
+.listBtn {
+    width: 100px;
+    height: 30px;
+    font-size: 15px;
+    border: none;
+    border-radius: 15px;
+    background-color: #e4aeb7;
+    color: white;
+    text-decoration: none;
+    text-align: center;
+    line-height: 30px;
+    transition: 0.5s ease-in-out;
+}
+
+.listBtn:hover {
+    background-color: #dc3056;
+}
