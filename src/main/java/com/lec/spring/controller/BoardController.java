@@ -92,13 +92,7 @@ public class BoardController {
             return "redirect:/board/write";
         }
 
-        // 태그 추가
-        //유효성 검사 경우의 수에 따라 이게 null 이 될 일은 없긴함 ..
-        Tag searchedTag = tagRepository.searchTag(tag);
 
-        // 태그 색깔 가져와야한다.
-        String color = categoryService.findById(searchedTag.getCategory_id()).getColor();
-        searchedTag.setColor(color);
 
         // user_id 가지고 오기
         post.setUser_id(loginUser.getId());
