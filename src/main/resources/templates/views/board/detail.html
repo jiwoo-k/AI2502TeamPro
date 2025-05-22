@@ -36,7 +36,7 @@
                     </ul>
                     <!--  이미지인 경우 보여주기 -->
                     <div th:each="attachment : ${board.fileList}" th:if="${attachment.image}">
-                        <img th:src="@{'/upload/' + ${attachment.fileName}}" class="img-thumbnail" alt="범규">
+                        <img th:src="@{'/upload/' + ${attachment.fileName}}" class="img-thumbnail" alt="image">
                     </div>
                 </div>
             </div>
@@ -44,7 +44,7 @@
 
 
 <table>
-    <div th:unless="${session.id} == ${board.user_id}">
+    <div th:unless="${id} == ${board.user_id}">
         <form th:if="${board.follow}" th:action="@{/board/follow/delete}" method="post">
             <input type="hidden" name="followingUserId" th:value="${board.user_id}" />
             <input type="hidden" name="followedUserId" th:value="${board.user_id}" />
