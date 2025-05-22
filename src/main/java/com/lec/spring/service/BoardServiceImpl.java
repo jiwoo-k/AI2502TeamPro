@@ -62,11 +62,11 @@ public class BoardServiceImpl implements BoardService {
         Post post = postRepository.findById(id);
         if (post != null) {
             // postTag 주입
-            List<Tag> postTag = postRepository.findByPostTag(id);
+            List<Tag> postTag = postRepository.findTagsByPostId(id);
             post.setPost_tag(postTag);
             // user_tag 주입
             if ("helper".equals(post.getType())) {
-                List <Tag> userTag = postRepository.findByUserTag(id);
+                List <Tag> userTag = postRepository.findTagsByUserId(id);
                 System.out.println("userTag" + userTag);
                 post.setUser_tag(userTag);
 
@@ -157,12 +157,12 @@ public class BoardServiceImpl implements BoardService {
             Long postId = post.getId();
 
             // post_tag 주입
-            List<Tag> postTags = postRepository.findByPostTag(postId);
+            List<Tag> postTags = postRepository.findTagsByPostId(postId);
             post.setPost_tag(postTags);
 
             // user_tag는 helper만 조회
             if ("helper".equals(post.getType())) {
-                List<Tag> userTags = postRepository.findByUserTag(postId);
+                List<Tag> userTags = postRepository.findTagsByUserId(postId);
                 post.setUser_tag(userTags);
             }
 

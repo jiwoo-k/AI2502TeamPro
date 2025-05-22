@@ -200,19 +200,6 @@ public class BoardController {
         return "board/deleteOk";
     }
 
-
-    @PostMapping("/warning")
-    public String warning(UserWarning warning, Model model, @AuthenticationPrincipal(expression = "user") User loginUser
-    ) {
-        warning.setComplaintUserId(loginUser.getId());
-
-        model.addAttribute("result", warning);
-        System.out.println("warning " + warning);
-        userWarningService.report(warning);
-        return "board/warning";
-    }
-
-
     @InitBinder("post")
     public void initBinder(WebDataBinder binder) {
         System.out.println("호출 성공");
