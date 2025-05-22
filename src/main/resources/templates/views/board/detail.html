@@ -6,9 +6,22 @@
 
 <head>
     <meta charset="UTF-8">
+    <title>게시물 상세조회</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- 1) 공통 스타일/헤더 스타일 -->
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+
+    <!-- 2) 상세 페이지 전용 스타일 -->
     <link rel="stylesheet" th:href="@{/css/detail.css}">
+
+    <!-- 3) 공통 스크립트 (jQuery, Google Maps API, 위치 팝업) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
+    <script th:src="@{/js/location.js}"></script>
 </head>
+
 <body>
 
 <th:block th:replace="~{common/header :: header-fragment}"></th:block>
@@ -45,7 +58,7 @@
             <!-- 첨부파일목록 -->
 
 
-<table>
+<div>
     <div th:unless="${id} == ${board.user_id}">
         <form th:if="${board.follow}" th:action="@{/board/follow/delete}" method="post">
             <input type="hidden" name="followingUserId" th:value="${board.user_id}" />
@@ -62,7 +75,7 @@
         </form>
     </div>
     <span th:text="'신고' + ${postWarningCount} + '개'"></span>
-</table>
+</div>
 <!--            태그 보여주기-->
 <div class="tagType" th:if="${board.type == 'guest'}">
             <span class="tagName" th:each="tag : ${board.post_tag}" th:text=" '# ' + ${tag.name} + '  '"
