@@ -12,9 +12,9 @@
     <script src="/js/locationOk.js"></script>
 </head>
 <body>
-<input id="locationInfo" type="hidden" th:value="${locationMissing}">
+<!--<input id="locationInfo" type="hidden" th:value="${locationMissing}">-->
 <!--header-->
-<header th:replace="common/header :: header-fragment"></header>
+<th:block th:replace="~{common/header :: header-fragment}"></th:block>
 
 <form method="get" action="/board/list">
     <select class="selectType" name="type" onchange="this.form.submit()">
@@ -24,9 +24,35 @@
 </form>
 <!--버튼-->
 <input type="hidden" th:value="${id}" id="loginUserId">
-<div id="button" onclick="return checkLogin()">
-    <button class="writeBtn"><a th:href="@{/board/write}" >게시물 작성하기</a></button>
+<div id="button">
+    <a class="writeBtn" th:href="@{/board/write}" onclick="return checkLogin()">게시물 작성하기</a>
 </div>
+
+
+
+<!-- 목록 -->
+    <table class="table table-hover">
+        <thead class="table-success">
+        <tr>
+            <th>#</th>
+            <th>제목</th>
+            <th>작성자</th>
+            <th>조회수</th>
+            <th>작성일</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="post : ${list}">
+            <td th:text="${post.id}"></td>
+            <td><a th:href="@{'/board/detail/' + ${post.id}}" th:text="${post.subject}"></a> </td>
+            <td th:text="${post.user.username}"></td>
+            <td th:text="${post.viewCnt}"></td>
+            <td th:text="${#temporals.format(post.regDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+        </tr>
+
+        </tbody>
+    </table>
+    <!-- 목록 -->
 
 <div th:each="board: ${board}" id="board" th:attr="data-id=${board.id}"
      onclick="location.href='/board/detail/' + this.getAttribute('data-id')" style="cursor:pointer;">
@@ -83,6 +109,16 @@
            th:text="${#temporals.format(board.createdat, board.createdat.monthValue >= 10 ? 'yy년 MM월 dd일 HH시' : 'yy년 M월 d일 H시')}"></a>
     </div>
 </div>
+    <div class="row">
+        <div class="col-12">
+            <a class="btn btn-outline-dark" th:href="@{/board/write}" sec:authorize="hasAnyRole('ADMIN', 'MEMBER')">작성</a>
+        </div>
+    </div>
+</div>
+
+<!-- pagination -->
+<th:block th:insert="~{board/pagination::pagination}"></th:block>
+<!-- pagination -->
 
 <script>
     function checkLogin() {
@@ -95,10 +131,6 @@
         return true;
     }
 </script>
-
-<!-- pagination -->
-<th:block th:insert="~{board/pagination::pagination}"></th:block>
-<!-- pagination -->
 
 </body>
 </html>

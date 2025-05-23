@@ -42,11 +42,11 @@ public interface AttachmentRepository {
     // 특정 첨부파일 1개 삭제
     int delete(Attachment file);
 
-    void addFiles(Map<String, MultipartFile> files, Long id);
-
-    Attachment upload(MultipartFile file);
-
-    void delFiles(Attachment file);
-
-    void setImage(List<Attachment> fileList);
+//    void addFiles(Map<String, MultipartFile> files, Long id);
+//
+//    Attachment upload(MultipartFile file);
+//
+//    void delFiles(Attachment file);
+//
+//    void setImage(List<Attachment> fileList);
 }

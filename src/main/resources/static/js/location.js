@@ -37,7 +37,7 @@ var lat, lng, areaName;
 
 $(function() {
 
-    const api_key = "xxxxxxxx"
+    const api_key = "AIzaSyCCXyWoVsfAgdZ27Ap0AZEKVXEOfz0ifDA"
 
     $('button#getLocation').click(function (){
        if(confirm('현재 위치를 가져오시겠습니까?')){

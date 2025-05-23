@@ -44,15 +44,17 @@ public class BoardServiceImpl implements BoardService {
     private final UserRepository userRepository;
     private final UserFollowingRepository userFollowingRepository;
     private final AttachmentRepository attachmentRepository;
+    private final AttachmentService attachmentService;
     private final TagRepository tagRepository;
 
-    public BoardServiceImpl(SqlSession sqlSession) {
+    public BoardServiceImpl(SqlSession sqlSession, AttachmentService attachmentService) {
         System.out.println("[ACTIVE] BoardServiceImpl");
         this.postRepository = sqlSession.getMapper(PostRepository.class);
         this.userRepository = sqlSession.getMapper(UserRepository.class);
         this.userFollowingRepository = sqlSession.getMapper(UserFollowingRepository.class);
         this.attachmentRepository = sqlSession.getMapper(AttachmentRepository.class);
         this.tagRepository = sqlSession.getMapper(TagRepository.class);
+        this.attachmentService = attachmentService;
     }
 
     @Override
@@ -74,7 +76,7 @@ public class BoardServiceImpl implements BoardService {
         if (post != null) {
             // 첨부파일(들) 정보 가져오기
             List<Attachment> fileList = attachmentRepository.findByPost(post.getId());
-            attachmentRepository.setImage(fileList);  // '이미지 파일 여부' 세팅
+            attachmentService.setImage(fileList);  // '이미지 파일 여부' 세팅
             post.setFileList(fileList);
 
             // postTag 주입
@@ -106,7 +108,7 @@ public class BoardServiceImpl implements BoardService {
         int cnt = postRepository.save(post);   // 글 먼저 저장 - 그래야 AI 된 PK값(id) 를 받아온다.
 
         // 첨부파일 추가.
-        attachmentRepository.addFiles(files, post.getId());
+        attachmentService.addFiles(files, post.getId());
 
         return cnt;
     }
@@ -190,13 +192,13 @@ public class BoardServiceImpl implements BoardService {
         int result = 0;
         result = postRepository.update(post);
 
-        attachmentRepository.addFiles(files, post.getId());
+        attachmentService.addFiles(files, post.getId());
 
         if (delFile != null) {
             for (Long fileId : delFile) {
                 Attachment file = attachmentRepository.findById(fileId);
                 if (file != null) {
-                    attachmentRepository.delFiles(file);
+                    attachmentService.delFiles(file);
                     attachmentRepository.delete(file);
                 }
             }
@@ -225,7 +227,7 @@ public class BoardServiceImpl implements BoardService {
             Long postId = post.getId();
 
             List<Attachment> fileList = attachmentRepository.findByPost(postId);
-            attachmentRepository.setImage(fileList); // 이미지 여부 설정
+            attachmentService.setImage(fileList); // 이미지 여부 설정
             post.setFileList(fileList);
 
             // post_tag 주입
