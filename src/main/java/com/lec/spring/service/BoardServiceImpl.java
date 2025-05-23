@@ -6,6 +6,7 @@ import com.lec.spring.domain.Tag;
 import com.lec.spring.domain.User;
 import com.lec.spring.repository.*;
 import com.lec.spring.util.U;
+import jakarta.servlet.http.HttpSession;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
