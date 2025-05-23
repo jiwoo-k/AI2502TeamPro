@@ -28,7 +28,6 @@ public class User {
     private String password; // 비밀번호
     private String re_password; // 비밀번호 확인 용도는 DB 도메인에 포함 X
 
-    private String juminNo; // 주민등록번호
     private LocalDateTime createdAt; // 가입일시
 
     // OAuth 사용자용
@@ -36,8 +35,8 @@ public class User {
     private String providerId; // OAuth 제공자의 사용자 고유 ID
 
     //사용자 현재 위치
-    private double latitude;
-    private double longitude;
+    private Double latitude;
+    private Double longitude;
     private String areaName; // 행정구역명
 
     //계정상태
@@ -68,7 +67,7 @@ public class User {
     }
 
 
-    public int getAge() {
+    /*public int getAge() {
         if (juminNo == null || juminNo.length() != 13) return -1;
         int birthYear = Integer.parseInt(juminNo.substring(0, 2));
         int birthMonth = Integer.parseInt(juminNo.substring(2, 4));
@@ -105,6 +104,6 @@ public class User {
             case 2, 4, 6, 8, 0 -> "여자";
             default -> "Unknown";
         };
-    }
+    }*/
 
 }

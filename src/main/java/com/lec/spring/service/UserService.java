@@ -31,6 +31,8 @@ public interface UserService {
     int saveUserLoginHistory(Long id);
 
     int updateLocation(User user);
+
+    List<User> findNearUsers();
 }
 
 

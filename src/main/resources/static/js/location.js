@@ -1,4 +1,4 @@
-/*
+
 function openMap(targetMapId, modalId, addressOutputId) {
     navigator.geolocation.getCurrentPosition(function(pos) {
         const lat = pos.coords.latitude;
@@ -30,44 +30,44 @@ function openMap(targetMapId, modalId, addressOutputId) {
                 if (document.getElementById("longitude")) document.getElementById("longitude").value = lng;
             }
         });
-
-        new bootstrap.Modal(document.getElementById(modalId)).show();
     });
 }
-*/
+
 var lat, lng, areaName;
 
 $(function() {
 
-    const api_key = "xxxxxxxxxx"
+    const api_key = "xxxxxxxx"
 
     $('button#getLocation').click(function (){
-        navigator.geolocation.getCurrentPosition(
-            (position) =>  {
-                lat = position.coords.latitude;
-                lng = position.coords.longitude;
+       if(confirm('현재 위치를 가져오시겠습니까?')){
+           navigator.geolocation.getCurrentPosition(
+               (position) =>  {
+                   lat = position.coords.latitude;
+                   lng = position.coords.longitude;
 
-                $('#showLat').text(lat);
-                $('#showLng').text(lng);
+                   $('#showLat').text(lat);
+                   $('#showLng').text(lng);
 
-                const map = new google.maps.Map(document.getElementById('showMap'), {
-                    center: { lat, lng },
-                    zoom: 13,
-                });
+                   const map = new google.maps.Map(document.getElementById('showMap'), {
+                       center: { lat, lng },
+                       zoom: 13,
+                   });
 
-                new google.maps.Marker({
-                    position: { lat, lng },
-                    map: map,
-                    title: "내 위치"
-                });
+                   new google.maps.Marker({
+                       position: { lat, lng },
+                       map: map,
+                       title: "내 위치"
+                   });
 
-                // $('div#showLocation').text(`${lat}, ${lng}`);
-                let url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${api_key}&language=ko`;
+                   // $('div#showLocation').text(`${lat}, ${lng}`);
+                   let url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${api_key}&language=ko`;
 
-                getAreaName(url);
-            },
-            (error) => {},
-        )
+                   getAreaName(url);
+               },
+               (error) => {},
+           )
+       }
     });
 });
 

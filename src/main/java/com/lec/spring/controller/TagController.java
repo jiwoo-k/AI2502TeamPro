@@ -4,10 +4,13 @@ import com.lec.spring.domain.Category;
 import com.lec.spring.domain.Tag;
 import com.lec.spring.vaildator.TagValidator;
 import com.lec.spring.repository.TagRepository;
+import com.lec.spring.service.BoardService;
 import com.lec.spring.service.CategoryService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,6 +19,8 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,8 +31,8 @@ public class TagController {
     private final TagRepository tagRepository;
     private final CategoryService categoryService;
 
-    public TagController(TagRepository tagRepository, CategoryService categoryService) {
-        this.tagRepository = tagRepository;
+    public TagController(SqlSession sqlSession, CategoryService categoryService, BoardService boardService) {
+        this.tagRepository = sqlSession.getMapper(TagRepository.class);
         this.categoryService = categoryService;
     }
 
@@ -52,13 +57,28 @@ public class TagController {
         return "common/tag";
     }
 
+
+
     @PostMapping("/tag")
     public String searchTag(@Valid Tag tag,
                             BindingResult result,
+                            @RequestHeader(value = HttpHeaders.REFERER, required = false) String referer,
                             Model model,
                             RedirectAttributes redirectAttributes,
                             HttpSession httpSession)
     {
+        String path = "/";
+
+        if(referer != null && !referer.isEmpty()){
+            try {
+                URI uri = new URI(referer);
+                path = uri.getPath();
+            } catch (URISyntaxException e) {
+                // URL 형식이 잘못된 경우
+                System.err.println("Referer URL 파싱 오류: " + referer);
+            }
+        }
+
         if(result.hasErrors()){
             for(FieldError err : result.getFieldErrors()){
                 redirectAttributes.addFlashAttribute("error_" + err.getField(), err.getCode());
@@ -74,7 +94,7 @@ public class TagController {
             redirectAttributes.addFlashAttribute("tagColor", tagColor);*/
             }
 
-            return "redirect:/tag";
+            return "redirect:" + path;
         }
 
         //유효성 검사 경우의 수에 따라 이게 null 이 될 일은 없긴함 ..
@@ -99,7 +119,7 @@ public class TagController {
         model.addAttribute("searchedTagCategoryName", searchedTagCategoryName);
 
 
-        return "common/tag";
+        return path.substring(1);
     }
 
     @PostMapping("/tag/add")
@@ -182,8 +202,9 @@ public class TagController {
 
     @PostMapping("/tag/save")
     public void tagSave(List<Tag> tags, HttpSession httpSession){
-        //TODO: 태그 저장 로직 작성
+        //1.
     }
+
 
     @Autowired
     TagValidator tagValidator;

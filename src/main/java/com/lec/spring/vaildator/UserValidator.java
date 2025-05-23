@@ -31,7 +31,6 @@ public class UserValidator implements Validator {
         User user = (User) target;
         String username = user.getUsername();
         String name = user.getName();
-        String juminNo = user.getJuminNo();
 
         //username 검증
         if(username == null || username.trim().isEmpty()){
@@ -51,6 +50,5 @@ public class UserValidator implements Validator {
         if(!user.getPassword().equals(user.getRe_password())){
             errors.rejectValue("re_password", "비밀번호와 비밀번호 확인 입력값이 다릅니다");
         }
-
     }
 }

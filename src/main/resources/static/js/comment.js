@@ -12,6 +12,9 @@ document.addEventListener("DOMContentLoaded", () => {
     async function loadComments() {
         try {
             const res = await fetch(`/comment/list/${postId}`);
+            console.log('▶ 댓글 리스트 호출:', `/comment/list/${postId}`, '응답 상태:', res.status);
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
             const json = await res.json();
             const list = json.data;
 
@@ -48,7 +51,8 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
         } catch (e) {
-            alert("댓글을 불러오지 못했습니다.");
+            alert(`댓글을 불러오지 못했습니다. (${e.message})`);
+            console.error(e);
         }
     }
 
@@ -56,11 +60,11 @@ document.addEventListener("DOMContentLoaded", () => {
         const content = commentInput.value.trim();
         if (!content) return alert("내용을 입력해주세요.");
 
-        const body = new URLSearchParams({ postId, content });
+        const body = new URLSearchParams({postId, content});
 
         const res = await fetch("/comment/write", {
             method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            headers: {"Content-Type": "application/x-www-form-urlencoded"},
             body
         });
 
@@ -73,14 +77,14 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    window.editComment = function(commentId, oldContent) {
+    window.editComment = function (commentId, oldContent) {
         const newContent = prompt("댓글 수정", oldContent);
         if (!newContent || newContent === oldContent) return;
 
         fetch(`/comment/update/${commentId}`, {
             method: "PUT",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: new URLSearchParams({ content: newContent })
+            headers: {"Content-Type": "application/x-www-form-urlencoded"},
+            body: new URLSearchParams({content: newContent})
         }).then(r => r.json())
             .then(json => {
                 if (json.status === "OK") loadComments();
@@ -88,10 +92,10 @@ document.addEventListener("DOMContentLoaded", () => {
             });
     };
 
-    window.deleteComment = function(commentId) {
+    window.deleteComment = function (commentId) {
         if (!confirm("댓글을 삭제하시겠습니까?")) return;
 
-        fetch(`/comment/delete/${commentId}`, { method: "DELETE" })
+        fetch(`/comment/delete/${commentId}`, {method: "DELETE"})
             .then(r => r.json())
             .then(json => {
                 if (json.status === "OK") loadComments();
@@ -99,9 +103,9 @@ document.addEventListener("DOMContentLoaded", () => {
             });
     };
 
-    window.togglePick = function(commentId, isPicked) {
+    window.togglePick = function (commentId, isPicked) {
         const url = isPicked ? `/comment/unpick/${commentId}` : `/comment/pick/${commentId}`;
-        fetch(url, { method: "PUT" })
+        fetch(url, {method: "PUT"})
             .then(r => r.json())
             .then(json => {
                 if (json.status === "OK") loadComments();

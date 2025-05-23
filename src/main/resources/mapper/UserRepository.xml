@@ -51,4 +51,25 @@
         insert into loginhistory(user_id)
         values(#{id});
     </insert>
+
+    <update id="updateLocation" parameterType="com.lec.spring.domain.User" flushCache="true">
+        update user
+        set latitude=#{latitude}, longitude=#{longitude}
+        where id=#{id}
+    </update>
+
+    <select id="findNearUsers" resultType="com.lec.spring.domain.User">
+        select distinct u.id "id",
+        u.username "username",
+        u.password "password",
+        u.name "name",
+        u.createdAt "createdAt",
+        u.provider "provider",
+        u.providerId "providerId",
+        u.latitude "latitude",
+        u.longitude "longitude",
+        u.status "status"
+        from user u, post p
+        where u.id=p.user_id;
+    </select>
 </mapper>

@@ -30,7 +30,7 @@
         FROM comment c
                  JOIN user u ON c.user_id = u.id
         WHERE c.post_id = #{postId}
-        ORDER BY c.parent_id ASC NULLS FIRST, c.createdat ASC
+        ORDER BY c.parent_id ASC, c.createdat ASC
     </select>
 
     <insert id="save" useGeneratedKeys="true" keyProperty="id">

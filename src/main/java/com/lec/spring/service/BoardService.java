@@ -2,6 +2,7 @@ package com.lec.spring.service;
 
 import com.lec.spring.domain.Post;
 import com.lec.spring.domain.Tag;
+import com.lec.spring.domain.User;
 import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,6 +36,9 @@ public interface BoardService {
 
     // 타입 선택 기능 추가
     List<Post> listByType(String type);
+
+    //타입 + 위치정보
+    List<Post> listByTypeLocation(String type, List<User> users);
 
     // 삭제 정보 저장
     void deleteTime(Long id);
