@@ -47,10 +47,10 @@ public class SecurityConfig {
                                 "/mypage/**",
                                 "/board/write",
                                 "/board/update/**",
-                                "board/follow/**",
-                                "board/warning/**"
+                                "/board/follow/**",
+                                "/board/warning/**"
                         ).authenticated()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
                         .anyRequest().permitAll()
                 )
                 .formLogin(form -> form
