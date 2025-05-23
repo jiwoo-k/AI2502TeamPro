@@ -56,6 +56,34 @@
         ORDER BY post.createdat DESC
 
     </select>
+
+    <!--type 에 추가로 위치기준 추가-->
+    <select id="findByTypeLocation" resultType="com.lec.spring.domain.Post">
+        SELECT
+        p.id,
+        p.user_id,
+        p.type,
+        p.title,
+        p.content,
+        p.createdat,
+        p.type,
+        p.isdeleted,
+        p.deletedat,
+        u.id "user_id",
+        u.name "name"
+        FROM
+        post p,
+        user u
+        WHERE
+        p.user_id = u.id
+        AND u.id IN
+        <foreach collection="userList" item="user" separator="," open="(" close=")">
+            #{user.id}
+        </foreach>
+        AND p.type = #{type}
+        AND p.isdeleted = 0 ORDER BY p.createdat DESC
+    </select>
+
     <!--게시글 상세조회-->
     <select id="findById" parameterType="long" resultMap="postMap">
         <include refid="select_base"/>

@@ -22,7 +22,7 @@
 <h2>게시물 작성</h2>
 
 <!--header-->
-<header th:replace="common/header :: header-fragment"></header>
+<header th:fragment="~{common/header::header-fragment}"></header>
 
 <div id="writeBoard">
 
@@ -75,7 +75,7 @@
             <!-- 목록 버튼 -->
             <a th:href="@{/board/list}" class="listBtn">목록</a>
         </div>
-</div>
+    </form>
 </div>
 </body>
 </html>

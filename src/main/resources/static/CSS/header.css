@@ -1,0 +1,44 @@
+/* static/css/header.css */
+.site-header {
+    width: 100%;
+    background: #fff;
+    border-bottom: 1px solid #ccc;
+}
+.header__inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+    padding: 0 16px;
+}
+.header__logo a {
+    font-size: 1.4rem;
+    font-weight: bold;
+    text-decoration: none;
+    color: #333;
+}
+.header__nav-wrapper {
+    display: flex;
+    gap: 24px; /* 사용자 블록과 관리자 블록 사이 여백 */
+}
+.header__nav {
+    list-style: none;
+    display: flex;
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+}
+.header__nav .nav-item {
+    display: inline-block;
+    padding: 8px 12px;
+    border: 1px solid #333;
+    border-radius: 4px;
+    text-decoration: none;
+    color: #333;
+    cursor: pointer;
+}
+.header__nav .nav-item:hover {
+    background: #f5f5f5;
+}

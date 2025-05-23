@@ -67,6 +67,39 @@ WHERE c.user_id = (
 )
 ORDER BY c.createdat DESC;
 
+insert into user_follow
+values(3, 2);
 
+select * from user_follow;
 
 select * from attachment;
+select * from user_tag;
+select * from user;
+
+select  distinct(u.id), u.latitude, u.longitude
+    from user u, post p
+where u.id=p.user_id;
+
+select * from post
+where user_id in (1, 2);
+
+select p.id, p.user_id, p.type, p.title, p.content, p.createdat, p.isdeleted, p.deletedat
+    from post p, user u
+where p.user_id=u.id and u.id in (1, 2) and p.type='guest';
+
+select distinct u.id "id",
+                u.username "username",
+                u.password "password",
+                u.name "name",
+                u.createdAt "createdAt",
+                u.provider "provider",
+                u.providerId "providerId",
+                u.latitude "latitude",
+                u.longitude "longitude",
+                u.status "status"
+from user u, post p
+where u.id=p.user_id;
+
+update user
+set latitude=37.27760888368095, longitude=127.05015732955697
+    where id=3;

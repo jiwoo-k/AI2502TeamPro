@@ -67,6 +67,9 @@ public class BoardServiceImpl implements BoardService {
         System.out.println("PostId : " + id);
         Post post = postRepository.findById(id); // SELECT
 
+        Integer followCount = userFollowingRepository.followCount(post.getUser_id());
+        post.setFollowCount(followCount);
+
         if (post != null) {
             // 첨부파일(들) 정보 가져오기
             List<Attachment> fileList = attachmentRepository.findByPost(post.getId());
@@ -175,6 +178,25 @@ public class BoardServiceImpl implements BoardService {
 //                List<Tag> userTags = postRepository.findTagsByUserId(postId);
 //                post.setUser_tag(userTags);
 //            }
+
+            // 팔로우 수 주입
+            Integer followCount = userFollowingRepository.followCount(post.getUser_id());
+            post.setFollowCount(followCount);
+        }
+
+        return posts;
+    }
+
+    @Override
+    public List<Post> listByTypeLocation(String type, List<User> users) {
+        List<Post> posts = postRepository.findByTypeLocation(type, users);
+
+        for (Post post : posts) {
+            Long postId = post.getId();
+
+            // post_tag 주입
+            List<Tag> postTags = postRepository.findTagsByPostId(postId);
+            post.setPost_tag(postTags);
 
             // 팔로우 수 주입
             Integer followCount = userFollowingRepository.followCount(post.getUser_id());

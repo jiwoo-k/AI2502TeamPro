@@ -261,6 +261,10 @@ ALTER TABLE warning
     ON DELETE CASCADE
 ;
 
+ALTER TABLE `user`
+    DROP COLUMN `juminNo`;
+
+
 
 
 # insert into user_follow (
