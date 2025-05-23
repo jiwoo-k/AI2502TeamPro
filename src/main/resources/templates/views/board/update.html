@@ -5,6 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/update.css}">
 </head>
 
 
@@ -38,7 +39,7 @@
         <div class="mb-3 mt-3">
             <label>기존 첨부파일:</label>
             <div class="input-group mb-2" th:each="attachment : ${board.fileList}">
-                <input class="form-control col-xs-3" type="text" readonly th:value="${attachment.sourcename }">
+                <input class="form-control col-xs-3" type="text" readonly th:value="${attachment.sourceName }">
                 <button type="button" class="btn btn-outline-danger" th:data-fileid-del="${attachment.id}">삭제</button>
             </div>
         </div>

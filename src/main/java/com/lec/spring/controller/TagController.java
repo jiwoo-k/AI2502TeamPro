@@ -2,11 +2,10 @@ package com.lec.spring.controller;
 
 import com.lec.spring.domain.Category;
 import com.lec.spring.domain.Tag;
-import com.lec.spring.domain.TagValidator;
+import com.lec.spring.vaildator.TagValidator;
 import com.lec.spring.repository.TagRepository;
 import com.lec.spring.service.BoardService;
 import com.lec.spring.service.CategoryService;
-import com.lec.spring.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.apache.ibatis.session.SqlSession;

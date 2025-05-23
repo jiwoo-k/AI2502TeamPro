@@ -143,3 +143,14 @@ VALUES (
            '테스트 댓글입니다.'
        );
 
+INSERT INTO comment (user_id, post_id, content)
+VALUES (
+           -- user 테이블에서 username='user1'인 행 중 하나만 가져오기
+           (SELECT id FROM user WHERE username = 'user1' LIMIT 1),
+
+           -- post 테이블에서 title='title1'인 행 중 하나만 가져오기
+           (SELECT id FROM post WHERE title = 'title1' LIMIT 1),
+
+           '테스트 댓글입니다.'
+       );
+

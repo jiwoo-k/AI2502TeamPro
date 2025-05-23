@@ -16,7 +16,7 @@
     <select id="followCount" resultType="int">
         SELECT COALESCE(COUNT(*), 0)
         FROM user_follow
-        WHERE following_userid = #{followingUserId}
+        WHERE followed_userid = #{followedUserId}
     </select>
 
     <insert id="insert" parameterType="com.lec.spring.domain.UserFollowing">

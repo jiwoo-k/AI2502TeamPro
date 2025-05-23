@@ -30,7 +30,7 @@
     <form th:action="@{/board/write}" method="post" enctype="multipart/form-data">
         <div class="writeTitle">
             <div>
-                <span>제목을 입력하세요</span>
+                <span>제목</span>
                 <input type="text" th:value="${title}" placeholder="제목을 입력하세요" name="title">
             </div>
             <div th:if="${error_title}" th:text="${error_title}" style="color: red"></div>
@@ -39,7 +39,7 @@
         <br><br><br>
         <!--content-->
         <div class="writeContent">
-            <span>내용을 입력하세요</span>
+            <span>내용</span>
             <textarea th:value="${content}" placeholder="글을 작성하세요" name="content"></textarea>
             <div th:if="${error_content}" th:text="${error_content}" style="color: red"></div>
         </div>
@@ -54,10 +54,10 @@
                 <button type="button" id="btnAdd" class="btn btn-secondary">추가</button>
             </div>
         </div>
-        <!-- 첨부파일 -->
-<!--        태그추가-->
+        <!--첨부파일 -->
+        <!--태그추가-->
         <div></div>
-<!--        태그추가-->
+        <!--태그추가-->
 
         <!-- 유형 선택 -->
         <div class="select-wrapper">
@@ -69,11 +69,11 @@
 
         <div class="button-wrapper">
             <form th:action="@{/board/write}" method="post" enctype="multipart/form-data" style="display: inline;">
-                <button type="submit" class="writeBtn">작성</button>
+                <button type="submit" class="writeBtn">작성완료</button>
             </form>
 
             <!-- 목록 버튼 -->
-            <a th:href="@{/board/list}" class="listBtn">목록</a>
+            <a class="listBtn" th:href="@{/board/list(page=${session.page})}">목록</a>
         </div>
     </form>
 </div>

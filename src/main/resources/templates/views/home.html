@@ -1,4 +1,4 @@
-<!--<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko"
 	  xmlns:th="http://www.thymeleaf.org"
 	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
@@ -8,15 +8,15 @@
 	<title>ROOFY</title>
 	<link rel="stylesheet" th:href="@{/css/style.css}">
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDTB-m0-ZCanKi1R6CYmoqR4Xx29RRq2IE"></script>
-	<script src="/js/location.js"></script>
+<!--	<script src="/js/location.js"></script>-->
 </head>
 
 <body>
-&lt;!&ndash; 조건부 헤더 &ndash;&gt;
-&lt;!&ndash;<div th:if="${not #httpServletRequest.requestURI.matches('/user/(login|register).*')}">&ndash;&gt;
+<!-- 조건부 헤더 -->
+<!--<div th:if="${not #httpServletRequest.requestURI.matches('/user/(login|register).*')}">-->
 <div th:if="${#httpServletRequest != null and not #httpServletRequest.requestURI.matches('/user/(login|register).*')}">
-	&lt;!&ndash;	<div th:replace="~{common/header :: header-fragment}"></div>&ndash;&gt;
-	&lt;!&ndash;	로그인 구현해야 주석 해제가능&ndash;&gt;
+	<!--	<div th:replace="~{common/header :: header-fragment}"></div>-->
+	<!--	로그인 구현해야 주석 해제가능-->
 </div>
 
 <div th:replace="~{common/header :: header-fragment}"></div>
@@ -26,11 +26,11 @@
 	<div th:replace="~{common/tag :: tag-fragment}"></div>
 
 
-	&lt;!&ndash;글쓰기 작성&ndash;&gt;
+	<!--글쓰기 작성-->
 	<button><a th:href="@{/board/write}">글쓰기</a></button>
 
 </main>
-&lt;!&ndash; 지도 모달 &ndash;&gt;
+<!-- 지도 모달 -->
 <div class="modal fade" id="mapModalFromHeader" tabindex="-1">
 	<div class="modal-dialog modal-lg">
 		<div class="modal-content">

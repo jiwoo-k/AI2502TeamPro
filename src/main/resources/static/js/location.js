@@ -1,4 +1,4 @@
-/*
+
 function openMap(targetMapId, modalId, addressOutputId) {
     navigator.geolocation.getCurrentPosition(function(pos) {
         const lat = pos.coords.latitude;
@@ -30,11 +30,9 @@ function openMap(targetMapId, modalId, addressOutputId) {
                 if (document.getElementById("longitude")) document.getElementById("longitude").value = lng;
             }
         });
-
-        new bootstrap.Modal(document.getElementById(modalId)).show();
     });
 }
-*/
+
 var lat, lng, areaName;
 
 $(function() {

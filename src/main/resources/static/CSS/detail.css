@@ -262,3 +262,17 @@ form[th\:action*="warning"] button[type="submit"]:hover {
     }
 }
 
+.image-wrapper {
+    width: 300px;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #888;
+}
+
+.img-thumbnail {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}

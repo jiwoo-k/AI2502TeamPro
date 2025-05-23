@@ -8,6 +8,7 @@ import com.lec.spring.domain.Tag;
 import com.lec.spring.domain.User;
 import com.lec.spring.domain.UserWarning;
 import com.lec.spring.service.*;
+import com.lec.spring.util.U;
 import com.lec.spring.vaildator.BoardValidator;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -68,6 +69,7 @@ public class BoardController {
             @RequestParam Map<String, MultipartFile> files,
             @Valid Post post,
             @Valid Tag tag,
+            @RequestParam(required = false) String type,
             BindingResult bindingResult,
             Model model,
             RedirectAttributes redirectAttributes,
@@ -98,6 +100,7 @@ public class BoardController {
         post.setUser_id(loginUser.getId());
         int result = boardService.write(post, files);
         model.addAttribute("result", result);
+        model.addAttribute("type", type );
         return "board/writeOk";
     }
 
@@ -206,6 +209,8 @@ public class BoardController {
 
         model.addAttribute("follow", (follow != null) ? follow : false);
         model.addAttribute("selectedType", type);
+
+        //TODO: 이외에 다른 매커니즘 혹시 필요하면 추가 바랍니다
 
 
         return "board/list";
@@ -326,5 +331,14 @@ public class BoardController {
         System.out.println("호출 성공");
         binder.setValidator(new BoardValidator());
     }
+
+    // 페이징
+    // pageRows 변경시 동작
+    @PostMapping("/pageRows")
+    public String pageRows(Integer page, Integer pageRows){
+        U.getSession().setAttribute("pageRows", pageRows);
+        return "redirect:/board/list?page=" + page;
+    }
+
 
 }

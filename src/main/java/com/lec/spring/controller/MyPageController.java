@@ -6,7 +6,7 @@ import com.lec.spring.domain.Post;
 import com.lec.spring.domain.Comment;
 import com.lec.spring.domain.User;
 import com.lec.spring.domain.ProfileUpdateForm;
-import com.lec.spring.service.MypageService;
+import com.lec.spring.service.MyPageService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,10 +29,10 @@ import java.util.stream.Collectors;
 @Controller
 public class MyPageController {
 
-    private final MypageService mypageService;
+    private final MyPageService myPageService;
 
-    public MyPageController(MypageService mypageService) {
-        this.mypageService = mypageService;
+    public MyPageController(MyPageService myPageService) {
+        this.myPageService = myPageService;
     }
 
     /** 1) 마이페이지 메인 **/
@@ -40,7 +40,7 @@ public class MyPageController {
     public String myPageMain(@AuthenticationPrincipal PrincipalDetails principal, Model model) {
         Long userId = principal.getUser().getId();
 
-        User user = mypageService.getUserById(userId);
+        User user = myPageService.getUserById(userId);
         model.addAttribute("user", user);
         return "mypage/myPageMain";
     }
@@ -56,7 +56,7 @@ public class MyPageController {
                 SecurityContextHolder.getContext().getAuthentication().getPrincipal())
                 .getUser().getId();
 
-        Page<Post> postsPage = mypageService.getMyPosts(userId, selectedType, pageable);
+        Page<Post> postsPage = myPageService.getMyPosts(userId, selectedType, pageable);
         model.addAttribute("posts", postsPage);
         model.addAttribute("selectedType", selectedType);
         return "mypage/myPosts";
@@ -72,7 +72,7 @@ public class MyPageController {
                 SecurityContextHolder.getContext().getAuthentication().getPrincipal())
                 .getUser().getId();
 
-        Page<Comment> commentsPage = mypageService.getMyComments(userId, pageable);
+        Page<Comment> commentsPage = myPageService.getMyComments(userId, pageable);
         model.addAttribute("comments", commentsPage);
         return "mypage/myComments";
     }
@@ -87,7 +87,7 @@ public class MyPageController {
                 SecurityContextHolder.getContext().getAuthentication().getPrincipal())
                 .getUser().getId();
 
-        Page<User> page = mypageService.getMyFollowing(userId, pageable);
+        Page<User> page = myPageService.getMyFollowing(userId, pageable);
         model.addAttribute("following", page);
         return "mypage/myFollowing";
     }
@@ -100,7 +100,7 @@ public class MyPageController {
             @AuthenticationPrincipal PrincipalDetails principal
     ) {
         Long me = principal.getUser().getId();
-        mypageService.followUser(me, userId);
+        myPageService.followUser(me, userId);
     }
 
     // 언팔로우
@@ -111,7 +111,7 @@ public class MyPageController {
             @AuthenticationPrincipal PrincipalDetails principal
     ) {
         Long me = principal.getUser().getId();
-        mypageService.unfollowUser(me, userId);
+        myPageService.unfollowUser(me, userId);
     }
 
 
@@ -124,7 +124,7 @@ public class MyPageController {
         PrincipalDetails principal = (PrincipalDetails) auth.getPrincipal();
         Long userId = principal.getUser().getId();
 
-        ProfileUpdateForm form = mypageService.getProfileUpdateForm(userId);
+        ProfileUpdateForm form = myPageService.getProfileUpdateForm(userId);
         model.addAttribute("profileUpdateForm", form);
         return "mypage/editProfile";
     }
@@ -151,7 +151,7 @@ public class MyPageController {
                 .filter(s -> !s.isEmpty())
                 .collect(Collectors.toList()));
 
-        mypageService.updateUserProfile(user);
+        myPageService.updateUserProfile(user);
         return "redirect:/mypage/myPageMain";
     }
 }
