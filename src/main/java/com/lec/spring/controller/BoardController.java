@@ -8,6 +8,7 @@ import com.lec.spring.domain.Tag;
 import com.lec.spring.domain.User;
 import com.lec.spring.domain.UserWarning;
 import com.lec.spring.service.*;
+import com.lec.spring.util.U;
 import com.lec.spring.vaildator.BoardValidator;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -272,5 +273,14 @@ public class BoardController {
         System.out.println("호출 성공");
         binder.setValidator(new BoardValidator());
     }
+
+    // 페이징
+    // pageRows 변경시 동작
+    @PostMapping("/pageRows")
+    public String pageRows(Integer page, Integer pageRows){
+        U.getSession().setAttribute("pageRows", pageRows);
+        return "redirect:/board/list?page=" + page;
+    }
+
 
 }

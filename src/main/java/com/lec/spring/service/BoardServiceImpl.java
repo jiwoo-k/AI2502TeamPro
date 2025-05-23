@@ -30,13 +30,13 @@ import java.util.Map;
 @Service
 public class BoardServiceImpl implements BoardService {
 
-    @Value("upload")
+    @Value("${app.upload.path}")
     private String uploadDir;
 
-    @Value("10")
+    @Value("${app.pagination.write_pages}")
     private int WRITE_PAGES;
 
-    @Value("10")
+    @Value("${app.pagination.page_rows}")
     private int PAGE_ROWS;
 
     private final PostRepository postRepository;
@@ -166,6 +166,10 @@ public class BoardServiceImpl implements BoardService {
         for (Post post : posts) {
             Long postId = post.getId();
 
+            List<Attachment> fileList = attachmentRepository.findByPost(postId);
+            setImage(fileList); // 이미지 여부 설정
+            post.setFileList(fileList);
+
             // post_tag 주입
             List<Tag> postTags = postRepository.findTagsByPostId(postId);
             post.setPost_tag(postTags);
@@ -218,12 +222,15 @@ public class BoardServiceImpl implements BoardService {
         }
     }
 
+    // 물리적으로 서버에 파일 저장.  중복된 파일 이름 -> rename 처리.
     private Attachment upload(MultipartFile multipartFile) {
         Attachment attachment = null;
 
+        // 담긴 파일이 없으면 pass
         String originalFilename = multipartFile.getOriginalFilename();
         if (originalFilename == null || originalFilename.isEmpty()) return null;
 
+        // 원본 파일명
         String sourceName = StringUtils.cleanPath(originalFilename);
 
         // 현재 시각 timestamp
@@ -256,9 +263,13 @@ public class BoardServiceImpl implements BoardService {
             throw new RuntimeException(e);
         }
 
+        String contentType = multipartFile.getContentType();
+        boolean isImage = contentType != null && contentType.startsWith("image");
+
         attachment = Attachment.builder()
                 .fileName(fileName)         // 저장된 이름
                 .sourceName(sourceName)     // 원본 이름
+                .isImage(isImage)
                 .build();
 
         return attachment;
@@ -294,7 +305,7 @@ public class BoardServiceImpl implements BoardService {
                 // ※ ↑ 파일이 존재 하지 않으면 IOExcepion 발생한다
                 //   ↑ 이미지가 아닌 경우는 null 리턴
             } catch (IOException e) {
-                System.out.println("파일 존재안함: " + f.getAbsolutePath() + " [" + e.getMessage() + "]");
+                System.out.println("No File : " + f.getAbsolutePath() + " [" + e.getMessage() + "]");
             }
 
             if (imgData != null) attachment.setImage(true);   // 이미지 여부 체크
