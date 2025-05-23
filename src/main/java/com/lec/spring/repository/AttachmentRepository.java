@@ -3,6 +3,7 @@ package com.lec.spring.repository;
 import com.lec.spring.domain.Attachment;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -13,8 +14,9 @@ public interface AttachmentRepository {
     /**
      * 특정 글(postId)에 첨부파일(들) 추가 INSERT
      * 글 insert, update 시 사용됨.
-     * @param list Map<String, Object> 들의 List
-     *             예: <"sourceName", 원본파일명>, <"fileName", 저장된파일명>
+     *
+     * @param list   Map<String, Object> 들의 List
+     *               예: <"sourceName", 원본파일명>, <"fileName", 저장된파일명>
      * @param postId 첨부될 글 ID
      * @return DML 수행 결과값
      */
@@ -39,4 +41,12 @@ public interface AttachmentRepository {
 
     // 특정 첨부파일 1개 삭제
     int delete(Attachment file);
+
+    void addFiles(Map<String, MultipartFile> files, Long id);
+
+    Attachment upload(MultipartFile file);
+
+    void delFiles(Attachment file);
+
+    void setImage(List<Attachment> fileList);
 }

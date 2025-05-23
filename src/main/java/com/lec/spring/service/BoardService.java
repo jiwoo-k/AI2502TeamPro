@@ -15,7 +15,6 @@ public interface BoardService {
 
     int write(Post post, Map<String, MultipartFile> files);
 
-
     // id 가져와서 글 읽기
     Post detail(Long id);
 
@@ -29,7 +28,6 @@ public interface BoardService {
     int update(Post Post);
 
     int update(Post post, Map<String, MultipartFile> files, Long[] delfile);
-
 
     // 게시판 삭제
     int delete(Long id);
