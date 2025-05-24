@@ -294,7 +294,7 @@ public class BoardController {
         }
 
         if (selectedTags.isEmpty()) {
-            model.addAttribute("board", allPosts);
+            model.addAttribute("boardList", allPosts);
         } else {
             for (Post post : allPosts) {
                 List<Tag> tags = post.getPost_tag();
@@ -305,7 +305,7 @@ public class BoardController {
                     }
                 }
             }
-            model.addAttribute("board", filteredPosts);
+            model.addAttribute("boardList", filteredPosts);
         }
 
         model.addAttribute("follow", (follow != null) ? follow : false);
