@@ -277,8 +277,24 @@ public class BoardController {
             post.setFollow(isFollowed);
         }
 
+        model.addAttribute("follow", (follow != null) ? follow : false);
+        model.addAttribute("board", allPosts);
+        model.addAttribute("selectedType", type);
+
+
+        return "board/list";
+    }
+
+    //태그 form 통해 들어오는 /board/list
+    @PostMapping("/list")
+    public String list(String type, HttpSession httpSession, Model model) {
+        //일단 특정 유형의 게시글 모두 들고오기
+        List<Post> allPosts = boardService.listByType(type);
+
         // 태그 필터링
         List<Post> filteredPosts = new ArrayList<>();
+
+        //세션에 있는 태그목록 가져오기
         List<Tag> selectedTags = (List<Tag>) httpSession.getAttribute("selectedTags");
 
         if (selectedTags == null) {
@@ -434,3 +450,5 @@ public class BoardController {
 
 
 }
+
+

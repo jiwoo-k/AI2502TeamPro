@@ -26,7 +26,7 @@
 
     <h2 style="text-align:center; margin-bottom:30px;">팔로잉 목록</h2>
 
-    <!-- ====== 여기를 통째로 교체하세요 ====== -->
+
     <table style="width:100%; border-collapse:collapse;">
         <thead>
         <tr>
@@ -68,7 +68,7 @@
 <!-- ====== AJAX 토글 스크립트 추가 ====== -->
 <script th:inline="javascript">
     document.addEventListener('DOMContentLoaded', function() {
-        // _csrf가 null이면 '' 할당 → parsing 에러 방지
+        // _csrf 가 null 이면 '' 할당 → parsing 에러 방지
         const csrfToken  = /*[[${_csrf == null ? '' : _csrf.token}]]*/ '';
         const csrfHeader = /*[[${_csrf == null ? '' : _csrf.headerName}]]*/ '';
 

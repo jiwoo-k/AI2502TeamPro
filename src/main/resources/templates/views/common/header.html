@@ -10,22 +10,25 @@
             <!-- 네비게이션 -->
             <nav class="header__nav-wrapper">
                 <ul class="header__nav">
-                    <li sec:authorize="isAuthenticated()">
-                        <a href="#" class="nav-item" onclick="openMapFromHeader()"
-                           th:text="${#authentication.principal.user.areaName != null ? #authentication.principal.user.areaName : '위치'}">
+                    <!-- 로그인했을 때만 보일 메뉴 (일반 사용자) -->
+                    <li sec:authorize="isAuthenticated() and !hasRole('ADMIN')">
+                        <a href="#"
+                           class="nav-item"
+                           onclick="openMapFromHeader()"
+                           th:text="${#authentication.principal.user.areaName}">
                             위치
                         </a>
                     </li>
-                    <li sec:authorize="isAuthenticated()">
+                    <li sec:authorize="isAuthenticated() and !hasRole('ADMIN')">
                         <span class="nav-item" th:text="${#authentication.principal.user.name}">닉네임</span>
                     </li>
-                    <li sec:authorize="isAuthenticated()">
+                    <li sec:authorize="isAuthenticated() and !hasRole('ADMIN')">
                         <a class="nav-item" th:href="@{/mypage}">마이페이지</a>
                     </li>
                     <li sec:authorize="!isAuthenticated()">
                         <a class="nav-item" th:href="@{/user/login}">로그인</a>
                     </li>
-                    <li sec:authorize="isAuthenticated()">
+                    <li sec:authorize="isAuthenticated() and !hasRole('ADMIN')">
                         <a class="nav-item" th:href="@{/user/logout}">로그아웃</a>
                     </li>
                 </ul>
