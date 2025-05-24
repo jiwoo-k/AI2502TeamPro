@@ -11,7 +11,7 @@ import java.util.List;
 @Service
 public class UserWarningServiceImpl implements UserWarningService {
 
-    private final UserWarningRepository repository;
+    private final UserWarningRepository userWarningRepository;
     private final PostRepository postRepository;
 
     /**
@@ -19,7 +19,7 @@ public class UserWarningServiceImpl implements UserWarningService {
      * UserWarningRepository 구현체를 획득
      */
     public UserWarningServiceImpl(SqlSession sqlSession) {
-        this.repository = sqlSession.getMapper(UserWarningRepository.class);
+        this.userWarningRepository = sqlSession.getMapper(UserWarningRepository.class);
         this.postRepository = sqlSession.getMapper(PostRepository.class);
     }
 
@@ -29,12 +29,12 @@ public class UserWarningServiceImpl implements UserWarningService {
         if (post == null) {
             return 0;
         }
-        return repository.insert(warning);
+        return userWarningRepository.insert(warning);
     }
 
     @Override
     public List<UserWarning> getWarningsByPostId(Long postId) {
-        return repository.findByPostId(postId);
+        return userWarningRepository.findByPostId(postId);
     }
 
     @Override
@@ -44,7 +44,12 @@ public class UserWarningServiceImpl implements UserWarningService {
 
     @Override
     public int postWarningCount(Long postId) {
-        return repository.postWarningCount(postId);
+        return userWarningRepository.postWarningCount(postId);
+    }
+
+    @Override
+    public List<UserWarning> findWarningDetails(Long userId) {
+        return userWarningRepository.findWarningDetails(userId);
     }
 }
 
