@@ -18,5 +18,12 @@
         select complaint_user_id AS complaintUserId , post_id from warning where post_id = #{postId}
     </select>
 
-
+    <select id="findWarningDetails" resultType="com.lec.spring.domain.UserWarning">
+        select w.complaint_user_id "complaintUserId",
+               p.id "postId",
+               w.reason "reason",
+               w.warndate "warnDate"
+        from user u, warning w, post p
+        where w.post_id = p.id and u.id = p.user_id and u.id = #{userId};
+    </select>
 </mapper>

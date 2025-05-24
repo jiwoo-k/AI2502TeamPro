@@ -52,14 +52,19 @@
     </delete>
 
     <select id="list" resultMap="mapCategory">
-        select c.id "c_id",
-               c.name "c_name",
-               c.color "c_color",
-               count(*) "tag_count"
-        from category c, tag t
-        where c.id = t.category_id
-        group by category_id
-        order by tag_count desc;
+        SELECT
+            c.id "c_id",
+            c.name "c_name",
+            c.color "c_color",
+            COUNT(t.id) "tag_count"
+        FROM
+            category c
+                LEFT JOIN
+            tag t ON c.id = t.category_id
+        GROUP BY
+            c.id, c.name, c.color
+        ORDER BY
+            tag_count desc;
     </select>
 
     <resultMap id="mapCategory" type="com.lec.spring.domain.Category">

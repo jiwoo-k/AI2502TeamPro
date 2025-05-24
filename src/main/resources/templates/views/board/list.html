@@ -74,7 +74,7 @@
 <!-- pagination -->
 
 
-<div th:each="board: ${board}" id="board" th:attr="data-id=${board.id}"
+<div th:each="board: ${boardList}" id="board" th:attr="data-id=${board.id}"
      onclick="location.href='/board/detail/' + this.getAttribute('data-id')" style="cursor:pointer;">
 
     <!--첨부파일 들어갈 곳-->
@@ -129,12 +129,6 @@
            th:text="${#temporals.format(board.createdat, board.createdat.monthValue >= 10 ? 'yy년 MM월 dd일 HH시' : 'yy년 M월 d일 H시')}"></a>
     </div>
 </div>
-<div class="row">
-    <div class="col-12">
-        <a class="btn btn-outline-dark" th:href="@{/board/write}" sec:authorize="hasAnyRole('ADMIN', 'MEMBER')">작성</a>
-    </div>
-</div>
-
 
 <script>
     function checkLogin() {
