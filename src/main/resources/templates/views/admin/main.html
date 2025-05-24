@@ -1,11 +1,32 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
-<h2>김 수한무 거북이와 두루미 삼천갑자 동박사 치치카포..... 뭐였지 </h2>
+<!--header-->
 
+<!--header-->
+
+<!--날짜 선택 zone-->
+<label for="loginAt">날짜 선택: </label>
+<input id="loginAt" name="loginAt" type="date" value="">
+<!--날짜 선택 zone-->
+
+<!--chart-->
+
+<!--chart-->
+
+<!--x축 선택 zone-->
+<div class="xOptions">
+
+</div>
+<!--x축 선택 zone-->
+
+<!--다른 페이지 이동 버튼들-->
+<a th:href="@{/admin/users}">사용자 관리</a>
+<a th:href="@{/admin/category/list}">카테고리 관리</a>
+<!--다른 페이지 이동 버튼들-->
 </body>
 </html>

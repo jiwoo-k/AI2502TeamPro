@@ -5,6 +5,9 @@ import com.lec.spring.repository.TagRepository;
 import com.lec.spring.service.CategoryService;
 import com.lec.spring.service.UserService;
 import com.lec.spring.util.U;
+import com.lec.spring.vaildator.TagValidator;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -57,6 +60,7 @@ public class HomeController {
         model.addAttribute("categoryList", categoryList);
 
         selectedTags = (List<Tag>) httpSession.getAttribute("selectedTags");
+        String areaName = (String) httpSession.getAttribute("areaName");
         if(selectedTags == null){
             //새로 만들기
             selectedTags = new ArrayList<>();
@@ -64,6 +68,7 @@ public class HomeController {
         }
 
         model.addAttribute("selectedTags", selectedTags);
+        model.addAttribute("areaName", areaName);
     }
 
     @PostMapping("/home")
@@ -112,6 +117,7 @@ public class HomeController {
         searchedTag.setColor(color);
 
         selectedTags = (List<Tag>) httpSession.getAttribute("selectedTags");
+        String areaName = (String) httpSession.getAttribute("areaName");
 
         model.addAttribute("selectedTags", selectedTags);
 
@@ -124,6 +130,7 @@ public class HomeController {
 
         String searchedTagCategoryName = categoryService.findById(searchedTag.getCategory_id()).getName();
         model.addAttribute("searchedTagCategoryName", searchedTagCategoryName);
+        model.addAttribute("areaName", areaName);
 
 
         return path.substring(1);
@@ -136,12 +143,7 @@ public class HomeController {
 
         User user = U.getLoggedUser();
 
-        if(user == null){
-            U.getSession().setAttribute("lat", locationInfo.getLat());
-            U.getSession().setAttribute("lng", locationInfo.getLng());
-            U.getSession().setAttribute("areaName", locationInfo.getAreaName());
-        }
-        else {
+        if(user != null){
             user.setLatitude(locationInfo.getLat());
             user.setLongitude(locationInfo.getLng());
             user.setAreaName(locationInfo.getAreaName());
@@ -149,7 +151,12 @@ public class HomeController {
             userService.updateLocation(user);
         }
 
+        U.getSession().setAttribute("lat", locationInfo.getLat());
+        U.getSession().setAttribute("lng", locationInfo.getLng());
+        U.getSession().setAttribute("areaName", locationInfo.getAreaName());
+
         System.out.println(user);
+
         return user;
     }
 

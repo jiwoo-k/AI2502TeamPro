@@ -28,7 +28,7 @@
     <button class="writeBtn"><a th:href="@{/board/write}" >게시물 작성하기</a></button>
 </div>
 
-<div th:each="board: ${board}" id="board" th:attr="data-id=${board.id}"
+<div th:each="board: ${boardList}" id="board" th:attr="data-id=${board.id}"
      onclick="location.href='/board/detail/' + this.getAttribute('data-id')" style="cursor:pointer;">
 
     <!--첨부파일 들어갈 곳-->

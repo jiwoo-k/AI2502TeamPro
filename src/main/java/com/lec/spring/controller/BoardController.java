@@ -160,13 +160,14 @@ public class BoardController {
             }
         }
 
+        if (type == null || type.isBlank()) {
+            type = "guest";
+        }
+
         List<Post> allPosts = boardService.listByTypeLocation(type, filteredUsers);
 
         model.addAttribute("id", loginUserId);
 
-        if (type == null || type.isBlank()) {
-            type = "guest";
-        }
 
 //        List<Post> allPosts = boardService.listByType(type);
 
@@ -186,7 +187,7 @@ public class BoardController {
         }
 
         if (selectedTags.isEmpty()) {
-            model.addAttribute("board", allPosts);
+            model.addAttribute("boardList", allPosts);
 
 
         } else {
@@ -202,7 +203,7 @@ public class BoardController {
                 }
             }
 
-            model.addAttribute("board", filteredPosts);
+            model.addAttribute("boardList", filteredPosts);
         }
 
 

@@ -18,4 +18,6 @@ public interface UserWarningService {
 
     int postWarningCount(Long postId);
 
+    //특정 사용자의 신고당한 상세내역
+    List<UserWarning> findWarningDetails(Long userId);
 }
