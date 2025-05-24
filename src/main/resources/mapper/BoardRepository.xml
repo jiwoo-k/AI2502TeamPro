@@ -142,4 +142,16 @@
         where id = #{id}
     </update>
 
+    <!--   페이징용 쿼리  -->
+    <select id="selectFromRow" resultMap="postMap">
+        <include refid="select_base"/>
+        ORDER BY p_id DESC
+        LIMIT #{param1}, #{param2}
+    </select>
+
+    <select id="countAll" resultType="int">
+        SELECT count(*) FROM post
+    </select>
+
+
 </mapper>

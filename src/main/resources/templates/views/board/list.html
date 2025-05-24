@@ -12,7 +12,7 @@
     <script src="/js/locationOk.js"></script>
 </head>
 <body>
-<!--<input id="locationInfo" type="hidden" th:value="${locationMissing}">-->
+<input id="locationInfo" type="hidden" th:value="${locationMissing}">
 <!--header-->
 <th:block th:replace="~{common/header :: header-fragment}"></th:block>
 
@@ -28,31 +28,51 @@
     <a class="writeBtn" th:href="@{/board/write}" onclick="return checkLogin()">게시물 작성하기</a>
 </div>
 
-
+<!-- 페이징 헤더 -->
+<div class="mb-3 mt-3 clearfix">
+    <span class="float-start me-2" th:text="${'총 ' + cnt + '개'}"></span>
+    <span class="float-start" th:text="${'page ' + page + '/' + totalPage}"></span>
+    <span class="float-end">
+            <form name="frmPageRows">
+                <input type="hidden" name="page" th:value="${page}">
+                <select class="form-select" name="pageRows">
+                    <option value="10" th:selected="${pageRows == 10}">10</option>
+                    <option value="15" th:selected="${pageRows == 15}">15</option>
+                    <option value="20" th:selected="${pageRows == 20}">20</option>
+                    <option value="50" th:selected="${pageRows == 50}">50</option>
+                </select>
+            </form>
+        </span>
+</div>
+<!-- 페이징 헤더 -->
 
 <!-- 목록 -->
-    <table class="table table-hover">
-        <thead class="table-success">
-        <tr>
-            <th>#</th>
-            <th>제목</th>
-            <th>작성자</th>
-            <th>조회수</th>
-            <th>작성일</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="post : ${list}">
-            <td th:text="${post.id}"></td>
-            <td><a th:href="@{'/board/detail/' + ${post.id}}" th:text="${post.subject}"></a> </td>
-            <td th:text="${post.user.username}"></td>
-            <td th:text="${post.viewCnt}"></td>
-            <td th:text="${#temporals.format(post.regDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
-        </tr>
+<table class="table table-hover">
+    <thead class="table-success">
+    <tr>
+        <th>#</th>
+        <th>제목</th>
+        <th>작성자</th>
+        <th>조회수</th>
+        <th>작성일</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- 올바른 코드 -->
+    <tr th:each="board : ${list}">
+        <td th:text="${board.id}">게시글 번호</td>
+        <td th:text="${board.title}">제목</td>
+        <td th:text="${board.name}">작성자</td>
+    </tr>
 
-        </tbody>
-    </table>
-    <!-- 목록 -->
+    </tbody>
+</table>
+<!-- 목록 -->
+
+<!-- pagination -->
+<th:block th:insert="~{board/pagination::pagination}"></th:block>
+<!-- pagination -->
+
 
 <div th:each="board: ${board}" id="board" th:attr="data-id=${board.id}"
      onclick="location.href='/board/detail/' + this.getAttribute('data-id')" style="cursor:pointer;">
@@ -109,16 +129,12 @@
            th:text="${#temporals.format(board.createdat, board.createdat.monthValue >= 10 ? 'yy년 MM월 dd일 HH시' : 'yy년 M월 d일 H시')}"></a>
     </div>
 </div>
-    <div class="row">
-        <div class="col-12">
-            <a class="btn btn-outline-dark" th:href="@{/board/write}" sec:authorize="hasAnyRole('ADMIN', 'MEMBER')">작성</a>
-        </div>
+<div class="row">
+    <div class="col-12">
+        <a class="btn btn-outline-dark" th:href="@{/board/write}" sec:authorize="hasAnyRole('ADMIN', 'MEMBER')">작성</a>
     </div>
 </div>
 
-<!-- pagination -->
-<th:block th:insert="~{board/pagination::pagination}"></th:block>
-<!-- pagination -->
 
 <script>
     function checkLogin() {

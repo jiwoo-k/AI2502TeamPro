@@ -53,6 +53,6 @@ public interface PostRepository {
     int deletedAt (Long id, LocalDateTime now);
 
     // 페이징
-    // from 부터 rows 개 만큰 SELECT
+    // from 부터 rows 개 만큼 SELECT
     List<Post> selectFromRow(int from, int rows);
 }

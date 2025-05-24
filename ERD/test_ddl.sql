@@ -9,8 +9,8 @@ DROP TABLE IF EXISTS tag;
 DROP TABLE IF EXISTS post;
 DROP TABLE IF EXISTS category;
 DROP TABLE IF EXISTS authority;
-DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS loginhistory;
+DROP TABLE IF EXISTS user;
 
 
 CREATE TABLE attachment
@@ -260,9 +260,9 @@ ALTER TABLE warning
     ON UPDATE RESTRICT
     ON DELETE CASCADE
 ;
-
-ALTER TABLE `user`
-    DROP COLUMN `juminNo`;
+#
+# ALTER TABLE `user`
+#     DROP COLUMN `juminNo`;
 
 
 

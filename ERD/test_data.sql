@@ -35,25 +35,32 @@ VALUES (3, '같이밥먹어요'),
        (1, '헬스장');
 
 insert into post(user_id, type, title, content)
-values (1, 'guest', 'title1', 'content1'),
-       (1, 'helper', 'title2', 'content2'),
-       (3, 'guest', 'title3', 'content3')
-insert into post (user_id, type, title, content)
-values(1, 'guest', 'title1', 'content1')
+values (1, 'guest', 'title1', 'content1')
+     , (2, 'helper', 'title2', 'content2')
+     , (3, 'guest', 'title3', 'content3')
+     , (4, 'helper', 'title4', 'content4')
+     , (1, 'guest', 'title5', 'content5')
+     , (2, 'helper', 'title6', 'content6')
+     , (3, 'guest', 'title7', 'content7')
+     , (4, 'helper', 'title8', 'content8')
+     , (1, 'guest', 'title9', 'content9')
+     , (2, 'helper', 'title10', 'content10')
+     , (3, 'guest', 'title11', 'content11')
+     , (4, 'helper', 'title12', 'content12')
+     , (1, 'guest', 'title13', 'content13')
+     , (2, 'helper', 'title14', 'content14')
+     , (3, 'guest', 'title15', 'content15')
+     , (4, 'helper', 'title16', 'content16')
+     , (1, 'guest', 'title17', 'content17')
+     , (2, 'helper', 'title18', 'content18')
+     , (3, 'guest', 'title19', 'content19')
+     , (4, 'helper', 'title20', 'content20')
 ;
 
 
 
-insert into post_tag
-values (1, 1),
-       (1, 2),
-       (1, 3),
-       (2, 2),
-       (2, 3),
-       (2, 4),
-       (3, 1),
-       (3, 2)
-;
+
+
 
 insert into user_tag
 values (1, 1),
@@ -73,17 +80,18 @@ VALUES ('ROLE_MEMBER'),
 -- 샘플 사용자-권한
 INSERT INTO user_authorities
 VALUES (1, 1),
-       (3, 1),
+       (1, 2),
+       (2, 1),
        (3, 2)
 ;
 
 INSERT INTO attachment (post_id, sourcename, filename)
-VALUES (1, 'face01.png', 'face01.png'),
-       (1, 'face02.png', 'face02.png'),
-       (2, 'face03.png', 'face03.png'),
-       (2, 'face04.png', 'face04.png'),
-       (1, 'picture05.jpg', 'picture05_stored.jpg'),
-       (2, 'picture06.jpg', 'picture06_stored.jpg');
+VALUES (1, 'face01.png', 'face01.png')
+     , (2, 'face02.png', 'face02.png')
+     , (3, 'face03.png', 'face03.png')
+     , (4, 'face04.png', 'face04.png')
+;
+
 
 
 select *
@@ -98,22 +106,28 @@ select *
 from category;
 select *
 from user_tag;
-select * from post;
-select * from user;
-select * from post_tag;
-select * from tag;
-select * from category;
-select * from warning
+select *
+from post;
+select *
+from user;
+select *
+from post_tag;
+select *
+from tag;
+select *
+from category;
+select *
+from warning
 
 
-ALTER TABLE post MODIFY type VARCHAR(10);
+ALTER TABLE post
+    MODIFY type VARCHAR(10);
 
 
-SELECT
-    t.id AS id,
-    t.category_id AS category_id,
-    t.name AS name,
-    c.color AS color
+SELECT t.id          AS id,
+       t.category_id AS category_id,
+       t.name        AS name,
+       c.color       AS color
 FROM tag t
          JOIN category c ON t.category_id = c.id
          JOIN user_tag ut ON ut.tag_id = t.id
@@ -121,36 +135,30 @@ FROM tag t
 WHERE p.id = 1;
 
 
-insert into warning (post_id, complaint_user_id, reason)values
-                                                (2,2, '그냥 신고하고 싶음');
+insert into warning (post_id, complaint_user_id, reason)
+values (2, 2, '그냥 신고하고 싶음');
 
 
 
 INSERT INTO user_follow (following_userid, followed_userid)
-VALUES (
-           (SELECT id FROM user WHERE username = 'user1'),
-           (SELECT id FROM user WHERE username = 'user4')
-       );
+VALUES ((SELECT id FROM user WHERE username = 'user1'),
+        (SELECT id FROM user WHERE username = 'user4'));
 
 INSERT INTO comment (user_id, post_id, content)
 VALUES (
            -- user 테이블에서 username='user1'인 행 중 하나만 가져오기
-           (SELECT id FROM user WHERE username = 'user1' LIMIT 1),
+               (SELECT id FROM user WHERE username = 'user1' LIMIT 1),
 
            -- post 테이블에서 title='title1'인 행 중 하나만 가져오기
-           (SELECT id FROM post WHERE title = 'title1' LIMIT 1),
-
-           '테스트 댓글입니다.'
-       );
+               (SELECT id FROM post WHERE title = 'title1' LIMIT 1),
+               '테스트 댓글입니다.');
 
 INSERT INTO comment (user_id, post_id, content)
 VALUES (
            -- user 테이블에서 username='user1'인 행 중 하나만 가져오기
-           (SELECT id FROM user WHERE username = 'user1' LIMIT 1),
+               (SELECT id FROM user WHERE username = 'user1' LIMIT 1),
 
            -- post 테이블에서 title='title1'인 행 중 하나만 가져오기
-           (SELECT id FROM post WHERE title = 'title1' LIMIT 1),
-
-           '테스트 댓글입니다.'
-       );
+               (SELECT id FROM post WHERE title = 'title1' LIMIT 1),
+               '테스트 댓글입니다.');
 

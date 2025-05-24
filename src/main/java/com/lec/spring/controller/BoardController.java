@@ -47,7 +47,7 @@ public class BoardController {
                            AttachmentService attachmentService,
                            CategoryService categoryService,
                            TagRepository tagRepository
-                           ) {
+    ) {
         System.out.println("[ACTIVE] BoardController");
         this.boardService = boardService;
         this.userFollowingService = userFollowingService;
@@ -95,18 +95,125 @@ public class BoardController {
         }
 
 
-
         // user_id 가지고 오기
         post.setUser_id(loginUser.getId());
         int result = boardService.write(post, files);
         model.addAttribute("result", result);
-        model.addAttribute("type", type );
+        model.addAttribute("type", type);
         return "board/writeOk";
     }
 
     // listBytype (손님, 도우미 선택 가능 => findAll 은 혹시 몰라서 일부러 놔뒀음)
+//    @GetMapping("/list")
+//    public String list(@RequestParam(required = false) String type,
+//                       Integer page,
+//                       Model model,
+//                       @RequestParam(required = false) Boolean follow,
+//                       Principal principal,
+//                       HttpSession httpSession) {
+//
+//        // 로그인 사용자 ID 추출
+//        Long loginUserId = null;
+//        User loginUser;
+//
+//        //위도, 경도
+//        Double lat1, lng1;
+//
+//        if (principal != null) {
+//            String username = principal.getName();
+//            loginUser = userService.findByUsername(username);
+//            loginUserId = loginUser.getId();
+//
+//            //로그인한 사용자 위치검증
+//            if (loginUser.getLatitude() == null || loginUser.getLongitude() == null) {
+//                model.addAttribute("locationMissing", "위치 정보 없음");
+//                return "board/list";
+//            } else {
+//                lat1 = loginUser.getLatitude();
+//                lng1 = loginUser.getLongitude();
+//            }
+//        } else {
+//            //로그인 안한 사용자 위치검증
+//            lat1 = (Double) httpSession.getAttribute("lat");
+//            lng1 = (Double) httpSession.getAttribute("lng");
+//
+//            if (lat1 == null || lng1 == null) {
+//                model.addAttribute("locationMissing", "위치 정보 없음");
+//                return "board/list";
+//            }
+//        }
+//
+//        //1. 사용자 3km 이내 보여주기
+//        List<User> allUsers = userService.findNearUsers();
+//        List<User> filteredUsers = new ArrayList<>();
+//        for (User user : allUsers) {
+//            Double lat2 = user.getLatitude();
+//            Double lng2 = user.getLongitude();
+//
+//            if (lat2 == null || lng2 == null) continue;
+//
+//            double distance = calcDistance(lat1, lat2, lng1, lng2);
+//            if (distance <= 3) {
+//                filteredUsers.add(user);
+//            }
+//        }
+//
+//        List<Post> allPosts = boardService.listByTypeLocation(type, filteredUsers);
+//
+//        model.addAttribute("id", loginUserId);
+//
+//        if (type == null || type.isBlank()) {
+//            type = "guest";
+//        }
+//
+
+    /// /        List<Post> allPosts = boardService.listByType(type);
+//
+//        for (Post post : allPosts) {
+//            boolean isFollowed = loginUserId != null && userFollowingService.isFollowing(loginUserId, post.getUser_id());
+//            post.setFollow(isFollowed);
+//        }
+//
+//        //태그 검색 필터에 만족하는 게시글들 담을 것.
+//        List<Post> filteredPosts = new ArrayList<>();
+//
+//        List<Tag> selectedTags = (List<Tag>) httpSession.getAttribute("selectedTags");
+//
+//        if (selectedTags == null) {
+//            selectedTags = new ArrayList<>();
+//            httpSession.setAttribute("selectedTags", selectedTags);
+//        }
+//
+//        if (selectedTags.isEmpty()) {
+//            model.addAttribute("board", allPosts);
+//
+//
+//        } else {
+//            for (Post post : allPosts) {
+//                //게시글마다 태그 정보 뽑아오기
+//                List<Tag> tags = post.getPost_tag();
+//
+//                for (Tag tag : selectedTags) {
+//                    if (tags.contains(tag)) {
+//                        filteredPosts.add(post);
+//                        break;
+//                    }
+//                }
+//            }
+//
+//            model.addAttribute("board", filteredPosts);
+//        }
+//
+//
+//        model.addAttribute("follow", (follow != null) ? follow : false);
+//        model.addAttribute("selectedType", type);
+//        boardService.list(page, model);
+//
+//        return "board/list";
+//    }
     @GetMapping("/list")
     public String list(@RequestParam(required = false) String type,
+                       Integer page,
                        Model model,
                        @RequestParam(required = false) Boolean follow,
                        Principal principal,
@@ -114,86 +221,76 @@ public class BoardController {
 
         // 로그인 사용자 ID 추출
         Long loginUserId = null;
-        User loginUser;
+        User loginUser = null;
 
         //위도, 경도
-        Double lat1, lng1;
+        Double lat1 = null, lng1 = null;
 
         if (principal != null) {
             String username = principal.getName();
             loginUser = userService.findByUsername(username);
             loginUserId = loginUser.getId();
 
-            //로그인한 사용자 위치검증
-            if(loginUser.getLatitude() == null || loginUser.getLongitude() == null) {
-                model.addAttribute("locationMissing", "위치 정보 없음");
-                return "board/list";
-            }
-            else{
-                lat1 = loginUser.getLatitude();
-                lng1 = loginUser.getLongitude();
-            }
-        }
-        else{
-            //로그인 안한 사용자 위치검증
+            lat1 = loginUser.getLatitude();
+            lng1 = loginUser.getLongitude();
+        } else {
             lat1 = (Double) httpSession.getAttribute("lat");
             lng1 = (Double) httpSession.getAttribute("lng");
-
-            if(lat1 == null || lng1 == null){
-                model.addAttribute("locationMissing", "위치 정보 없음");
-                return "board/list";
-            }
         }
 
-        //1. 사용자 3km 이내 보여주기
-        List<User> allUsers = userService.findNearUsers();
-        List<User> filteredUsers = new ArrayList<>();
-        for(User user : allUsers){
-            Double lat2 = user.getLatitude();
-            Double lng2 = user.getLongitude();
-
-            if(lat2 == null || lng2 == null) continue;
-
-            double distance = calcDistance(lat1, lat2, lng1, lng2);
-            if(distance <= 3){
-                filteredUsers.add(user);
-            }
-        }
-
-        List<Post> allPosts = boardService.listByTypeLocation(type, filteredUsers);
-
-        model.addAttribute("id", loginUserId);
-
+        // 타입 기본값 설정
         if (type == null || type.isBlank()) {
             type = "guest";
         }
 
-//        List<Post> allPosts = boardService.listByType(type);
+        List<Post> allPosts;
 
+        if (lat1 != null && lng1 != null) {
+            // 1. 위치 정보가 있을 때: 3km 이내 유저 필터링
+            List<User> allUsers = userService.findNearUsers();
+            List<User> filteredUsers = new ArrayList<>();
+
+            for (User user : allUsers) {
+                Double lat2 = user.getLatitude();
+                Double lng2 = user.getLongitude();
+
+                if (lat2 == null || lng2 == null) continue;
+
+                double distance = calcDistance(lat1, lat2, lng1, lng2);
+                if (distance <= 3) {
+                    filteredUsers.add(user);
+                }
+            }
+
+            allPosts = boardService.listByTypeLocation(type, filteredUsers);
+        } else {
+            // 2. 위치 정보가 없을 때: 위치 상관없이 타입별로 전체 게시글 불러오기
+            model.addAttribute("locationMissing", "위치 정보 없음");
+            allPosts = boardService.listByType(type);
+        }
+
+        model.addAttribute("id", loginUserId);
+
+        // 게시글 별로 follow 상태 추가
         for (Post post : allPosts) {
             boolean isFollowed = loginUserId != null && userFollowingService.isFollowing(loginUserId, post.getUser_id());
             post.setFollow(isFollowed);
         }
 
-        //태그 검색 필터에 만족하는 게시글들 담을 것.
+        // 태그 필터링
         List<Post> filteredPosts = new ArrayList<>();
-
         List<Tag> selectedTags = (List<Tag>) httpSession.getAttribute("selectedTags");
 
-        if(selectedTags == null) {
+        if (selectedTags == null) {
             selectedTags = new ArrayList<>();
             httpSession.setAttribute("selectedTags", selectedTags);
         }
 
         if (selectedTags.isEmpty()) {
             model.addAttribute("board", allPosts);
-
-
         } else {
             for (Post post : allPosts) {
-                //게시글마다 태그 정보 뽑아오기
                 List<Tag> tags = post.getPost_tag();
-
                 for (Tag tag : selectedTags) {
                     if (tags.contains(tag)) {
                         filteredPosts.add(post);
@@ -201,17 +298,12 @@ public class BoardController {
                     }
                 }
             }
-
             model.addAttribute("board", filteredPosts);
         }
 
-
-
         model.addAttribute("follow", (follow != null) ? follow : false);
         model.addAttribute("selectedType", type);
-
-        //TODO: 이외에 다른 매커니즘 혹시 필요하면 추가 바랍니다
-
+        boardService.list(page, model);
 
         return "board/list";
     }
@@ -228,7 +320,7 @@ public class BoardController {
         double sinDeltaLng = Math.sin(deltaLng / 2);
         double squareRoot = Math.sqrt(
                 sinDeltaLat * sinDeltaLat +
-                        Math.cos(lng1 * radian) * Math.cos(lng2 * radian) * sinDeltaLng * sinDeltaLng);
+                Math.cos(lng1 * radian) * Math.cos(lng2 * radian) * sinDeltaLng * sinDeltaLng);
 
         distance = 2 * radius * Math.asin(squareRoot);
 
@@ -335,7 +427,7 @@ public class BoardController {
     // 페이징
     // pageRows 변경시 동작
     @PostMapping("/pageRows")
-    public String pageRows(Integer page, Integer pageRows){
+    public String pageRows(Integer page, Integer pageRows) {
         U.getSession().setAttribute("pageRows", pageRows);
         return "redirect:/board/list?page=" + page;
     }
