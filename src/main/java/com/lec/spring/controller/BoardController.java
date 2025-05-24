@@ -175,9 +175,24 @@ public class BoardController {
             post.setFollow(isFollowed);
         }
 
+        model.addAttribute("follow", (follow != null) ? follow : false);
+        model.addAttribute("board", allPosts);
+        model.addAttribute("selectedType", type);
+
+
+        return "board/list";
+    }
+
+    //태그 form 통해 들어오는 /board/list
+    @PostMapping("/list")
+    public String list(String type, HttpSession httpSession, Model model) {
+        //일단 특정 유형의 게시글 모두 들고오기
+        List<Post> allPosts = boardService.listByType(type);
+
         //태그 검색 필터에 만족하는 게시글들 담을 것.
         List<Post> filteredPosts = new ArrayList<>();
 
+        //세션에 있는 태그목록 가져오기
         List<Tag> selectedTags = (List<Tag>) httpSession.getAttribute("selectedTags");
 
         if(selectedTags == null) {
@@ -187,8 +202,6 @@ public class BoardController {
 
         if (selectedTags.isEmpty()) {
             model.addAttribute("board", allPosts);
-
-
         } else {
             for (Post post : allPosts) {
                 //게시글마다 태그 정보 뽑아오기
@@ -205,9 +218,6 @@ public class BoardController {
             model.addAttribute("board", filteredPosts);
         }
 
-
-
-        model.addAttribute("follow", (follow != null) ? follow : false);
         model.addAttribute("selectedType", type);
 
         //TODO: 이외에 다른 매커니즘 혹시 필요하면 추가 바랍니다
@@ -342,3 +352,5 @@ public class BoardController {
 
 
 }
+
+
