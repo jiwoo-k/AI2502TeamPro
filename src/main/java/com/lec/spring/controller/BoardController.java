@@ -47,7 +47,7 @@ public class BoardController {
                            AttachmentService attachmentService,
                            CategoryService categoryService,
                            TagRepository tagRepository
-    ) {
+                           ) {
         System.out.println("[ACTIVE] BoardController");
         this.boardService = boardService;
         this.userFollowingService = userFollowingService;
@@ -95,11 +95,12 @@ public class BoardController {
         }
 
 
+
         // user_id 가지고 오기
         post.setUser_id(loginUser.getId());
         int result = boardService.write(post, files);
         model.addAttribute("result", result);
-        model.addAttribute("type", type);
+        model.addAttribute("type", type );
         return "board/writeOk";
     }
 
@@ -221,58 +222,63 @@ public class BoardController {
 
         // 로그인 사용자 ID 추출
         Long loginUserId = null;
-        User loginUser = null;
+        User loginUser;
 
         //위도, 경도
-        Double lat1 = null, lng1 = null;
+        Double lat1, lng1;
 
         if (principal != null) {
             String username = principal.getName();
             loginUser = userService.findByUsername(username);
             loginUserId = loginUser.getId();
 
-            lat1 = loginUser.getLatitude();
-            lng1 = loginUser.getLongitude();
-        } else {
+            //로그인한 사용자 위치검증
+            if(loginUser.getLatitude() == null || loginUser.getLongitude() == null) {
+                model.addAttribute("locationMissing", "위치 정보 없음");
+                return "board/list";
+            }
+            else{
+                lat1 = loginUser.getLatitude();
+                lng1 = loginUser.getLongitude();
+            }
+        }
+        else{
+            //로그인 안한 사용자 위치검증
             lat1 = (Double) httpSession.getAttribute("lat");
             lng1 = (Double) httpSession.getAttribute("lng");
+
+            if(lat1 == null || lng1 == null){
+                model.addAttribute("locationMissing", "위치 정보 없음");
+                return "board/list";
+            }
         }
 
-        // 타입 기본값 설정
+        //1. 사용자 3km 이내 보여주기
+        List<User> allUsers = userService.findNearUsers();
+        List<User> filteredUsers = new ArrayList<>();
+        for(User user : allUsers){
+            Double lat2 = user.getLatitude();
+            Double lng2 = user.getLongitude();
+
+            if(lat2 == null || lng2 == null) continue;
+
+            double distance = calcDistance(lat1, lat2, lng1, lng2);
+            if(distance <= 3){
+                filteredUsers.add(user);
+            }
+        }
+
         if (type == null || type.isBlank()) {
             type = "guest";
         }
 
-        List<Post> allPosts;
-
-        if (lat1 != null && lng1 != null) {
-            // 1. 위치 정보가 있을 때: 3km 이내 유저 필터링
-            List<User> allUsers = userService.findNearUsers();
-            List<User> filteredUsers = new ArrayList<>();
-
-            for (User user : allUsers) {
-                Double lat2 = user.getLatitude();
-                Double lng2 = user.getLongitude();
-
-                if (lat2 == null || lng2 == null) continue;
-
-                double distance = calcDistance(lat1, lat2, lng1, lng2);
-                if (distance <= 3) {
-                    filteredUsers.add(user);
-                }
-            }
-
-            allPosts = boardService.listByTypeLocation(type, filteredUsers);
-        } else {
-
-            // 2. 위치 정보가 없을 때: 위치 상관없이 타입별로 전체 게시글 불러오기
-            model.addAttribute("locationMissing", "위치 정보 없음");
-            allPosts = boardService.listByType(type);
-        }
+        List<Post> allPosts = boardService.listByTypeLocation(type, filteredUsers);
 
         model.addAttribute("id", loginUserId);
 
-        // 게시글 별로 follow 상태 추가
+
+//        List<Post> allPosts = boardService.listByType(type);
+
         for (Post post : allPosts) {
             boolean isFollowed = loginUserId != null && userFollowingService.isFollowing(loginUserId, post.getUser_id());
             post.setFollow(isFollowed);
@@ -359,7 +365,7 @@ public class BoardController {
         Post post = boardService.detail(id);
         boolean isFollowed = loginUserId != null && userFollowingService.isFollowing(loginUserId, post.getUser_id());
         post.setFollow(isFollowed);
-        model.addAttribute("boardList", post);
+        model.addAttribute("board", post);
 
         //  신고 횟수
         int warningCount = userWarningService.postWarningCount(id); // id는 게시물 id
@@ -428,7 +434,7 @@ public class BoardController {
     // 페이징
     // pageRows 변경시 동작
     @PostMapping("/pageRows")
-    public String pageRows(Integer page, Integer pageRows) {
+    public String pageRows(Integer page, Integer pageRows){
         U.getSession().setAttribute("pageRows", pageRows);
         return "redirect:/board/list?page=" + page;
     }

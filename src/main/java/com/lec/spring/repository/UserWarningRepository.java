@@ -1,5 +1,6 @@
 package com.lec.spring.repository;
 
+import com.lec.spring.domain.User;
 import com.lec.spring.domain.UserWarning;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -22,4 +23,7 @@ public interface UserWarningRepository {
 
     // 한 게시물의 신고 횟수 count
     int postWarningCount(Long postId);
+
+    //특정 사용자의 신고 상세내역
+    List<UserWarning> findWarningDetails(Long userId);
 }

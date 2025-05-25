@@ -33,6 +33,12 @@ public interface UserService {
     int updateLocation(User user);
 
     List<User> findNearUsers();
+
+    //사용자들 신고 목록
+    List<User> findUsersByWarnCount(Integer warnCount1, Integer warnCount2);
+
+    //특정 사용자 특정 일수 만큼 계정 정지
+    void limitUser(Long id, Integer days);
 }
 
 
