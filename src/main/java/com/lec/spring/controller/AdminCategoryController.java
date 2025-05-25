@@ -30,7 +30,7 @@ public class AdminCategoryController {
     @PostMapping("/delete")
     public String delete(@RequestParam("selectedId") Long id) {
         categoryService.delete(id);
-        return "redirect:/admin/category";
+        return "redirect:/admin/category/list";
     }
 
     // 3) 추가·수정 폼 이동

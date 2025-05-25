@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>카테고리 작성</title>
+    <th:block th:replace="~{common/header :: header-fragment}" />
+    <link rel="stylesheet" th:href="@{/css/admin-category.css}" />
+</head>
+<body>
+
+<div class="container mt-5">
+    <h1 class="mb-4">카테고리 추가</h1>
+
+    <form th:action="@{/admin/category/save}" method="post" enctype="multipart/form-data">
+
+        <!-- 카테고리 이름 -->
+        <div class="mb-3">
+            <label for="name" class="form-label fw-bold">카테고리 이름 작성</label>
+            <input type="text" id="name" name="name" class="form-control" th:value="${category.name}" required />
+        </div>
+
+        <!-- 아이콘 파일 첨부 -->
+        <div class="mb-3">
+            <label for="icon" class="form-label fw-bold">카테고리 아이콘 첨부</label>
+            <input type="file" id="icon" name="file" class="form-control" />
+        </div>
+
+        <!-- 버튼 -->
+        <div class="text-center mt-4">
+            <button type="button"
+                    class="btn btn-outline-secondary me-2"
+                    th:onclick="|location.href='@{/admin/category/list}'|">
+                목록
+            </button>
+            <button type="submit"
+                    class="btn btn-outline-primary">
+                추가 완료
+            </button>
+        </div>
+
+    </form>
+</div>
+
+</body>
+</html>

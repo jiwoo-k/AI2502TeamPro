@@ -214,9 +214,10 @@ public class BoardController {
 //    }
     @GetMapping("/list")
     public String list(@RequestParam(required = false) String type,
-                       Integer page,
-                       Model model,
+                       @RequestParam(required = false, defaultValue = "1") Integer page,
+                       @RequestParam(required = false) Integer pageRows,
                        @RequestParam(required = false) Boolean follow,
+                       Model model,
                        Principal principal,
                        HttpSession httpSession) {
 
@@ -307,6 +308,51 @@ public class BoardController {
             }
             model.addAttribute("boardList", filteredPosts);
         }
+
+        // 페이징 처리
+        if (pageRows == null || pageRows < 1) {
+            pageRows = 10;
+        }
+
+        List<Post> displayList;
+        if (selectedTags.isEmpty()) {
+            displayList = allPosts;
+        } else {
+            for (Post post : allPosts) {
+                List<Tag> tags = post.getPost_tag();
+                for (Tag tag : selectedTags) {
+                    if (tags.contains(tag)) {
+                        filteredPosts.add(post);
+                        break;
+                    }
+                }
+            }
+            displayList = filteredPosts;
+        }
+
+        int totalCnt = displayList.size();
+        int totalPage = (int) Math.ceil((double) totalCnt / pageRows);
+        if (page < 1) page = 1;
+        if (page > totalPage) page = totalPage;
+
+        int fromIndex = (page - 1) * pageRows;
+        int toIndex = Math.min(fromIndex + pageRows, totalCnt);
+        List<Post> pageList = displayList.subList(fromIndex, toIndex);
+
+        model.addAttribute("boardList", pageList);
+        model.addAttribute("cnt", totalCnt);
+        model.addAttribute("page", page);
+        model.addAttribute("pageRows", pageRows);
+        model.addAttribute("totalPage", totalPage);
+
+        int writePages = 10;
+        int startPage = ((page - 1) / writePages) * writePages + 1;
+        int endPage = Math.min(startPage + writePages - 1, totalPage);
+
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+        model.addAttribute("url", "/board/list?type=" + type);
+
 
         model.addAttribute("follow", (follow != null) ? follow : false);
         model.addAttribute("selectedType", type);
