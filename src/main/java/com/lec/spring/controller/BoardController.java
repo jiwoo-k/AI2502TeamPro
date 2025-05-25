@@ -264,6 +264,7 @@ public class BoardController {
 
             allPosts = boardService.listByTypeLocation(type, filteredUsers);
         } else {
+
             // 2. 위치 정보가 없을 때: 위치 상관없이 타입별로 전체 게시글 불러오기
             model.addAttribute("locationMissing", "위치 정보 없음");
             allPosts = boardService.listByType(type);
@@ -287,7 +288,7 @@ public class BoardController {
         }
 
         if (selectedTags.isEmpty()) {
-            model.addAttribute("board", allPosts);
+            model.addAttribute("boardList", allPosts);
         } else {
             for (Post post : allPosts) {
                 List<Tag> tags = post.getPost_tag();
@@ -298,7 +299,7 @@ public class BoardController {
                     }
                 }
             }
-            model.addAttribute("board", filteredPosts);
+            model.addAttribute("boardList", filteredPosts);
         }
 
         model.addAttribute("follow", (follow != null) ? follow : false);
@@ -358,7 +359,7 @@ public class BoardController {
         Post post = boardService.detail(id);
         boolean isFollowed = loginUserId != null && userFollowingService.isFollowing(loginUserId, post.getUser_id());
         post.setFollow(isFollowed);
-        model.addAttribute("board", post);
+        model.addAttribute("boardList", post);
 
         //  신고 횟수
         int warningCount = userWarningService.postWarningCount(id); // id는 게시물 id
