@@ -64,7 +64,11 @@
             </td>
             <td>
                 <span th:unless="${cnt == 10}"> - </span>
-                <button th:if="${cnt == 10}">팔로워 초기화</button>
+                <span th:if="${cnt == 10 && user.followersCount == 0}">팔로워 없음</span>
+
+                <form th:if="${cnt == 10 && user.followersCount > 0}" th:action="@{/admin/follower/reset/{userId}(userId=${user.id})}" method="post">
+                    <button class="followReset">팔로워 초기화</button>
+                </form>
             </td>
         </tr>
         </tbody>

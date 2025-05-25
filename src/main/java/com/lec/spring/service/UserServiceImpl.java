@@ -6,6 +6,7 @@ import com.lec.spring.repository.AuthorityRepository;
 import com.lec.spring.repository.UserRepository;
 import com.lec.spring.util.U;
 import org.apache.ibatis.session.SqlSession;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -118,5 +119,22 @@ public class UserServiceImpl implements UserService {
 
 
         userRepository.updateState(user);
+    }
+
+    @Transactional // 중요: DB 변경이 발생하므로 트랜잭션 처리
+    @Override
+    public User activateAccount(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username);
+
+        // 임시 정지 상태이고, 정지 만료일이 지났다면 계정 활성화
+        if (user.getStatus().equals("paused") &&
+                user.getPauseEndDate() != null &&
+                user.getPauseEndDate().isBefore(LocalDateTime.now())) {
+
+            user.setStatus("active");
+            user.setPauseEndDate(null);
+            userRepository.updateState(user);
+        }
+        return user;
     }
 }

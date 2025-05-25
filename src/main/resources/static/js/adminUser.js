@@ -14,4 +14,10 @@ $(document).ready(function() {
             alert('영구 정지되었습니다.');
         }
     });
+
+    $('button.followReset').click(function() {
+       if(confirm('해당 계정의 팔로워를 초기화하시겠습니까?')){
+           alert('초기화되었습니다.');
+       }
+    });
 });

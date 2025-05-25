@@ -16,7 +16,7 @@
         ,latitude
         ,longitude
         ,status
-        ,pause_end_date
+        ,pause_end_date "pauseEndDate"
         FROM user
         WHERE 1 = 1
     </sql>
