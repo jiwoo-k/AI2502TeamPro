@@ -21,11 +21,9 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
     private String oauth2Password;
 
     private final UserService userService;
-    private final PasswordEncoder passwordEncoder;
 
-    public PrincipalOauth2UserService(UserService userService, PasswordEncoder passwordEncoder) {
+    public PrincipalOauth2UserService(UserService userService) {
         this.userService = userService;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @Override

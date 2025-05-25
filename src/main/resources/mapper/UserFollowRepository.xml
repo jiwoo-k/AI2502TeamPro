@@ -31,4 +31,10 @@
         WHERE following_userid = #{followingUserId}
           AND followed_userid = #{followedUserId}
     </delete>
+
+    <select id="findByFollowedUserId" resultType="com.lec.spring.domain.UserFollowing">
+        select following_userid "followingUserId", followed_userid "followedUserId"
+        from user_follow
+        where followed_userid=#{followedUserId};
+    </select>
 </mapper>
