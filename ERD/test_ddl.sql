@@ -272,3 +272,5 @@ ALTER TABLE warning
 #     followed_userid
 # )  values
 #     (2,2)
+
+ALTER TABLE user ADD pause_end_date DATETIME NULL;

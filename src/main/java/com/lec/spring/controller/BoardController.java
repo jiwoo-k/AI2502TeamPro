@@ -104,114 +104,7 @@ public class BoardController {
         return "board/writeOk";
     }
 
-    // listBytype (손님, 도우미 선택 가능 => findAll 은 혹시 몰라서 일부러 놔뒀음)
-//    @GetMapping("/list")
-//    public String list(@RequestParam(required = false) String type,
-//                       Integer page,
-//                       Model model,
-//                       @RequestParam(required = false) Boolean follow,
-//                       Principal principal,
-//                       HttpSession httpSession) {
-//
-//        // 로그인 사용자 ID 추출
-//        Long loginUserId = null;
-//        User loginUser;
-//
-//        //위도, 경도
-//        Double lat1, lng1;
-//
-//        if (principal != null) {
-//            String username = principal.getName();
-//            loginUser = userService.findByUsername(username);
-//            loginUserId = loginUser.getId();
-//
-//            //로그인한 사용자 위치검증
-//            if (loginUser.getLatitude() == null || loginUser.getLongitude() == null) {
-//                model.addAttribute("locationMissing", "위치 정보 없음");
-//                return "board/list";
-//            } else {
-//                lat1 = loginUser.getLatitude();
-//                lng1 = loginUser.getLongitude();
-//            }
-//        } else {
-//            //로그인 안한 사용자 위치검증
-//            lat1 = (Double) httpSession.getAttribute("lat");
-//            lng1 = (Double) httpSession.getAttribute("lng");
-//
-//            if (lat1 == null || lng1 == null) {
-//                model.addAttribute("locationMissing", "위치 정보 없음");
-//                return "board/list";
-//            }
-//        }
-//
-//        //1. 사용자 3km 이내 보여주기
-//        List<User> allUsers = userService.findNearUsers();
-//        List<User> filteredUsers = new ArrayList<>();
-//        for (User user : allUsers) {
-//            Double lat2 = user.getLatitude();
-//            Double lng2 = user.getLongitude();
-//
-//            if (lat2 == null || lng2 == null) continue;
-//
-//            double distance = calcDistance(lat1, lat2, lng1, lng2);
-//            if (distance <= 3) {
-//                filteredUsers.add(user);
-//            }
-//        }
-//
-//        List<Post> allPosts = boardService.listByTypeLocation(type, filteredUsers);
-//
-//        model.addAttribute("id", loginUserId);
-//
-//        if (type == null || type.isBlank()) {
-//            type = "guest";
-//        }
-//
 
-    /// /        List<Post> allPosts = boardService.listByType(type);
-//
-//        for (Post post : allPosts) {
-//            boolean isFollowed = loginUserId != null && userFollowingService.isFollowing(loginUserId, post.getUser_id());
-//            post.setFollow(isFollowed);
-//        }
-//
-//        //태그 검색 필터에 만족하는 게시글들 담을 것.
-//        List<Post> filteredPosts = new ArrayList<>();
-//
-//        List<Tag> selectedTags = (List<Tag>) httpSession.getAttribute("selectedTags");
-//
-//        if (selectedTags == null) {
-//            selectedTags = new ArrayList<>();
-//            httpSession.setAttribute("selectedTags", selectedTags);
-//        }
-//
-//        if (selectedTags.isEmpty()) {
-//            model.addAttribute("board", allPosts);
-//
-//
-//        } else {
-//            for (Post post : allPosts) {
-//                //게시글마다 태그 정보 뽑아오기
-//                List<Tag> tags = post.getPost_tag();
-//
-//                for (Tag tag : selectedTags) {
-//                    if (tags.contains(tag)) {
-//                        filteredPosts.add(post);
-//                        break;
-//                    }
-//                }
-//            }
-//
-//            model.addAttribute("board", filteredPosts);
-//        }
-//
-//
-//        model.addAttribute("follow", (follow != null) ? follow : false);
-//        model.addAttribute("selectedType", type);
-//        boardService.list(page, model);
-//
-//        return "board/list";
-//    }
     @GetMapping("/list")
     public String list(@RequestParam(required = false) String type,
                        @RequestParam(required = false, defaultValue = "1") Integer page,
@@ -235,8 +128,9 @@ public class BoardController {
 
             //로그인한 사용자 위치검증
             if(loginUser.getLatitude() == null || loginUser.getLongitude() == null) {
-                model.addAttribute("locationMissing", "위치 정보 없음");
-                return "board/list";
+                // 위치 정보 검증 (필요 시 주석처리)
+//                model.addAttribute("locationMissing", "위치 정보 없음");
+//                return "board/list";
             }
             else{
                 lat1 = loginUser.getLatitude();
@@ -249,8 +143,9 @@ public class BoardController {
             lng1 = (Double) httpSession.getAttribute("lng");
 
             if(lat1 == null || lng1 == null){
-                model.addAttribute("locationMissing", "위치 정보 없음");
-                return "board/list";
+                // 위치 정보 검증 (필요 시 주석처리)
+//                model.addAttribute("locationMissing", "위치 정보 없음");
+//                return "board/list";
             }
         }
 
@@ -261,19 +156,29 @@ public class BoardController {
             Double lat2 = user.getLatitude();
             Double lng2 = user.getLongitude();
 
+
+
             if(lat2 == null || lng2 == null) continue;
 
-            double distance = calcDistance(lat1, lat2, lng1, lng2);
-            if(distance <= 3){
-                filteredUsers.add(user);
-            }
+            // 거리 계산 (위치 정보 부재 시 주석 처리)
+//            double distance = calcDistance(lat1, lat2, lng1, lng2);
+//            if(distance <= 3){
+//                filteredUsers.add(user);
+//            }
         }
 
         if (type == null || type.isBlank()) {
             type = "guest";
         }
 
-        List<Post> allPosts = boardService.listByTypeLocation(type, filteredUsers);
+//        List<Post> allPosts = boardService.listByTypeLocation(type, filteredUsers);
+
+        List<Post> allPosts;
+        if (filteredUsers.isEmpty()) {
+            allPosts = boardService.listByType(type); // ← 일반 조회로 우회
+        } else {
+            allPosts = boardService.listByTypeLocation(type, filteredUsers);
+        }
 
         model.addAttribute("id", loginUserId);
 
