@@ -13,7 +13,7 @@ public interface BoardService {
     // 게시판 작성하기
     int write(Post Post);
 
-    int write(Post post, Map<String, MultipartFile> files);
+    int write(Post post, Map<String, MultipartFile> files, List<Tag> tags);
 
 
     // id 가져와서 글 읽기
@@ -28,7 +28,7 @@ public interface BoardService {
     // 게시판 수정하기
     int update(Post Post);
 
-    int update(Post post, Map<String, MultipartFile> files, Long[] delfile);
+    int update(Post post, Map<String, MultipartFile> files, Long[] delfile, List<Tag> selectedTags);
 
 
     // 게시판 삭제

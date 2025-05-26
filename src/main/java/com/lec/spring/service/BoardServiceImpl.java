@@ -24,6 +24,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -59,6 +60,8 @@ public class BoardServiceImpl implements BoardService {
         return postRepository.save(post);
     }
 
+
+
     // 특정 id 의 글 조회
     // 트랜잭션 처리
     @Override
@@ -92,9 +95,9 @@ public class BoardServiceImpl implements BoardService {
         return post;
     }
 
-
+    @Transactional
     @Override
-    public int write(Post post, Map<String, MultipartFile> files) {
+    public int write(Post post, Map<String, MultipartFile> files, List<Tag> tags) {
         // 현재 로그인한 작성자 정보
         User user = U.getLoggedUser();
 
@@ -106,6 +109,14 @@ public class BoardServiceImpl implements BoardService {
 
         // 첨부파일 추가.
         addFiles(files, post.getId());
+
+        if (tags != null && !tags.isEmpty()) {
+            Map<String, Object> paramMap = new HashMap<>();
+            paramMap.put("tags", tags);
+            paramMap.put("postId", post.getId());
+            tagRepository.savePostTag(paramMap);  // 이 부분 중요!
+        }
+
 
         return cnt;
     }
@@ -128,14 +139,18 @@ public class BoardServiceImpl implements BoardService {
     public int update(Post post) {
         return postRepository.update(post);
     }
-
+    @Transactional
     @Override
-    public int update(Post post, Map<String, MultipartFile> files, Long[] delFile) {
+    public int update(Post post, Map<String, MultipartFile> files, Long[] delFile, List<Tag> selectedTags) {
         int result = 0;
+
+        // 1. 게시글 내용 수정
         result = postRepository.update(post);
 
+        // 2. 파일 추가
         addFiles(files, post.getId());
 
+        // 3. 파일 삭제
         if (delFile != null) {
             for (Long fileId : delFile) {
                 Attachment file = attachmentRepository.findById(fileId);
@@ -146,8 +161,21 @@ public class BoardServiceImpl implements BoardService {
             }
         }
 
+
+        tagRepository.deletePostTag(post);
+
+
+        if (selectedTags != null && !selectedTags.isEmpty()) {
+            for (Tag tag : selectedTags) {
+                Map<String, Object> paramMap = new HashMap<>();
+                paramMap.put("post_id", post.getId());
+                paramMap.put("tag_id", tag.getId());
+                tagRepository.savePostTag(paramMap);
+            }
+        }
         return result;
     }
+
 
 
     @Override

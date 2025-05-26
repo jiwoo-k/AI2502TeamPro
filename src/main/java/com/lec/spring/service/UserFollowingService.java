@@ -12,7 +12,7 @@ public interface UserFollowingService {
 
 
     // 두 사용자의 팔로우 관계를 취소합니다.
-    int unfollow(User followingUser, User followedUser);
+    int unfollow(Long followingUser, Long followedUser);
 
 
     // 내가 follow 한 모든 관계를 조회합니다.

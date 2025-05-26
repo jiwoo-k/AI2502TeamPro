@@ -59,7 +59,7 @@ public class FollowController {
             System.out.println("팔로우하려는 사용자가 존재하지 않습니다.");
             return "redirect:/board/list";
         }
-        userFollowingService.unfollow(loginUser, followedUser);
+        userFollowingService.unfollow(followingUserId, followedUserId);
         return "redirect:/board/detail/" + postId;
     }
 
