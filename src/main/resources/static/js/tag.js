@@ -1,15 +1,4 @@
 $(function(){
-    const submitForm = document.getElementById("searchForm");
-    const tagSearchButton = document.getElementById("tagSearchButton");
-
-    if(submitForm && tagSearchButton){
-        tagSearchButton.addEventListener('click', function() {
-            const currentPageURL = window.location.pathname;
-            submitForm.action = currentPageURL;
-            submitForm.submit(); // 폼 제출
-        });
-    }
-
     const $categories = $('div.categoryBox');
 
     $categories.on('click', function(){
@@ -50,12 +39,12 @@ $(function(){
 
                 if(data.addExistingTag){
                     alert('검색 태그 목록에 저장 성공!');
-                    history.back();
+                    location.href = data.url;
                 }
 
                 if(data.result > 0){
                     alert('신규 태그 생성 및 목록에 저장 성공!');
-                    history.back();
+                    location.href = data.url;
                 }
             });
 
@@ -96,7 +85,7 @@ $(function(){
                 .then(data => {
                     if(data.deleteSuccess){
                         alert(data.deleteSuccess);
-                        history.back();
+                        location.href = data.url;
                     }
                 })
 
@@ -106,44 +95,11 @@ $(function(){
 
     $('button#saveTagList').click(function(){
         if(confirm('저장하시겠습니까?')){
-            //1. 태그 목록 가져와서,
-            let tagList = getTagList();
-
-            //2. 서버로 전송
-            fetch('/tag/save', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(tagList)
-            })
-                .then(response => response.json())
-
+            let tagList = $('div.selectedTag');
+            //TODO: 저장 로직 작성
 
             alert('저장 성공');
         }
     });
 
 });
-
-function getTagList(){
-    //HTML 에서 태그 갖고와서 배열로 전환
-    const tagList = document.querySelectorAll("div.selectedTag");
-    let tags = [];
-
-
-    //핸들러에 전송할 tag 형 배열 생성
-    tagList.forEach(tag =>{
-        const tagName = tag.querySelector("input[name='deleteTagName']").val();
-        const categoryId = tag.querySelector("input[name='deleteCategoryId']").val();
-        const tagId = tag.querySelector("input[name='deleteTagId']").val();
-        const tagColor = tag.querySelector("input[name='deleteTagColor']").val();
-
-        tags.push({
-            id: tagId,
-            name: tagName,
-            category_id: categoryId,
-            color: tagColor,
-        });
-    });
-
-    return tags;
-}

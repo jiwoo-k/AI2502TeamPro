@@ -1,7 +1,10 @@
 package com.lec.spring.controller;
 
 import com.lec.spring.domain.User;
+import com.lec.spring.domain.UserFollowing;
+import com.lec.spring.repository.UserFollowingRepository;
 import com.lec.spring.repository.UserWarningRepository;
+import com.lec.spring.service.UserFollowingService;
 import com.lec.spring.service.UserService;
 import com.lec.spring.service.UserWarningService;
 import com.lec.spring.service.UserWarningServiceImpl;
@@ -17,10 +20,12 @@ import java.util.List;
 public class AdminController {
     private final UserWarningService userWarningService;
     private final UserService userService;
+    private final UserFollowingService userFollowingService;
 
-    public AdminController(UserWarningService userWarningService, UserService userService) {
+    public AdminController(UserWarningService userWarningService, UserService userService, UserFollowingService userFollowingService) {
         this.userWarningService = userWarningService;
         this.userService = userService;
+        this.userFollowingService = userFollowingService;
     }
 
     @RequestMapping("/main")
@@ -33,6 +38,13 @@ public class AdminController {
         int cnt = (warningCount == null) ? 0 : warningCount;
 
         List<User> users = usersByWarnCount(cnt);
+
+        if(cnt == 10){
+            for (User user : users) {
+                user.setFollowersCount(userFollowingService.followCount(user.getId()));
+            }
+        }
+
         model.addAttribute("userList", users);
         model.addAttribute("cnt", cnt);
         return "admin/users";
@@ -42,22 +54,38 @@ public class AdminController {
     @PostMapping("/account/limit/{userId}")
     public String limitAccount(@PathVariable Long userId, Integer days, RedirectAttributes redirectAttributes) {
         userService.limitUser(userId, days);
-        Integer cnt;
+        int cnt;
 
         if(days == null) {
-            redirectAttributes.addFlashAttribute("banSuccess", "영구 정지 처리가 완료되었습니다.");
+//            redirectAttributes.addFlashAttribute("banSuccess", "영구 정지 처리가 완료되었습니다.");
             cnt = 15;
         }
         else if(days == 3) {
-            redirectAttributes.addFlashAttribute("pauseSuccess", "3일 정지 처리가 완료되었습니다.");
+//            redirectAttributes.addFlashAttribute("pauseSuccess", "3일 정지 처리가 완료되었습니다.");
             cnt = 5;
         }
         else {
-            redirectAttributes.addFlashAttribute("pauseSuccess", "7일 정지 처리가 완료되었습니다.");
+//            redirectAttributes.addFlashAttribute("pauseSuccess", "7일 정지 처리가 완료되었습니다.");
             cnt = 10;
         }
 
         return "redirect:/admin/users?warningCount="+cnt;
+    }
+
+    @PostMapping("/follower/reset/{userId}")
+    public String followerReset(@PathVariable Long userId, RedirectAttributes redirectAttributes){
+        //이 두 줄은 굳이 필요한 작업일까 싶긴하지만..
+        User user = userService.findByUserId(userId);
+        user.setFollowersCount(0);
+
+        //이 사용자의 팔로우 관계를 받아오기
+        List<UserFollowing> followerList = userFollowingService.getFollowersList(userId);
+
+        for(UserFollowing follow : followerList){
+            userFollowingService.unfollow(follow.getFollowingUserId(), follow.getFollowedUserId());
+        }
+
+        return "redirect:/admin/users?warningCount=10";
     }
 
     private List<User> usersByWarnCount(Integer warningCount){
@@ -77,16 +105,9 @@ public class AdminController {
                 users = userService.findUsersByWarnCount(15, Integer.MAX_VALUE); //어차피 15회 이상은 탈퇴이기 때문에 그 이상일 수가 없다..
                 break;
             default:
-                users = userService.findUsersByWarnCount(0, 4);
+                users = userService.findUsersByWarnCount(0, Integer.MAX_VALUE);
         }
 
         return users;
-    }
-
-
-    @PostMapping("/follower/reset")
-    public String followerReset(){
-
-        return "redirect:/admin/users";
     }
 }

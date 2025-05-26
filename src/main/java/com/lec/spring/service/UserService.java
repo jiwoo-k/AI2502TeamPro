@@ -39,6 +39,8 @@ public interface UserService {
 
     //특정 사용자 특정 일수 만큼 계정 정지
     void limitUser(Long id, Integer days);
+
+    User activateAccount(String username);
 }
 
 

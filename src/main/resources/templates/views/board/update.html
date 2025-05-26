@@ -6,8 +6,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" th:href="@{/css/update.css}">
-</head>
 
+
+</head>
+<style>
+    .categoryBox {
+        padding: 8px 12px;
+        margin: 5px;
+        border-radius: 5px;
+        cursor: pointer;
+        /* 기본 테두리 또는 배경 */
+        border: 1px solid transparent;
+        transition: border 0.3s ease;
+    }
+
+    .categoryBox.selected {
+        border: 2px solid red;
+    }
+</style>
 
 <body>
 <div>
@@ -15,7 +31,7 @@
     <!--        이거 게시판을 올린 날짜로 기준으로 잡을지 수정하고 수정완료 한 날짜를 기준으로 잡아야 할지 모르겠음.-->
     <div th:text="${#temporals.format(board.createdat,  'yyyy-MM-dd HH:mm:ss')}"></div>
 </div>
-<form th:action="@{/board/update}" method="post">
+<form id="writeForm" th:action="@{/board/update}" method="post">
     <input type="hidden" name="id" th:value="${board.id}">
 
     <input type="hidden" name="name" th:value="${board.name}">
@@ -57,12 +73,58 @@
         </div>
     </div>
     <!-- 첨부파일 -->
+    <!-- 여기서부터 태그 검색 및 추가 영역 -->
 
-    <button type="submit">수정완료</button>
+    <div id="tagSearch">
+        <div id="searchZone">
+            <input type="text" id="tagSearchInput" name="name" placeholder="태그 검색 (# 제외)" th:value="${tagName}" />
+            <input type="hidden" id="categoryIdInput" name="category_id" th:value="${submittedCategoryId}" />
+            <button type="button" id="tagSearchButton">검색</button>
+            <button type="button" id="tagAddButton" style="display:none;">추가</button>
+            <div class="searchSucceed" th:if="${searchedTag != null}" th:text="'검색 성공! 목록에 추가 가능합니다.'"></div>
+        </div>
+
+        <div id="categoryZone">
+            <p>카테고리 선택</p>
+            <div th:each="category : ${categoryList}"
+                 th:text="${category.name}"
+                 th:style="'background-color: ' + ${category.color} + '; display: inline-block'"
+                 class="categoryBox"
+                 th:id="${category.id}"
+                 th:classappend="${submittedCategoryId != null and category.id == submittedCategoryId} ? 'selected' : ''">
+            </div>
+        </div>
+
+        <div>
+            <div class="showError"><span th:if="${error_name}" th:utext="${error_name}"></span></div>
+            <div class="showError"><span th:if="${error_category_id}" th:utext="${error_category_id}"></span></div>
+            <div class="showError"><span th:if="${error_id}" th:utext="${error_id}"></span></div>
+        </div>
+
+        <p>담은 태그 목록</p>
+        <div id="tagList">
+            <div th:each="tag : ${selectedTags}" class="selectedTag">
+                <input name="tagName" type="hidden" th:value="${tag.name}" />
+                <input name="categoryId" type="hidden" th:value="${tag.category_id}" />
+                <input name="color" type="hidden" th:value="${tag.color}" />
+                <input name="tagId" type="hidden" th:value="${tag.id}" />
+                <span th:text="'# ' + ${tag.name}" th:style="'background-color: ' + ${tag.color}"></span>
+                <button type="button" class="deleteTag">X</button>
+            </div>
+        </div>
+    </div>
+    <div id="hiddenTagsContainer"></div>
+
+    <button type="submit" class="writeBtn">수정완료</button>
     <a th:href="@{/board/list}">목록</a>
 
 </form>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+<script src="/js/updateTag.js" defer></script>
+<script>
+    const boardId = [[${board.id}]];
+</script>
 
 </body>
 

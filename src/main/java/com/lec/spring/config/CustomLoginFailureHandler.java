@@ -3,10 +3,7 @@ package com.lec.spring.config;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.CredentialsExpiredException;
-import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.authentication.InternalAuthenticationServiceException;
+import org.springframework.security.authentication.*;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
@@ -21,19 +18,22 @@ public class CustomLoginFailureHandler implements AuthenticationFailureHandler {
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
         System.out.println("🎨 로그인 실패: onAuthenticationFailure() 호출");
+        System.out.println("🚫 전달된 예외 유형: " + exception.getClass().getName());
+        System.out.println("🚫 예외 메시지: " + exception.getMessage());
 
         String errorMessage = null;
 
-        //=================================================
-        //< set the error message
-        //=================================================
-        //< incorrect the identify or password
-        if(exception instanceof BadCredentialsException || exception instanceof InternalAuthenticationServiceException) {
+        if(exception instanceof BadCredentialsException) {
             errorMessage = "아이디나 비밀번호가 맞지 않습니다. 다시 확인해 주십시오.";
         }
-        //< account is disabled
+        else if (exception instanceof InternalAuthenticationServiceException) {
+            errorMessage = exception.getMessage();
+        }
         else if(exception instanceof DisabledException) {
-            errorMessage = "계정이 비활성화 되었습니다. 관리자에게 문의하세요.";
+            errorMessage = exception.getMessage();
+        }
+        else if(exception instanceof LockedException){
+            errorMessage = exception.getMessage();
         }
         //< expired the credential
         else if(exception instanceof CredentialsExpiredException) {
