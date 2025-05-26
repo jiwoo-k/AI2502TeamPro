@@ -12,7 +12,7 @@ $(function() {
 
     // 태그 검색
     $('#tagSearchButton').click(function() {
-        const tagName = $('input[name="tagName"]').val();
+        const tagName = $('#tagSearchInput').val();
         const categoryId = Number($('input[name="category_id"]').val());
 
         if (!tagName || !categoryId) {
@@ -55,7 +55,7 @@ $(function() {
         event.preventDefault();
 
         const categoryId = Number($("input[name='category_id']").val());
-        const tagName = $("input[name='name']").val();
+        const tagName = $('#tagSearchInput').val();
 
         if (!categoryId || !tagName) {
             alert("카테고리와 태그명을 입력하세요.");
