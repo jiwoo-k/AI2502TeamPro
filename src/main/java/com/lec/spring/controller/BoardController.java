@@ -39,6 +39,7 @@ public class BoardController {
     private final CategoryService categoryService;
     private final TagRepository tagRepository;
     private final AttachmentService attachmentService;
+    private final TagService tagService;
 
     public BoardController(BoardService boardService,
                            UserFollowingService userFollowingService,
@@ -46,8 +47,9 @@ public class BoardController {
                            UserService userService,
                            AttachmentService attachmentService,
                            CategoryService categoryService,
-                           TagRepository tagRepository
-                           ) {
+                           TagRepository tagRepository,
+                           TagService tagService
+    ) {
         System.out.println("[ACTIVE] BoardController");
         this.boardService = boardService;
         this.userFollowingService = userFollowingService;
@@ -56,11 +58,30 @@ public class BoardController {
         this.attachmentService = attachmentService;
         this.categoryService = categoryService;
         this.tagRepository = tagRepository;
+        this.tagService = tagService;
     }
 
     // 수정, 추가. 삭제의 경우 attr name을 result 로 하였음
     @GetMapping("/write")
-    public void write() {
+    public String write(Model model, HttpSession session) {
+        // 카테고리 목록 가져오기
+        List<Category> categoryList = categoryService.list();
+        model.addAttribute("categoryList", categoryList);
+
+        // 세션에서 선택된 태그 목록 가져오기
+        List<Tag> selectedTags = (List<Tag>) session.getAttribute("selectedTags");
+        if (selectedTags == null) {
+            selectedTags = new ArrayList<>();
+        }
+        model.addAttribute("selectedTags", selectedTags);
+
+        System.out.println("선택한 태그 목록" + selectedTags);
+        // 검색 태그 초기화
+        model.addAttribute("searchedTag", null);
+        model.addAttribute("name", "");
+        model.addAttribute("submittedCategoryId", null);
+
+        return "board/write";  // 글쓰기 뷰 반환
     }
 
 
@@ -70,13 +91,15 @@ public class BoardController {
             @Valid Post post,
             @Valid Tag tag,
             @RequestParam(required = false) String type,
+            @RequestParam(required = false, name = "tagIds[]") List<Long> tagIds,
             BindingResult bindingResult,
             Model model,
             RedirectAttributes redirectAttributes,
-            @AuthenticationPrincipal(expression = "user") User loginUser
+            @AuthenticationPrincipal(expression = "user") User loginUser,
+            HttpSession session
     ) {
 
-        // vaildator
+        // 유효성 검사 오류 처리
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("title", post.getTitle());
             redirectAttributes.addFlashAttribute("content", post.getContent());
@@ -94,17 +117,33 @@ public class BoardController {
             return "redirect:/board/write";
         }
 
+        // tagIds로 태그 리스트 조회 (null 체크 포함)
+        List<Tag> selectedTags = new ArrayList<>();
+        if (tagIds != null && !tagIds.isEmpty()) {
+            selectedTags = tagService.findTagsByIds(tagIds);
+        }
 
-
-        // user_id 가지고 오기
+        // 로그인한 사용자 ID 세팅
         post.setUser_id(loginUser.getId());
-        int result = boardService.write(post, files);
+
+        // 태그 리스트를 post에 세팅
+        post.setPost_tag(selectedTags);
+
+        // 게시글 저장 처리 (files, selectedTags 포함)
+        int result = boardService.write(post, files, selectedTags);
+
+        // 저장 성공 시 세션 태그 삭제 (필요시)
+        if (result > 0) {
+            session.removeAttribute("selectedTags");
+        }
+
         model.addAttribute("result", result);
-        model.addAttribute("type", type );
+        model.addAttribute("type", type);
+
         return "board/writeOk";
     }
 
-
+    // listBytype (손님, 도우미 선택 가능 => findAll 은 혹시 몰라서 일부러 놔뒀음)
     @GetMapping("/list")
     public String list(@RequestParam(required = false) String type,
                        @RequestParam(required = false, defaultValue = "1") Integer page,
@@ -128,9 +167,8 @@ public class BoardController {
 
             //로그인한 사용자 위치검증
             if(loginUser.getLatitude() == null || loginUser.getLongitude() == null) {
-                // 위치 정보 검증 (필요 시 주석처리)
-//                model.addAttribute("locationMissing", "위치 정보 없음");
-//                return "board/list";
+                model.addAttribute("locationMissing", "위치 정보 없음");
+                return "board/list";
             }
             else{
                 lat1 = loginUser.getLatitude();
@@ -143,9 +181,8 @@ public class BoardController {
             lng1 = (Double) httpSession.getAttribute("lng");
 
             if(lat1 == null || lng1 == null){
-                // 위치 정보 검증 (필요 시 주석처리)
-//                model.addAttribute("locationMissing", "위치 정보 없음");
-//                return "board/list";
+                model.addAttribute("locationMissing", "위치 정보 없음");
+                return "board/list";
             }
         }
 
@@ -156,29 +193,19 @@ public class BoardController {
             Double lat2 = user.getLatitude();
             Double lng2 = user.getLongitude();
 
-
-
             if(lat2 == null || lng2 == null) continue;
 
-            // 거리 계산 (위치 정보 부재 시 주석 처리)
-//            double distance = calcDistance(lat1, lat2, lng1, lng2);
-//            if(distance <= 3){
-//                filteredUsers.add(user);
-//            }
+            double distance = calcDistance(lat1, lat2, lng1, lng2);
+            if(distance <= 3){
+                filteredUsers.add(user);
+            }
         }
 
         if (type == null || type.isBlank()) {
             type = "guest";
         }
 
-//        List<Post> allPosts = boardService.listByTypeLocation(type, filteredUsers);
-
-        List<Post> allPosts;
-        if (filteredUsers.isEmpty()) {
-            allPosts = boardService.listByType(type); // ← 일반 조회로 우회
-        } else {
-            allPosts = boardService.listByTypeLocation(type, filteredUsers);
-        }
+        List<Post> allPosts = boardService.listByTypeLocation(type, filteredUsers);
 
         model.addAttribute("id", loginUserId);
 
@@ -285,6 +312,8 @@ public class BoardController {
         return distance;
     }
 
+
+
     @GetMapping("/detail/{id}")
     public String detail(@PathVariable Long id,
                          Model model,
@@ -341,17 +370,37 @@ public class BoardController {
 
 
     @GetMapping("/update/{id}")
-    public String update(Model model, @PathVariable Long id) {
-        model.addAttribute("board", boardService.detail(id));
+    public String update(Model model, @PathVariable Long id, HttpSession session) {
+        Post post = boardService.detail(id);
+        model.addAttribute("board", post);
+
+        List<Category> categoryList = categoryService.list();
+        model.addAttribute("categoryList", categoryList);
+
+        // 게시물에 연결된 태그 조회 (session 대신 DB 또는 service에서)
+        List<Tag> selectedTags = tagService.findTagsByBoardId(id); // ★ 반드시 이 부분 추가
+        model.addAttribute("selectedTags", selectedTags);
+        session.setAttribute("selectedTags", selectedTags);
+        System.out.println("선택한 태그 목록: " + selectedTags);
+        session.setAttribute("selectedTags", selectedTags);
+
+        model.addAttribute("searchedTag", null);
+        model.addAttribute("name", "");
+        model.addAttribute("submittedCategoryId", null);
         return "board/update";
     }
 
+
     @PostMapping("/update")
     public String update(@Valid Post post,
+                         @RequestParam Map<String, MultipartFile> files,
                          BindingResult bindingResult,
                          Model model,
                          RedirectAttributes redirectAttributes,
-                         @AuthenticationPrincipal(expression = "user") User loginUser
+                         @AuthenticationPrincipal(expression = "user") User loginUser,
+                         @RequestParam(required = false, name = "tagIds[]") List<Long> tagIds,
+                         @RequestParam(value = "deletedTagIds", required = false) List<Long> deletedTagIds,
+                         HttpSession session
     ) {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("title", post.getTitle());
@@ -362,15 +411,33 @@ public class BoardController {
             return "redirect:/board/update/" + post.getId();
         }
         post.setUser_id(loginUser.getId());
-        int result = boardService.update(post);
-        model.addAttribute("result", result);
 
+        // 삭제된 태그 id 가 있으면 session 에서 제거
+        List<Tag> selectedTags = (List<Tag>) session.getAttribute("selectedTags");
+        if (selectedTags == null) {
+            selectedTags = new ArrayList<>();
+        }
+        System.out.println("삭제할 태그 ID들: " + deletedTagIds);
+        if (deletedTagIds != null) {
+            selectedTags.removeIf(tag -> deletedTagIds.contains(tag.getId()));
+        }
+
+        int updateResult = boardService.write(post, files, selectedTags);
+        if (updateResult > 0) {
+            session.removeAttribute("selectedTags");
+        }
+
+
+        // 태그 리스트를 post에 세팅
+        post.setPost_tag(selectedTags);
+
+        model.addAttribute("result", updateResult);
 
         return "board/updateOk";
     }
 
     @PostMapping("/delete")
-    public String delete(Long id, Model model, @AuthenticationPrincipal(expression = "user") User loginUser) {
+    public String delete(@RequestParam Long id, Model model, @AuthenticationPrincipal(expression = "user") User loginUser) {
         boardService.deleteTime(id);
         model.addAttribute("result", 1);
         return "board/deleteOk";
@@ -385,10 +452,12 @@ public class BoardController {
     // 페이징
     // pageRows 변경시 동작
     @PostMapping("/pageRows")
-    public String pageRows(Integer page, Integer pageRows){
+    public String pageRows(Integer page, Integer pageRows) {
         U.getSession().setAttribute("pageRows", pageRows);
         return "redirect:/board/list?page=" + page;
     }
 
 
 }
+
+
