@@ -8,11 +8,11 @@
     <script src="/js/tag.js"></script>
 </head>
 
-<th:block th:fragment="tag">
+<th:block th:fragment="tag-fragment">
 
     <div>
         <!--form1: 태그 검색하고 목록에 담기-->
-        <form id="searchForm" method="post">
+        <form th:action="@{/tag}" method="post">
             <div id="tagSearch">
                 <!--태그 검색 및 추가-->
                 <div id="searchZone">
@@ -21,7 +21,7 @@
                     <!--                    <input type="hidden" name="tagColor" th:value="${tagColor}">-->
                     <input name="existError" type="hidden" th:value="${error_isExist}">
                     <input name="sizeOverError" type="hidden" th:value="${error_sizeOver}">
-                    <button type="button" id="tagSearchButton">검색</button>
+                    <button type="submit" id="tagSearchButton">검색</button>
                     <button th:if="${error_id != null} or ${searchedTag != null}" type="button" id="tagAddButton">추가
                     </button>
 
@@ -59,18 +59,15 @@
                         <input name="deleteTagName" type="hidden" th:value="${tag.name}">
                         <input name="deleteCategoryId" type="hidden" th:value="${tag.category_id}">
                         <input name="deleteTagId" type="hidden" th:value="${tag.id}">
-                        <input name="deleteTagColor" type="hidden" th:value="${tag.color}">
                         <span th:text="'# ' + ${tag.name}" th:style="'background-color: ' + ${tag.color}"></span>
                         <button class="deleteTag">X</button>
                     </div>
                 </div>
-
-                <button th:if="${showSaveButton != null}" id="saveTagList" type="button">목록 저장</button>
             </div>
         </form>
 
         <!--form2: 게시글 목록으로 갈 때 및 user_tag, post_tag 에 저장-->
-        <form th:action="@{/board/list}" name="tagForm" method="get">
+        <form th:action="@{/board/list}" name="tagForm" method="post">
             <!--radio 와 버튼-->
             <div id="optionButtons">
                 <p>게시글 조회</p>
@@ -81,6 +78,7 @@
 
                 <button id="postSearch" type="submit">조회</button>
             </div>
+            <button id="saveTagList" type="button">목록 저장</button>
         </form>
     </div>
 </th:block>

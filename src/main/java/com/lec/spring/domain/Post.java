@@ -39,4 +39,8 @@ public class Post {
     @Builder.Default
     private List<Attachment> fileList = new ArrayList<>();
 
+
+    private List<Long> tagList;
+
+
 }
