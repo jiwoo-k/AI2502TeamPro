@@ -83,6 +83,7 @@
     <select id="findUsersByWarnCount" resultType="com.lec.spring.domain.User">
         select u.id "id",
         u.username "username",
+        u.name "name",
         u.status "status",
         u.pause_end_date "pauseEndDate",
         count(*) "warningCount"

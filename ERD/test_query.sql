@@ -103,3 +103,41 @@ where u.id=p.user_id;
 update user
 set latitude=37.27760888368095, longitude=127.05015732955697
     where id=3;
+
+select w.complaint_user_id "complaint_user_id",
+       u.username "u_username",
+       u.name "u_name",
+       p.id "p_id",
+       p.title "p_title",
+       w.reason "w_reason",
+       w.warndate "w_warnDate"
+from user u, warning w, post p
+where w.post_id = p.id and u.id = p.user_id and p.user_id = 8;
+
+select
+    w.complaint_user_id "complaint_user_id",         -- 신고한 사용자 ID
+    complainer.username "complainer_username",       -- 신고한 사용자 이름
+    complainer.name "complainer_name",               -- 신고한 사용자 닉네임
+    reported_user.username "reported_user_username", -- 신고당한 사용자 이름 (원래 u.username)
+    reported_user.name "reported_user_name",         -- 신고당한 사용자 닉네임 (원래 u.name)
+    p.id "p_id",
+    p.title "p_title",
+    w.reason "w_reason",
+    w.warndate "w_warnDate"
+from
+    warning w
+        join post p on w.post_id = p.id
+        join user reported_user on p.user_id = reported_user.id  -- 신고당한 사용자 (게시글 작성자)
+        join user complainer on w.complaint_user_id = complainer.id -- 신고한 사용자
+where
+    reported_user.id = 1;
+
+select u.id "id",
+       u.username "username",
+       u.status "status",
+       u.pause_end_date "pauseEndDate",
+       count(*) "warningCount"
+from user u, warning w, post p
+where w.post_id = p.id and u.id = p.user_id
+group by u.id, u.username, u.status
+having count(*) between 10 and 14;

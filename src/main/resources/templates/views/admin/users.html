@@ -34,7 +34,7 @@
         </thead>
         <tbody>
         <tr th:each="user : ${userList}">
-            <td><a th:href="@{'/admin/users/detail/' + user.id}" th:text="${user.username}"></a></td>
+            <td><a th:href="@{/admin/users/detail/{userId}(userId=${user.id})}" th:utext="${user.username} + '<br>(' +${user.name} + ')'"></a></td>
             <td th:text="${user.warningCount}"></td>
             <td>
 

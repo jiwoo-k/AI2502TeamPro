@@ -2,6 +2,7 @@ package com.lec.spring.controller;
 
 import com.lec.spring.domain.User;
 import com.lec.spring.domain.UserFollowing;
+import com.lec.spring.domain.UserWarning;
 import com.lec.spring.repository.UserFollowingRepository;
 import com.lec.spring.repository.UserWarningRepository;
 import com.lec.spring.service.UserFollowingService;
@@ -86,6 +87,15 @@ public class AdminController {
         }
 
         return "redirect:/admin/users?warningCount=10";
+    }
+
+    @RequestMapping("/users/detail/{userId}")
+    public String userDetailsPage(@PathVariable Long userId, Model model) {
+        List<UserWarning> warnDetails = userWarningService.findWarningDetails(userId);
+
+        model.addAttribute("warnDetailList", warnDetails);
+
+        return "admin/userDetail";
     }
 
     private List<User> usersByWarnCount(Integer warningCount){

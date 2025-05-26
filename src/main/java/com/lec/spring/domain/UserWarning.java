@@ -16,4 +16,7 @@ public class UserWarning {
     private Long postId;
     private String reason;
     private LocalDateTime warnDate;
+
+    private Post post;
+    private User complaintUser;
 }
