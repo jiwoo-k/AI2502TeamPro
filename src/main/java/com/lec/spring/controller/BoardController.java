@@ -49,7 +49,7 @@ public class BoardController {
                            CategoryService categoryService,
                            TagRepository tagRepository,
                            TagService tagService
-    ) {
+                           ) {
         System.out.println("[ACTIVE] BoardController");
         this.boardService = boardService;
         this.userFollowingService = userFollowingService;
@@ -205,7 +205,14 @@ public class BoardController {
             type = "guest";
         }
 
-        List<Post> allPosts = boardService.listByTypeLocation(type, filteredUsers);
+//        List<Post> allPosts = boardService.listByTypeLocation(type, filteredUsers);
+
+        List<Post> allPosts;
+        if (filteredUsers.isEmpty()) {
+            allPosts = boardService.listByType(type); // ← 일반 조회로 우회
+        } else {
+            allPosts = boardService.listByTypeLocation(type, filteredUsers);
+        }
 
         model.addAttribute("id", loginUserId);
 
