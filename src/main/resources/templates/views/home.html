@@ -16,7 +16,7 @@
 
 <body>
 
-<!-- 헤더 (로그인 제외 페이지 조건 처리 가능) -->
+헤더 (로그인 제외 페이지 조건 처리 가능)
 <div th:if="${#httpServletRequest != null and not #httpServletRequest.requestURI.matches('/user/(login|register).*')}">
     <div th:replace="~{common/header :: header-fragment}"></div>
 </div>
@@ -38,27 +38,27 @@
     <div id="showMap" style="width: 100%; height: 300px;"></div>
 </div>
 
-<!-- 위치 모달 (from header 등 활용 시) -->
-<div class="modal fade" id="mapModalFromHeader" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">내 현재 위치</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <div id="mapFromHeader" style="width: 100%; height: 400px;"></div>
-                <p class="mt-2">현재 위치: <span id="modal-area-name-header">로딩 중...</span></p>
-            </div>
-        </div>
-    </div>
-</div>
+<!--&lt;!&ndash; 위치 모달 (from header 등 활용 시) &ndash;&gt;-->
+<!--<div class="modal fade" id="mapModalFromHeader" tabindex="-1">-->
+<!--    <div class="modal-dialog modal-lg">-->
+<!--        <div class="modal-content">-->
+<!--            <div class="modal-header">-->
+<!--                <h5 class="modal-title">내 현재 위치</h5>-->
+<!--                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>-->
+<!--            </div>-->
+<!--            <div class="modal-body">-->
+<!--                <div id="mapFromHeader" style="width: 100%; height: 400px;"></div>-->
+<!--                <p class="mt-2">현재 위치: <span id="modal-area-name-header">로딩 중...</span></p>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
 
-<script>
-    function openMapFromHeader() {
-        openMap("mapFromHeader", "mapModalFromHeader", "modal-area-name-header");
-    }
-</script>
+<!--<script>-->
+<!--    function openMapFromHeader() {-->
+<!--        openMap("mapFromHeader", "mapModalFromHeader", "modal-area-name-header");-->
+<!--    }-->
+<!--</script>-->
 
 </body>
 </html>
