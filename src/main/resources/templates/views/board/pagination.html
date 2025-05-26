@@ -10,6 +10,7 @@
       <!--/* < 표시 여부 */-->
       <li class="page-item" th:if="${startPage > 1 }"><a class="page-link" th:href="@{${url }(page=${startPage - 1 })}"><i class='fas fa-angle-left'></i></a></li>
 
+
       <!--/* 페이징 안의 '숫자' 표시 */-->
       <th:block th:if="${totalPage > 1 }">
         <th:block th:each="k: ${#numbers.sequence(startPage, endPage)}">
