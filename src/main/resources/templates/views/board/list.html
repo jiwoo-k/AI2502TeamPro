@@ -8,10 +8,11 @@
     <link rel="stylesheet" href="/css/list.css">
     <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Boldonse&family=Jua&family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=KoHo:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans+KR:wght@100..900&family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Oswald:wght@576&family=Sunflower:wght@300&display=swap"
           rel="stylesheet">
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <script src="/js/locationOk.js"></script>
 </head>
 <body>
-
+<input id="locationInfo" type="hidden" th:value="${locationMissing}">
 <!--header-->
 <th:block th:replace="~{common/header :: header-fragment}"></th:block>
 
@@ -32,26 +33,18 @@
     <span class="float-start me-2" th:text="${'총 ' + cnt + '개'}"></span>
     <span class="float-start" th:text="${'page ' + page + '/' + totalPage}"></span>
     <span class="float-end">
-        <form name="frmPageRows" method="get" action="/board/list">
-            <input type="hidden" name="page" th:value="${page}">
-            <select class="form-select" name="pageRows">
-                <option value="10" th:selected="${pageRows == 10}">10</option>
-                <option value="15" th:selected="${pageRows == 15}">15</option>
-                <option value="20" th:selected="${pageRows == 20}">20</option>
-                <option value="50" th:selected="${pageRows == 50}">50</option>
-            </select>
-        </form>
-    </span>
+            <form name="frmPageRows">
+                <input type="hidden" name="page" th:value="${page}">
+                <select class="form-select" name="pageRows">
+                    <option value="10" th:selected="${pageRows == 10}">10</option>
+                    <option value="15" th:selected="${pageRows == 15}">15</option>
+                    <option value="20" th:selected="${pageRows == 20}">20</option>
+                    <option value="50" th:selected="${pageRows == 50}">50</option>
+                </select>
+            </form>
+        </span>
 </div>
 <!-- 페이징 헤더 -->
-
-<script>
-    $(document).ready(function () {
-        $("select[name='pageRows']").change(function () {
-            $("form[name='frmPageRows']").submit();
-        });
-    });
-</script>
 
 <!-- 목록 -->
 <table class="table table-hover">
@@ -81,17 +74,40 @@
 <!-- pagination -->
 
 
-<div th:each="board: ${boardList}" class="board" th:attr="data-id=${board.id}"
+<div th:each="board: ${boardList}" id="board" th:attr="data-id=${board.id}"
      onclick="location.href='/board/detail/' + this.getAttribute('data-id')" style="cursor:pointer;">
+
     <!--첨부파일 들어갈 곳-->
-    <div class="attachment"></div>
+    <div id="attachment">
+        <!-- 첨부파일목록 -->
+        <div class="container mt-3 mb-3 border rounded">
+            <div class="mb-3 mt-3">
+                <!--  이미지인 경우 보여주기 -->
+                <div class="image-wrapper">
+                    <!-- 실제 이미지가 있는 경우 -->
+                    <img th:if="${board.fileList != null and board.fileList.size() > 0 and board.fileList[0].image}"
+                         th:src="@{'/upload/' + ${board.fileList[0].fileName}}"
+                         class="img-thumbnail"
+                         alt="image">
+
+                    <!-- 이미지가 없거나 첫 첨부파일이 이미지가 아닌 경우 -->
+                    <div th:if="${board.fileList == null or board.fileList.size() == 0 or !board.fileList[0].image}"
+                         style="width: 100%; height: 100%; background-color: #888; display: flex; justify-content: center; align-items: center; color: white;">
+                        <span>이미지 없음</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 첨부파일목록 -->
+
     <div id="text-area">
         <!--        이름, 게시물 제목-->
         <a class="title" th:text="${board.title}"></a>
         <div class="name-wapper">
             <a class="name" th:text="${board.name}"></a>
         </div>
-        <!--        일부 content보여주기-->
+        <!--일부 content보여주기-->
         <a class="content" th:text="${board.content}"></a>
         <div th:unless="${id} == ${board.user_id}">
             <a class="follow" th:if="${board.type == 'helper'}"
@@ -106,13 +122,12 @@
             <span class="tagName" th:each="tag : ${board.user_tag}" th:text=" '# ' + ${tag.name} + '  '"
                   th:style="'color:' + ${tag.color} + '; border: 1px solid ' + ${tag.color}"></span>
         </div>
+        <!--팔로우 수-->
+        <a class="followCount" th:if="${board.type == 'helper'}" th:text="'팔로워 : ' + ${board.followCount} "></a>
+        <!--날짜-->
+        <a class="day"
+           th:text="${#temporals.format(board.createdat, board.createdat.monthValue >= 10 ? 'yy년 MM월 dd일 HH시' : 'yy년 M월 d일 H시')}"></a>
     </div>
-    <!--    팔로우 수-->
-    <a class="followCount" th:if="${board.type == 'helper'}" th:text="'팔로워 : ' + ${board.followCount} "></a>
-    <!--    날짜-->
-    <a class="day"
-       th:text="${#temporals.format(board.createdat, board.createdat.monthValue >= 10 ? 'yy년 MM월 dd일 HH시' : 'yy년 M월 d일 H시')}"></a>
-
 </div>
 <div class="row">
     <div class="col-12">
