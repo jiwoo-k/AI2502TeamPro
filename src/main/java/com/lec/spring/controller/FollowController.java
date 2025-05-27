@@ -26,8 +26,7 @@ public class FollowController {
     // 팔로우하기
     @PostMapping("/follow/insert")
     public String insertFollow(@RequestParam("followedUserId") Long followedUserId,
-                               @AuthenticationPrincipal(expression = "user") User loginUser
-            ,@RequestParam("followingUserId") Long followingUserId,
+                               @AuthenticationPrincipal(expression = "user") User loginUser,
                                @RequestParam("id") Long postId
     ) {
 
@@ -47,16 +46,15 @@ public class FollowController {
 
     // 언팔로우하기 ㅇㅇㅇㅇ
     @PostMapping("/follow/delete")
-    public String deleteFollow(@RequestParam("followingUserId") Long followingUserId,
-                               @AuthenticationPrincipal(expression = "user") User loginUser,
+    public String deleteFollow(@AuthenticationPrincipal(expression = "user") User loginUser,
                                @RequestParam("followedUserId") Long followedUserId,
                                @RequestParam("id") Long postId
     ) {
 
-        User followedUser = userService.findByUserId(followingUserId);
+        User followedUser = userService.findByUserId(followedUserId); // 언팔로우할 대상 조회
 
         if (followedUser == null) {
-            System.out.println("팔로우하려는 사용자가 존재하지 않습니다.");
+            System.out.println("언팔로우하려는 사용자가 존재하지 않습니다.");
             return "redirect:/board/list";
         }
         userFollowingService.unfollow(loginUser.getId(), followedUser.getId());

@@ -488,7 +488,7 @@ public class BoardController {
     }
 
     @PostMapping("/delete")
-    public String delete(@RequestParam Long id, Model model, @AuthenticationPrincipal(expression = "user") User loginUser) {
+    public String delete(@RequestParam("id") Long id, Model model, @AuthenticationPrincipal(expression = "user") User loginUser) {
         boardService.deleteTime(id);
         model.addAttribute("result", 1);
         return "board/deleteOk";
