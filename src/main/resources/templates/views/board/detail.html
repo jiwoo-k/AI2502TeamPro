@@ -117,7 +117,7 @@
 <!-- 전역 변수 및 로그인 체크 -->
 <script th:inline="javascript">
     window.postId = [[${board.id}]];
-    window.loggedUserId = [[${id}]];
+    window.loggedUserId = [[${loginUserId}]];
     window.postAuthorId = [[${board.user_id}]];
 </script>
 <!--<script th:src="@{/js/comment.js}"></script>-->
