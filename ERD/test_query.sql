@@ -141,3 +141,5 @@ from user u, warning w, post p
 where w.post_id = p.id and u.id = p.user_id
 group by u.id, u.username, u.status
 having count(*) between 10 and 14;
+
+select * from

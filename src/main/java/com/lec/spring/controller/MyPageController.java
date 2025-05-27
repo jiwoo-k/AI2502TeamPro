@@ -16,18 +16,26 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 @Controller
 public class MyPageController {
+
+    private static final Logger logger = LoggerFactory.getLogger(MyPageController.class);
 
     private final MyPageService myPageService;
 
@@ -35,7 +43,9 @@ public class MyPageController {
         this.myPageService = myPageService;
     }
 
-    /** 1) 마이페이지 메인 **/
+    /**
+     * 1) 마이페이지 메인
+     **/
     @GetMapping("/mypage")
     public String myPageMain(@AuthenticationPrincipal PrincipalDetails principal, Model model) {
         Long userId = principal.getUser().getId();
@@ -45,7 +55,9 @@ public class MyPageController {
         return "mypage/myPageMain";
     }
 
-    /** 2) 내가 쓴 글 (페이징 + type 필터링) **/
+    /**
+     * 2) 내가 쓴 글 (페이징 + type 필터링)
+     **/
     @GetMapping("/mypage/post")
     public String myPosts(
             @RequestParam(value = "selectedType", required = false) String selectedType,
@@ -62,7 +74,9 @@ public class MyPageController {
         return "mypage/myPosts";
     }
 
-    /** 3) 내가 쓴 댓글 (페이징) **/
+    /**
+     * 3) 내가 쓴 댓글 (페이징)
+     **/
     @GetMapping("/mypage/comment")
     public String myComments(
             Model model,
@@ -77,7 +91,9 @@ public class MyPageController {
         return "mypage/myComments";
     }
 
-    /** 4) 내가 팔로잉한 사용자 목록 (페이징) **/
+    /**
+     * 4) 내가 팔로잉한 사용자 목록 (페이징)
+     **/
     @GetMapping("/mypage/follow")
     public String myFollowing(
             Model model,
@@ -122,7 +138,6 @@ public class MyPageController {
     }
 
 
-
     // 팔로우
     @PostMapping("/mypage/follow")
     @ResponseStatus(HttpStatus.OK)
@@ -146,57 +161,86 @@ public class MyPageController {
     }
 
 
-
-
-    /** 5) 프로필 수정 폼 **/
+    /**
+     * 5) 프로필 수정 폼
+     **/
     @GetMapping("/mypage/edit")
-    public String editProfile(Model model) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        PrincipalDetails principal = (PrincipalDetails) auth.getPrincipal();
-        Long userId = principal.getUser().getId();
+    public String editProfile(Model model,
+                              @AuthenticationPrincipal PrincipalDetails principal,
+                              CsrfToken csrfToken) {
+        model.addAttribute("_csrf", csrfToken);
 
+        Long userId = principal.getUser().getId();
         ProfileUpdateForm form = myPageService.getProfileUpdateForm(userId);
         model.addAttribute("profileUpdateForm", form);
         return "mypage/editProfile";
     }
 
-    /** 6) 프로필 업데이트 **/
+    /**
+     * 6) 프로필 업데이트
+     **/
     @PostMapping("/mypage/update")
     public String updateProfile(
             @Validated @ModelAttribute("profileUpdateForm") ProfileUpdateForm form,
-            BindingResult bindingResult
+            BindingResult bindingResult,
+            Model model,
+            @AuthenticationPrincipal PrincipalDetails principal,
+            CsrfToken csrfToken,
+            RedirectAttributes redirectAttrs
     ) {
-        // 입력 검증 에러가 있으면 다시 수정 페이지로
+        // ① 기본 검증 에러 있으면 수정 페이지로
         if (bindingResult.hasErrors()) {
+            model.addAttribute("_csrf", csrfToken);
+            model.addAttribute("profileUpdateForm", form);
             return "mypage/editProfile";
         }
 
-        // 현재 로그인한 회원의 ID 조회
+        // ② 새 비밀번호 입력 시에만 confirmPassword 검증
+        if (form.getNewPassword() != null && !form.getNewPassword().isBlank()) {
+            // 확인 비워졌으면 에러
+            if (form.getConfirmPassword() == null || form.getConfirmPassword().isBlank()) {
+                bindingResult.rejectValue(
+                        "confirmPassword",
+                        "empty",
+                        "비밀번호 확인을 입력하세요."
+                );
+            }
+            // 불일치 시 에러
+            else if (!form.getNewPassword().equals(form.getConfirmPassword())) {
+                bindingResult.rejectValue(
+                        "confirmPassword",
+                        "mismatch",
+                        "비밀번호가 일치하지 않습니다."
+                );
+            }
+            if (bindingResult.hasErrors()) {
+                return "mypage/editProfile";
+            }
+        }
+
+        // ③ 로그인 사용자 ID 가져오기
         Long userId = ((PrincipalDetails)
                 SecurityContextHolder.getContext()
                         .getAuthentication().getPrincipal())
                 .getUser().getId();
 
-        // 업데이트할 User 객체 생성
+        // ④ User 엔티티에 설정
         User user = new User();
         user.setId(userId);
         user.setName(form.getName());
-
-        // 새 비밀번호가 입력된 경우에만 설정
         if (form.getNewPassword() != null && !form.getNewPassword().isBlank()) {
             user.setPassword(form.getNewPassword());
         }
-
-        // 태그 리스트 설정
         user.setTags(Arrays.stream(form.getTags().split(","))
                 .map(String::trim)
                 .filter(s -> !s.isEmpty())
                 .collect(Collectors.toList()));
 
-        // 서비스 호출 (트랜잭션이 걸린 updateUserProfile 메서드에서 실제 DB 반영)
+        // ⑤ 로그, 서비스 호출, 플래시 메시지
+        logger.info("▶▶ MyPageController.updateProfile 진입: {}", form);
         myPageService.updateUserProfile(user);
-
-        // 수정 후 마이페이지로 리다이렉트
+        redirectAttrs.addFlashAttribute("msg", "회원정보가 정상적으로 수정되었습니다.");
         return "redirect:/mypage";
     }
+
 }

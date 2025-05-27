@@ -1,6 +1,6 @@
 <!-- src/main/resources/templates/views/mypage/editProfile.html -->
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>회원정보 수정</title>
@@ -40,6 +40,9 @@
         </a>
     </div>
 
+    <!-- 수정 성공 메시지 -->
+    <div th:if="${msg}" class="alert alert-success" th:text="${msg}"></div>
+
     <!-- 1. 회원 정보 수정 -->
     <div style="background-color:#555;color:#fff;padding:15px;margin-bottom:20px;">
         회원정보 수정
@@ -47,8 +50,16 @@
 
     <form th:action="@{/mypage/update}"
           th:object="${profileUpdateForm}"
-          method="post"
-          onsubmit="alert('회원정보 수정 완료');">
+          method="post">
+
+        <sec:csrfInput/>
+
+        <!-- _csrf 변수가 있을 때만 폼에 hidden input 추가 -->
+        <input th:if="${_csrf != null}"
+               type="hidden"
+               th:name="${_csrf.parameterName}"
+               th:value="${_csrf.token}"/>
+
 
         <!-- 2. 새로운 닉네임 입력 -->
         <div style="border:1px solid #ccc;padding:15px;margin-bottom:10px;">
@@ -64,26 +75,19 @@
 
         <!-- 3. 새로운 비밀번호 입력 -->
         <div style="border:1px solid #ccc;padding:15px;margin-bottom:10px;">
-            새로운 비밀번호 입력
-            <input id="newPassword"
-                   th:field="*{newPassword}"
-                   type="password"
-                   disabled
-                   placeholder="새 비밀번호"
-                   style="width:100%;margin-top:5px;padding:8px;"/>
-            <!-- 검증 에러 출력 추가 -->
-            <div th:if="${#fields.hasErrors('newPassword')}" th:errors="*{newPassword}"></div>
-        </div>
-
-        <!-- 4. 비밀번호 재입력 -->
-        <div style="border:1px solid #ccc;padding:15px;margin-bottom:10px;">
+        <input id="newPassword"
+               th:field="*{newPassword}"
+               type="password"
+               placeholder="새 비밀번호"
+               style="width:100%; margin-top:5px; padding:8px;"/>
+        <!-- 검증 에러 출력 추가 -->
+        <div th:if="${#fields.hasErrors('newPassword')}" th:errors="*{newPassword}"></div>
             비밀번호 재입력
             <input id="confirmPassword"
                    th:field="*{confirmPassword}"
                    type="password"
-                   disabled
                    placeholder="비밀번호 확인"
-                   style="width:100%;margin-top:5px;padding:8px;"/>
+                   style="width:100%; margin-top:5px; padding:8px;"/>
             <!-- 검증 에러 출력 추가 -->
             <div th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></div>
         </div>
@@ -113,13 +117,13 @@
     </form>
 
     <script>
-        const toggleBtn   = document.getElementById('togglePassword');
-        const pwInput     = document.getElementById('newPassword');
-        const confirmInput= document.getElementById('confirmPassword');
+        const toggleBtn = document.getElementById('togglePassword');
+        const pwInput = document.getElementById('newPassword');
+        const confirmInput = document.getElementById('confirmPassword');
         toggleBtn.addEventListener('click', () => {
-            const disabled = pwInput.disabled;
-            pwInput.disabled = !disabled;
-            confirmInput.disabled = !disabled;
+            // readonly 속성 토글
+            pwInput.readOnly = !pwInput.readOnly;
+            confirmInput.readOnly = !confirmInput.readOnly;
         });
     </script>
 
