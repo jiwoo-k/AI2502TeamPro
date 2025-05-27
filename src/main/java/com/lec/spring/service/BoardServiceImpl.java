@@ -98,7 +98,11 @@ public class BoardServiceImpl implements BoardService {
     @Transactional  // <- 이 메소드를 트랜잭션 처리.
     public Post detail(Long id) {
         System.out.println("PostId : " + id);
-        Post post = postRepository.findById(id); // SELECT
+        Post post = postRepository.findById(id);
+        if (post == null) {
+            System.out.println("게시물이 없습니다. id=" + id);
+            return null;
+        }
 
         Integer followCount = userFollowingRepository.followCount(post.getUser_id());
         post.setFollowCount(followCount);
@@ -202,6 +206,7 @@ public class BoardServiceImpl implements BoardService {
     @Transactional
     @Override
     public int update(Post post, Map<String, MultipartFile> files, Long[] delFile, List<Tag> selectedTags) {
+
         int result = 0;
 
         // 1. 게시글 내용 수정
