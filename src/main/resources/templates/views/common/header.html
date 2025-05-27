@@ -38,6 +38,9 @@
                 <!-- 관리자 메뉴 -->
                 <ul class="header__nav" sec:authorize="hasRole('ADMIN')">
                     <li><span class="nav-item" th:text="${#authentication.principal.user.name}">관리자</span></li>
+
+                    <li><a class="nav-item" th:href="@{/admin/main}">관리자페이지</a></li>
+                    <li><a class="nav-item" th:href="@{/mypage}">마이페이지</a></li>
                     <li><a class="nav-item" th:href="@{/user/logout}">로그아웃</a></li>
                 </ul>
             </nav>
