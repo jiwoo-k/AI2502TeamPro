@@ -92,6 +92,37 @@ public class MyPageController {
         return "mypage/myFollowing";
     }
 
+    @GetMapping("/mypage/follow/{userId}")
+    public String viewUserPosts(
+            @PathVariable Long userId,
+            @RequestParam(value = "selectedType", required = false) String selectedType,
+            Model model,
+            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC)
+            Pageable pageable
+    ) {
+        // (1) 내 아이디
+        Long principalId = ((PrincipalDetails)
+                SecurityContextHolder.getContext()
+                        .getAuthentication().getPrincipal())
+                .getUser().getId();
+
+        // (2) 클릭한 사용자의 게시글 목록
+        Page<Post> postsPage = myPageService.getMyPosts(userId, selectedType, pageable);
+
+        // (3) 클릭한 사용자 정보 조회
+        User viewUser = myPageService.getUserById(userId);
+
+        // (4) 모델에 담기
+        model.addAttribute("posts", postsPage);
+        model.addAttribute("selectedType", selectedType);
+        model.addAttribute("viewUser", viewUser);
+        model.addAttribute("principalId", principalId);
+
+        return "mypage/myPosts";
+    }
+
+
+
     // 팔로우
     @PostMapping("/mypage/follow")
     @ResponseStatus(HttpStatus.OK)
@@ -135,23 +166,37 @@ public class MyPageController {
             @Validated @ModelAttribute("profileUpdateForm") ProfileUpdateForm form,
             BindingResult bindingResult
     ) {
+        // 입력 검증 에러가 있으면 다시 수정 페이지로
         if (bindingResult.hasErrors()) {
             return "mypage/editProfile";
         }
+
+        // 현재 로그인한 회원의 ID 조회
         Long userId = ((PrincipalDetails)
-                SecurityContextHolder.getContext().getAuthentication().getPrincipal())
+                SecurityContextHolder.getContext()
+                        .getAuthentication().getPrincipal())
                 .getUser().getId();
 
+        // 업데이트할 User 객체 생성
         User user = new User();
         user.setId(userId);
         user.setName(form.getName());
-        user.setPassword(form.getNewPassword());
+
+        // 새 비밀번호가 입력된 경우에만 설정
+        if (form.getNewPassword() != null && !form.getNewPassword().isBlank()) {
+            user.setPassword(form.getNewPassword());
+        }
+
+        // 태그 리스트 설정
         user.setTags(Arrays.stream(form.getTags().split(","))
                 .map(String::trim)
                 .filter(s -> !s.isEmpty())
                 .collect(Collectors.toList()));
 
+        // 서비스 호출 (트랜잭션이 걸린 updateUserProfile 메서드에서 실제 DB 반영)
         myPageService.updateUserProfile(user);
-        return "redirect:/mypage/myPageMain";
+
+        // 수정 후 마이페이지로 리다이렉트
+        return "redirect:/mypage";
     }
 }

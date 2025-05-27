@@ -183,9 +183,13 @@
     <update id="updateProfile"
             parameterType="com.lec.spring.domain.User">
         UPDATE user
-        SET
-        name = #{name},
-        password = #{password}
+        <set>
+            name = #{name},
+            <!-- 새 비밀번호가 넘어왔을 때만 password 컬럼 업데이트 -->
+            <if test="password != null and password != ''">
+                password = #{password},
+            </if>
+        </set>
         WHERE id = #{id}
     </update>
 

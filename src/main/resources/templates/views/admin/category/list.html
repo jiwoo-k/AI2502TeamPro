@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>카테고리 목록</title>
+    <link rel="stylesheet" href="/css/category.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- ① Header -->
+<!-- 공통 헤더 삽입  -->
+<!--<th:block th:replace="~{common/header :: header-fragment}"></th:block>-->
+
+<!-- 커스텀 헤더 (나중에 주석처리)  -->
+<div class="admin-header d-flex justify-content-between align-items-center p-3 bg-light border-bottom">
+    <div><strong>ROOFY</strong></div>
+    <div>
+        <span class="me-3">사용자 위치</span>
+        <span class="me-3">닉네임</span>
+        <a href="/mypage" class="me-2">마이페이지</a>
+        <a href="/login">로그인</a>
+    </div>
+</div>
+
+<!-- ② 카테고리 목록 -->
+<form method="post">
+    <div class="category-list container mt-4">
+        <div class="row row-cols-1 row-cols-md-2 g-3" th:each="category : ${categoryList}">
+            <div class="col">
+                <div class="category-item d-flex align-items-center border rounded p-3 shadow-sm">
+                    <input type="radio" name="selectedCategory" th:value="${category.id}" class="form-check-input me-3">
+
+                    <!-- 색상 박스 -->
+                    <div class="me-3"
+                         th:style="'width: 30px; height: 30px; background-color:' + ${category.color} + '; border:1px solid #ccc; border-radius:4px;'">
+                    </div>
+
+                    <!-- 카테고리 이름 + 색상 코드 -->
+                    <div>
+                        <div class="fw-bold" th:text="${category.name}">카테고리 이름</div>
+                        <div class="text-muted small" th:text="${category.color}">#색상코드</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ③ 버튼 영역 -->
+    <div class="category-actions text-center my-4">
+        <a href="/admin/category/add" class="btn btn-primary">추가</a>
+        <button type="submit" class="btn btn-warning" formaction="/admin/category/edit" formmethod="get">수정</button>
+        <button type="submit" class="btn btn-danger" formaction="/admin/category/delete">삭제</button>
+    </div>
+</form>
+
+<script src="/js/adminCategory.js"></script>
+</body>
+</html>

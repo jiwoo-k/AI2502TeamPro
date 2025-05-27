@@ -189,8 +189,7 @@ public class BoardController {
                 lat1 = loginUser.getLatitude();
                 lng1 = loginUser.getLongitude();
             }
-        }
-        else{
+        } else {
             //로그인 안한 사용자 위치검증
             lat1 = (Double) httpSession.getAttribute("lat");
             lng1 = (Double) httpSession.getAttribute("lng");
@@ -204,11 +203,11 @@ public class BoardController {
         //1. 사용자 3km 이내 보여주기
         List<User> allUsers = userService.findNearUsers();
         List<User> filteredUsers = new ArrayList<>();
-        for(User user : allUsers){
+        for (User user : allUsers) {
             Double lat2 = user.getLatitude();
             Double lng2 = user.getLongitude();
 
-            if(lat2 == null || lng2 == null) continue;
+            if (lat2 == null || lng2 == null) continue;
 
             double distance = calcDistance(lat1, lat2, lng1, lng2);
             if(distance <= 3){
@@ -236,6 +235,8 @@ public class BoardController {
         List<Post> filteredPosts = new ArrayList<>();
         List<Tag> selectedTags = (List<Tag>) httpSession.getAttribute("selectedTags");
 
+
+
         if (selectedTags == null) {
             selectedTags = new ArrayList<>();
             httpSession.setAttribute("selectedTags", selectedTags);
@@ -257,9 +258,13 @@ public class BoardController {
         }
 
         // 페이징 처리
+        if (pageRows == null) {
+            pageRows = (Integer) httpSession.getAttribute("pageRows");
+        }
         if (pageRows == null || pageRows < 1) {
             pageRows = 10;
         }
+        httpSession.setAttribute("pageRows", pageRows);
 
         List<Post> displayList;
         if (selectedTags.isEmpty()) {
@@ -279,15 +284,20 @@ public class BoardController {
 
         int totalCnt = displayList.size();
         int totalPage = (int) Math.ceil((double) totalCnt / pageRows);
-        if (page < 1) page = 1;
+
+        // 최소 페이지 보정
+        if (page == null || page < 1) page = 1;
+        if (totalPage == 0) totalPage = 1;
         if (page > totalPage) page = totalPage;
 
         int fromIndex = (page - 1) * pageRows;
         int toIndex = Math.min(fromIndex + pageRows, totalCnt);
-        if (fromIndex < 0) {
-            fromIndex = 0;
+
+        // fromIndex가 유효한 범위인지 확인
+        List<Post> pageList = new ArrayList<>();
+        if (fromIndex >= 0 && fromIndex < totalCnt) {
+            pageList = displayList.subList(fromIndex, toIndex);
         }
-        List<Post> pageList = displayList.subList(fromIndex, toIndex);
 
         model.addAttribute("boardList", pageList);
         model.addAttribute("cnt", totalCnt);
@@ -301,15 +311,15 @@ public class BoardController {
 
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
-        model.addAttribute("url", "/board/list?type=" + type);
-
+        model.addAttribute("url", "/board/list"); // type 빼자
+        model.addAttribute("selectedType", type);
 
         model.addAttribute("follow", (follow != null) ? follow : false);
-        model.addAttribute("selectedType", type);
-        boardService.list(page, model);
 
         return "board/list";
     }
+
+
 
     private double calcDistance(Double lat1, Double lat2, Double lng1, Double lng2) {
         double distance;
@@ -331,7 +341,6 @@ public class BoardController {
     }
 
 
-
     @GetMapping("/detail/{id}")
     public String detail(@PathVariable Long id,
                          Model model,
@@ -351,7 +360,6 @@ public class BoardController {
             loginUserId = loginUser.getId();
         }
         model.addAttribute("loginUserId", loginUserId);
-
 
         List<Post> posts = boardService.listByType(type);
         for (Post p : posts) {
@@ -436,6 +444,7 @@ public class BoardController {
         if (selectedTags == null) {
             selectedTags = new ArrayList<>();
         }
+        System.out.println("삭제할 태그 ID들: " + deletedTagIds);
         if (deletedTagIds != null) {
             selectedTags.removeIf(removeTag -> deletedTagIds.contains(removeTag.getId()));
         }
@@ -448,8 +457,6 @@ public class BoardController {
 
         post.setPost_tag(updatetags);
 
-
-
         int updateResult = boardService.update(post, files, deletedFileIds, updatetags);
 
         if (updateResult > 0) {
@@ -457,6 +464,7 @@ public class BoardController {
         }
         model.addAttribute("board", post);
         model.addAttribute("result", updateResult);
+
         return "board/updateOk";
     }
 

@@ -18,9 +18,12 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public int save(Category category) {
-        return categoryRepository.save(category);
+        if (category.getId() == null) {
+            return categoryRepository.save(category);   // INSERT
+        } else {
+            return categoryRepository.update(category); // UPDATE
+        }
     }
-
     @Override
     public int update(Category category) {
         return categoryRepository.update(category);
