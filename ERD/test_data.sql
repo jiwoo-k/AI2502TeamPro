@@ -78,7 +78,6 @@ values (1, 'guest', 'title1', 'content1')
 ;
 
 
-
 insert into user_tag
 values (1, 1),
        (1, 2),
@@ -113,6 +112,8 @@ VALUES (1, 'face01.png', 'face01.png')
 
 select *
 from post;
+select *
+from tag;
 select *
 from user;
 select *

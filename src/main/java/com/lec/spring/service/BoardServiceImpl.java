@@ -209,6 +209,8 @@ public class BoardServiceImpl implements BoardService {
 
         attachmentService.addFiles(files, post.getId());
 
+
+
         // 3. 파일 삭제
         if (delFile != null) {
             for (Long fileId : delFile) {
@@ -283,6 +285,11 @@ public class BoardServiceImpl implements BoardService {
 
         for (Post post : posts) {
             Long postId = post.getId();
+
+            // 첨부파일 주입
+            List<Attachment> fileList = attachmentRepository.findByPost(postId);
+            attachmentService.setImage(fileList);
+            post.setFileList(fileList);
 
             // post_tag 주입
             List<Tag> postTags = postRepository.findTagsByPostId(postId);

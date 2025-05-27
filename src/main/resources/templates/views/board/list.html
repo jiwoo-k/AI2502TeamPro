@@ -57,12 +57,12 @@
 
     <div id="attachment">
         <div class="container mt-3 mb-3 border rounded">
-            <div class="mb-3 mt-3 image-wrapper">
-                <img th:if="${board.fileList != null and board.fileList.size() > 0 and board.fileList[0].image}"
+            <div class="image-wrapper">
+                <img th:if="${not #lists.isEmpty(board.fileList) and board.fileList[0].image == true}"
                      th:src="@{'/upload/' + ${board.fileList[0].fileName}}"
                      class="img-thumbnail" alt="image">
-                <div th:if="${board.fileList == null or board.fileList.size() == 0 or !board.fileList[0].image}"
-                     class="image-wrapper" style="background-color: #888; color: white;">
+                <div th:if="${#lists.isEmpty(board.fileList) or !board.fileList[0].image}"
+                     class="image-thumbnail" style="background-color: #888; color: white;">
                     <span>이미지 없음</span>
                 </div>
             </div>
