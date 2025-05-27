@@ -13,6 +13,7 @@ import com.lec.spring.vaildator.BoardValidator;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
@@ -354,6 +356,20 @@ public class BoardController {
                          @RequestParam(required = false) Boolean follow,
                          Principal principal
     ) {
+        // 없는 페이지나 삭제한 페이지만 list로 back
+        Post post = boardService.detail(id);
+
+        if (post == null || (post.getIsdeleted() != null && post.getIsdeleted())) {
+            System.out.println("게시물이 존재하지 않습니다. id=" + id);
+            return "redirect:/board/list?notFound=true";
+        }
+
+
+
+        model.addAttribute("board", post);
+
+
+
 
         if (type == null || type.isBlank()) {
             type = "guest";
@@ -374,10 +390,10 @@ public class BoardController {
         }
         model.addAttribute("postList", posts);
 
-        Post post = boardService.detail(id);
         boolean isFollowed = loginUserId != null && userFollowingService.isFollowing(loginUserId, post.getUser_id());
         post.setFollow(isFollowed);
-        model.addAttribute("board", post);
+
+
 
         //  신고 횟수
         int warningCount = userWarningService.postWarningCount(id); // id는 게시물 id
@@ -396,6 +412,7 @@ public class BoardController {
         boolean hasReported = warnings.stream()
                 .anyMatch(w -> w.getComplaintUserId().equals(userId));
         model.addAttribute("hasReported", hasReported);
+
 
         return "board/detail";
     }
@@ -425,6 +442,7 @@ public class BoardController {
 
     @PostMapping("/update")
     public String update(@ModelAttribute Post post,
+                         @PathVariable Long id,
                          BindingResult bindingResult,
                          Model model,
                          RedirectAttributes redirectAttributes,
@@ -436,9 +454,14 @@ public class BoardController {
                          @RequestParam(value = "deletedFileIds", required = false) Long[] deletedFileIds,
                          HttpSession session
     ) {
+        Post updatePost = boardService.detail(id);
+
+        if (updatePost == null || updatePost.getIsdeleted()) {
+            model.addAttribute("notfound", true);
+            return "board/detail";
+        }
 
         post.setUser_id(loginUser.getId());
-
         // 삭제된 태그 id 가 있으면 session 에서 제거
         List<Tag> selectedTags = (List<Tag>) session.getAttribute("selectedTags");
         if (selectedTags == null) {

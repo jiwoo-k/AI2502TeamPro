@@ -98,7 +98,7 @@
 
             <p>담은 태그 목록</p>
             <div id="tagList">
-                <div th:each="tag : ${selectedTags}" class="selectedTag">
+                <div th:each="tag : ${selectedTags}" class="selectedTag"  th:style="'background-color: ' + ${tag.color} + '; color: white;'">
                     <input name="name" type="hidden" th:value="${tag.name}" />
                     <input name="category_id" type="hidden" th:value="${tag.category_id}" />
                     <input name="id" type="hidden" th:value="${tag.id}" />
@@ -119,7 +119,5 @@
     </form>
 
 </div>
-
-
 </body>
 </html>
