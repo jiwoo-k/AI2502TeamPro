@@ -29,6 +29,11 @@ public class UserController {
         this.userService = userService;
     }
 
+    @RequestMapping("/rejectAuth")
+    public String rejectAuth(){
+        return "user/rejectAuth";
+    }
+
     @GetMapping("/login")
     public void login(Model model) {
 
