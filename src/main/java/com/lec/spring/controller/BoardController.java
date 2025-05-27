@@ -89,7 +89,7 @@ public class BoardController {
     @PostMapping("/write")
     public String write(
             @RequestParam Map<String, MultipartFile> files,
-            @Valid Post post,
+            @ModelAttribute Post post,
             BindingResult bindingResult,
             @ModelAttribute Tag tag,
             @RequestParam(required = false) String type,
@@ -100,23 +100,7 @@ public class BoardController {
             HttpSession session
     ) {
 
-        // 유효성 검사 오류 처리
-        if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("title", post.getTitle());
-            redirectAttributes.addFlashAttribute("content", post.getContent());
-            redirectAttributes.addFlashAttribute("name", tag.getName());
 
-            // 카테고리 검색 validator
-            List<Category> categoryList = categoryService.list();
-            redirectAttributes.addFlashAttribute("categoryList", categoryList);
-            redirectAttributes.addFlashAttribute("submittedCategoryId", tag.getCategory_id());
-
-
-            for (FieldError error : bindingResult.getFieldErrors()) {
-                redirectAttributes.addFlashAttribute("error_" + error.getField(), error.getDefaultMessage());
-            }
-            return "redirect:/board/write";
-        }
         // 새로운 태그 추가 처리
         if (tag != null && tag.getName() != null && !tag.getName().trim().isEmpty()) {
             Tag existing = tagService.findByName(tag.getName().trim());            if (existing == null) {
@@ -154,6 +138,28 @@ public class BoardController {
         model.addAttribute("result", result);
         model.addAttribute("type", type);
         System.out.println("addTag" + tagIds);
+
+        // 수동으로 유호성 검사하기
+        new BoardValidator().validate(post, bindingResult);
+
+        // 유효성 검사 오류 처리
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("title", post.getTitle());
+            redirectAttributes.addFlashAttribute("content", post.getContent());
+            redirectAttributes.addFlashAttribute("name", tag.getName());
+            redirectAttributes.addFlashAttribute("post_tag" , post.getPost_tag());
+
+            // 카테고리 검색 validator
+            List<Category> categoryList = categoryService.list();
+            redirectAttributes.addFlashAttribute("categoryList", categoryList);
+            redirectAttributes.addFlashAttribute("submittedCategoryId", tag.getCategory_id());
+
+
+            for (FieldError error : bindingResult.getFieldErrors()) {
+                redirectAttributes.addFlashAttribute("error_" + error.getField(), error.getDefaultMessage());
+            }
+            return "redirect:/board/write";
+        }
 
         return "board/writeOk";
     }
@@ -418,25 +424,19 @@ public class BoardController {
 
 
     @PostMapping("/update")
-    public String update(@Valid Post post,
-                         @RequestParam Map<String, MultipartFile> files,
+    public String update(@ModelAttribute Post post,
                          BindingResult bindingResult,
                          Model model,
                          RedirectAttributes redirectAttributes,
+                         @RequestParam Map<String, MultipartFile> files,
+                         @ModelAttribute Tag tag,
                          @AuthenticationPrincipal(expression = "user") User loginUser,
                          @RequestParam(required = false, name = "tagIds[]") List<Long> tagIds,
                          @RequestParam(value = "deletedTagIds", required = false) List<Long> deletedTagIds,
                          @RequestParam(value = "deletedFileIds", required = false) Long[] deletedFileIds,
                          HttpSession session
     ) {
-        if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("title", post.getTitle());
-            redirectAttributes.addFlashAttribute("content", post.getContent());
-            for (FieldError error : bindingResult.getFieldErrors()) {
-                redirectAttributes.addFlashAttribute("error_" + error.getField(), error.getDefaultMessage());
-            }
-            return "redirect:/board/update/" + post.getId();
-        }
+
         post.setUser_id(loginUser.getId());
 
         // 삭제된 태그 id 가 있으면 session 에서 제거
@@ -464,6 +464,25 @@ public class BoardController {
         }
         model.addAttribute("board", post);
         model.addAttribute("result", updateResult);
+
+        // 수동으로 유호성 검사하기
+        new BoardValidator().validate(post, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("title", post.getTitle());
+            redirectAttributes.addFlashAttribute("content", post.getContent());
+            redirectAttributes.addFlashAttribute("name", tag.getName());
+            redirectAttributes.addFlashAttribute("post_tag" , post.getPost_tag());
+
+            // 카테고리 검색 validator
+            List<Category> categoryList = categoryService.list();
+            redirectAttributes.addFlashAttribute("categoryList", categoryList);
+            redirectAttributes.addFlashAttribute("submittedCategoryId", tag.getCategory_id());
+            for (FieldError error : bindingResult.getFieldErrors()) {
+                redirectAttributes.addFlashAttribute("error_" + error.getField(), error.getDefaultMessage());
+            }
+            return "redirect:/board/update/" + post.getId();
+        }
 
         return "board/updateOk";
     }

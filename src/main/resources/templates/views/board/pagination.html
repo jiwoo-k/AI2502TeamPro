@@ -18,13 +18,17 @@
       </li>
 
       <!-- 페이지 숫자 -->
-      <th:block th:each="k : ${#numbers.sequence(startPage, endPage)}">
-        <li class="page-item" th:classappend="${k == page} ? 'active'">
-          <a class="page-link"
-             th:href="@{${url}(type=${selectedType}, pageRows=${pageRows}, page=${k})}"
-             th:text="${k}"></a>
-        </li>
+      <th:block th:if="${startPage != null and endPage != null}">
+        <th:block th:each="k : ${#numbers.sequence(startPage, endPage)}">
+          <li class="page-item" th:classappend="${k == page} ? 'active'">
+            <a class="page-link"
+               th:href="@{${url}(type=${selectedType}, pageRows=${pageRows}, page=${k})}"
+               th:text="${k}"></a>
+          </li>
+        </th:block>
       </th:block>
+
+
 
       <!-- > 다음 -->
       <li class="page-item" th:if="${totalPage > endPage}">

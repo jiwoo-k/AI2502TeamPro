@@ -23,6 +23,9 @@ public class BoardValidator implements Validator {
         if (post.getContent() == null || post.getContent().isEmpty()) {
             errors.rejectValue("content", "content","글을 작성하세요");
         }
+        if (post.getPost_tag() == null || post.getPost_tag().isEmpty()) {
+            errors.rejectValue("post_tag", "post_tag", "태그를 추가해주세요");
+        }
 
 
     }

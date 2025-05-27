@@ -40,7 +40,7 @@
     }
 </script>
 
-<input type="hidden" th:value="${id}" id="loginUserId">
+<input type="hidden" th:value="${loginUserId}" id="loginUserId">
 <div id="button">
     <a class="writeBtn" th:href="@{/board/write}" onclick="return checkLogin()">게시물 작성하기</a>
 </div>
