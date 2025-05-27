@@ -129,13 +129,15 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUsername(username);
 
         // 임시 정지 상태이고, 정지 만료일이 지났다면 계정 활성화
-        if (user.getStatus().equals("paused") &&
-                user.getPauseEndDate() != null &&
-                user.getPauseEndDate().isBefore(LocalDateTime.now())) {
+        if(user != null){
+            if (user.getStatus().equals("paused") &&
+                    user.getPauseEndDate() != null &&
+                    user.getPauseEndDate().isBefore(LocalDateTime.now())) {
 
-            user.setStatus("active");
-            user.setPauseEndDate(null);
-            userRepository.updateState(user);
+                user.setStatus("active");
+                user.setPauseEndDate(null);
+                userRepository.updateState(user);
+            }
         }
         return user;
     }

@@ -69,7 +69,9 @@ public class PrincipalDetailService implements UserDetailsService {
             userDetails.setUserService(userService);
             return userDetails;
         }
+        else{
+            throw new UsernameNotFoundException("존재하지 않는 아이디입니다.");
+        }
 
-        throw new UsernameNotFoundException(username);
     }
 }
