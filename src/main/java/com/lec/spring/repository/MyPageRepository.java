@@ -29,9 +29,9 @@ public interface MyPageRepository {
 
     long countMyFollowing(@Param("userId") Long userId);
 
-    void updateUser(User user);
+    int updateUser(User user);
 
-    void updateProfile(User user);
+    int updateProfile(User user);
 
     List<Post> selectMyPostsPaged(Map<String, Object> params);
 

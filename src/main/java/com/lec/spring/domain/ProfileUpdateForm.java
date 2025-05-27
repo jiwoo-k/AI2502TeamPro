@@ -7,10 +7,10 @@ public class ProfileUpdateForm {
     @NotBlank(message = "닉네임은 반드시 입력해야 합니다.")
     private String name;
 
-    @Size(min = 8, message = "새 비밀번호는 8자 이상이어야 합니다.")
+//    @Size(min = 8, message = "새 비밀번호는 8자 이상이어야 합니다.")
     private String newPassword;
 
-    @NotBlank(message = "비밀번호 확인을 입력하세요.")
+//    @NotBlank(message = "비밀번호 확인을 입력하세요.")
     private String confirmPassword;
 
     // 화면에 콤마로 전달된 태그 문자열

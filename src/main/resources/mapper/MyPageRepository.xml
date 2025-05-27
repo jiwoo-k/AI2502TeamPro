@@ -180,12 +180,13 @@
     </select>
 
     <!-- 6) 프로필 일부(name, password) 업데이트 -->
-    <update id="updateProfile"
+    <update id="updateUser"
             parameterType="com.lec.spring.domain.User">
-        UPDATE user
+        UPDATE `user`
         <set>
-            name = #{name},
-            <!-- 새 비밀번호가 넘어왔을 때만 password 컬럼 업데이트 -->
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
             <if test="password != null and password != ''">
                 password = #{password},
             </if>
