@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 <!--header-->
@@ -10,12 +11,21 @@
 <!--header-->
 
 <!--날짜 선택 zone-->
-<label for="loginAt">날짜 선택: </label>
-<input id="loginAt" name="loginAt" type="date" value="">
+<form id="dateSelect" method="get">
+    <label for="startDate">시작 날짜:</label>
+    <input type="date" id="startDate" name="startDate" required>
+
+    <label for="endDate">종료 날짜:</label>
+    <input type="date" id="endDate" name="endDate" required>
+
+    <button id="showChartButton" type="submit">차트 보기</button>
+    <div th:text="${dateError}"></div>
+</form>
 <!--날짜 선택 zone-->
 
 <!--chart-->
-
+<canvas id="loginHistoryChart"></canvas>
+<canvas id="categoryPieChart"></canvas>
 <!--chart-->
 
 <!--x축 선택 zone-->
@@ -29,4 +39,151 @@
 <a th:href="@{/admin/category/list}">카테고리 관리</a>
 <!--다른 페이지 이동 버튼들-->
 </body>
+
+<script th:inline="javascript">
+    let categories = [[${categories}]];
+    let loginHistories = [[${loginHistories}]];
+
+    let categoryNames = categories.map(category => category.name);
+    let postCounts = categories.map(category => category.postCount);
+
+    let loginDates = loginHistories.map(loginHistory => loginHistory.loginAt);
+    let userCounts = loginHistories.map(loginHistory => loginHistory.userCount);
+
+
+    function getRandomRgb() {
+        let r = Math.floor(Math.random() * 255);
+        let g = Math.floor(Math.random() * 255);
+        let b = Math.floor(Math.random() * 255);
+        return {r: r, g: g, b: b};
+    }
+
+
+
+    let backgroundColors_category = [];
+    let borderColors_category = [];
+
+    for (let i = 0; i < categories.length; i++) {
+        let rgb = getRandomRgb();
+        backgroundColors_category.push('rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ', 0.5)'); // 투명도 0.5
+        borderColors_category.push('rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ', 1)');     // 투명도 1
+    }
+
+    //카테고리별 이용률 차트
+    let ctx_category = document.getElementById('categoryPieChart').getContext('2d');
+    new Chart(ctx_category, {
+        type: 'pie',
+        data: {
+            labels: categoryNames,
+            datasets: [{
+                label: '카테고리별 게시글 수',
+                data: postCounts,
+                backgroundColor: backgroundColors_category,
+                borderColor: borderColors_category,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (tooltipItem) {
+                            let label = tooltipItem.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            const value = tooltipItem.raw; // 실제 값
+                            const total = tooltipItem.dataset.data.reduce((sum, current) => sum + current, 0);
+                            const percentage = ((value / total) * 100).toFixed(1);
+
+                            // '라벨: 값 (비율%)' 형태로 표시
+                            label += percentage + '%';
+                            return label;
+                        }
+                    }
+                },
+                title: {
+                    display: true,
+                    text: '카테고리별 사용자 이용률',
+                    font: {
+                        size: 18, // 제목 글자 크기
+                        weight: 'bold' // 제목 글자 굵기
+                    },
+                    padding: {
+                        top: 10,
+                        bottom: 30
+                    }
+                }
+            }
+        },
+    });
+
+
+    let backgroundColors_login = [];
+    let borderColors_login = [];
+
+    for (let i = 0; i < loginHistories.length; i++) {
+        let rgb = getRandomRgb();
+        backgroundColors_login.push('rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ', 0.5)');
+        borderColors_login.push('rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ', 1)');
+    }
+
+    let ctx_login = document.getElementById('loginHistoryChart').getContext('2d');
+
+    new Chart(ctx_login, {
+        type: 'bar', // 막대 그래프
+        data: {
+            labels: loginDates, // 날짜 배열
+            datasets: [{
+                label: '일일 로그인 사용자 수',
+                data: userCounts, // 사용자 수 배열
+                backgroundColor: backgroundColors_login, // 막대 색상
+                borderColor: borderColors_login, // 막대 테두리 색상
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true, // 컨테이너 크기에 맞춰 비율 유지
+            scales: {
+                y: {
+                    beginAtZero: true, // y축을 0부터 시작
+                    ticks: {
+                        stepSize: 1,
+                    },
+                    title: {
+                        display: true,
+                        text: '사용자 수'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: '날짜'
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.dataset.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            if (context.parsed.y !== null) {
+                                label += context.parsed.y + '명';
+                            }
+                            return label;
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
 </html>

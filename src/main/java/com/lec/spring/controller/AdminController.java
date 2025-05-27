@@ -1,19 +1,16 @@
 package com.lec.spring.controller;
 
-import com.lec.spring.domain.User;
-import com.lec.spring.domain.UserFollowing;
-import com.lec.spring.domain.UserWarning;
+import com.lec.spring.domain.*;
 import com.lec.spring.repository.UserFollowingRepository;
 import com.lec.spring.repository.UserWarningRepository;
-import com.lec.spring.service.UserFollowingService;
-import com.lec.spring.service.UserService;
-import com.lec.spring.service.UserWarningService;
-import com.lec.spring.service.UserWarningServiceImpl;
+import com.lec.spring.service.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -22,15 +19,29 @@ public class AdminController {
     private final UserWarningService userWarningService;
     private final UserService userService;
     private final UserFollowingService userFollowingService;
+    private final CategoryService categoryService;
 
-    public AdminController(UserWarningService userWarningService, UserService userService, UserFollowingService userFollowingService) {
+    public AdminController(UserWarningService userWarningService, UserService userService, UserFollowingService userFollowingService, CategoryService categoryService) {
         this.userWarningService = userWarningService;
         this.userService = userService;
         this.userFollowingService = userFollowingService;
+        this.categoryService = categoryService;
     }
 
     @RequestMapping("/main")
-    public String mainPage() {
+    public String mainPage(Model model, LocalDate startDate, LocalDate endDate, RedirectAttributes redirectAttributes) {
+        List<Category> categories = categoryService.list();
+        List<LoginHistory> loginHistories = userService.findLoginHistory(startDate, endDate);
+
+        if(startDate != null && endDate != null && startDate.isAfter(endDate)) {
+            redirectAttributes.addFlashAttribute("dateError", "시작 날짜는 종료 날짜보다 이후일 수 없습니다.");
+
+            return "redirect:/admin/main";
+        }
+
+        model.addAttribute("categories", categories);
+        model.addAttribute("loginHistories", loginHistories);
+
         return "admin/main";
     }
 

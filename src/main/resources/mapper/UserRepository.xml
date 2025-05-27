@@ -92,4 +92,13 @@
         group by u.id, u.username, u.status
         having count(*) between #{warnCount1} and #{warnCount2}
     </select>
+
+    <select id="findLoginHistory" resultType="com.lec.spring.domain.LoginHistory">
+        select l.login_date "loginAt", count(*) "userCount"
+        from (select distinct cast(loginat AS date) as login_date, user_id
+        from loginhistory) l
+        where l.login_date between #{startDate} and #{endDate}
+        group by loginAt
+        order by loginAt;
+    </select>
 </mapper>

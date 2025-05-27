@@ -56,22 +56,26 @@
             c.id "c_id",
             c.name "c_name",
             c.color "c_color",
-            COUNT(t.id) "tag_count"
+            COUNT(t.id) "tag_count",
+            COUNT(pt.post_id) "post_count"
         FROM
             category c
-                LEFT JOIN
-            tag t ON c.id = t.category_id
+                LEFT JOIN tag t ON c.id = t.category_id
+                LEFT JOIN post_tag pt ON pt.tag_id = t.id
         GROUP BY
             c.id, c.name, c.color
         ORDER BY
             tag_count desc;
     </select>
 
+
+
     <resultMap id="mapCategory" type="com.lec.spring.domain.Category">
         <result column="c_id" property="id"/>
         <result column="c_name" property="name"/>
         <result column="c_color" property="color"/>
         <result column="tag_count" property="tagCount"/>
+        <result column="post_count" property="postCount"/>
     </resultMap>
 </mapper>
 

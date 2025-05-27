@@ -142,5 +142,57 @@ where w.post_id = p.id and u.id = p.user_id
 group by u.id, u.username, u.status
 having count(*) between 10 and 14;
 
-select * from post;
-select * from post_tag;
+select * from user;
+
+select t.category_id, count(*) postsCount
+    from post_tag p, tag t
+where p.tag_id=t.id
+group by t.category_id
+order by t.category_id desc ;
+
+SELECT
+    c.id "c_id",
+    c.name "c_name",
+    c.color "c_color",
+    COUNT(t.id) "tag_count",
+    COUNT(pt.post_id)
+FROM
+    category c
+        LEFT JOIN tag t ON c.id = t.category_id
+        LEFT JOIN post_tag pt ON pt.tag_id = t.id
+GROUP BY
+    c.id, c.name, c.color
+ORDER BY tag_count desc;
+
+select * from loginhistory;
+
+SELECT DISTINCT
+    CAST(loginat AS DATE) AS login_date,
+    count(*)
+FROM
+    loginhistory
+WHERE
+    CAST(loginat AS DATE) BETWEEN CAST('2025-05-01 18:00:00' as  date ) AND CAST('2025-05-30 18:00:00' as date )
+group by login_date
+ORDER BY
+    login_date;
+
+SELECT DISTINCT
+    CAST(loginat AS DATE) AS login_date, user_id
+FROM
+    loginhistory
+WHERE
+    CAST(loginat AS DATE) BETWEEN CAST('2025-05-01 18:00:00' as  date ) AND CAST('2025-05-30 18:00:00' as date )
+group by loginat
+ORDER BY
+    login_date;
+
+select distinct cast(loginat AS date) as login_date, user_id
+    from loginhistory;
+
+select l.login_date "loginAt", count(*) "userCount"
+    from (select distinct cast(loginat AS date) as login_date, user_id
+          from loginhistory) l
+where l.login_date between  cast('2025-05-01 18:00:00' as date ) and cast('2025-05-30 18:00:00' as date )
+group by loginAt
+order by loginAt;
