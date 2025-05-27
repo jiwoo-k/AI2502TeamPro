@@ -41,7 +41,20 @@
         </a>
     </div>
 
-    <h2 style="text-align: center; margin-bottom: 30px;">나의 게시글 조회</h2>
+    <h2 style="text-align:center; margin-bottom:30px;"
+        th:if="${viewUser == null}">
+        나의 게시글 조회
+    </h2>
+    <h2 style="text-align:center; margin-bottom:30px;"
+        th:if="${viewUser != null}">
+         <span th:if="${viewUser.id == principalId}">
+       내 게시글 목록
+     </span>
+        <span th:unless="${viewUser.id == principalId}"
+              th:text="${viewUser.name + '님의 게시글 목록'}">
+       사용자명님의 게시글 목록
+     </span>
+    </h2>
     <!-- 게시판 유형 선택  -->
     <form method="get" th:action="@{/mypage/post}" style="margin-bottom: 20px;">
         <select name="selectedType" onchange="this.form.submit()">
@@ -66,7 +79,8 @@
         </tbody>
     </table>
     <div style="margin-top: 20px;">
-        <a th:if="${posts.hasPrevious()}" th:href="@{/mypage/post(selectedType=${selectedType},page=${posts.number -1})}">Previous</a>
+        <a th:if="${posts.hasPrevious()}"
+           th:href="@{/mypage/post(selectedType=${selectedType},page=${posts.number -1})}">Previous</a>
         <span th:text="'Page ' + (${posts.number + 1}) + ' / ' + ${posts.totalPages}"></span>
         <a th:if="${posts.hasNext()}" th:href="@{/mypage/post(selectedType=${selectedType},page=${posts.number + 1})}">Next</a>
     </div>
