@@ -38,7 +38,7 @@
     <form th:action="@{/board/write}" method="post" enctype="multipart/form-data" id="writeForm">
         <div class="writeTitle">
             <div>
-                <span>제목을 입력하세요</span>
+                <span>제목</span>
                 <input type="text" th:value="${title}" placeholder="제목을 입력하세요" name="title" required />
             </div>
             <div th:if="${error_title}" th:text="${error_title}" style="color: red"></div>
@@ -47,7 +47,7 @@
         <br/><br/><br/>
 
         <div class="writeContent">
-            <span>내용을 입력하세요</span>
+            <span>내용</span>
             <textarea placeholder="글을 작성하세요" name="content" required
                       th:text="${content}"></textarea>
             <div th:if="${error_content}" th:text="${error_content}" style="color: red"></div>
