@@ -11,15 +11,21 @@
             <nav class="header__nav-wrapper">
                 <ul class="header__nav">
                     <!-- 로그인했을 때만 보일 메뉴 (일반 사용자) -->
-                    <li sec:authorize="isAuthenticated() and !hasRole('ADMIN')">
-                        <a href="#"
-                           class="nav-item"
-                           onclick="openMapFromHeader()"
-                           th:text="${#strings.isEmpty(#authentication.principal.user.areaName)
-                                    ? '내 위치'
-                                    : #authentication.principal.user.areaName}">
-                            내 위치
-                        </a>
+                    <!--<li sec:authorize="!hasRole('ADMIN')">
+                        <span id="setLocation"
+                           class="nav-item">
+                            위치 설정
+                        </span>
+                    </li>-->
+                    <li sec:authorize="!isAuthenticated()">
+                        <span class="nav-item" th:text="${session.areaName != null ? session.areaName : '위치 정보 없음'}">
+
+                        </span>
+                    </li>
+                    <li sec:authorize="hasRole('MEMBER')">
+                       <span class="nav-item" th:text="${#authentication.principal.user.areaName != null ? #authentication.principal.user.areaName : '위치 정보 없음'}">
+
+                        </span>
                     </li>
                     <li sec:authorize="isAuthenticated() and !hasRole('ADMIN')">
                         <span class="nav-item" th:text="${#authentication.principal.user.name}">닉네임</span>
@@ -64,15 +70,17 @@
     </div>
 
 
-    <script th:inline="javascript">
+    <!--<script th:inline="javascript">
         function openMapFromHeader() {
-            // ① Bootstrap 모달 띄우기
-            const modalEl = document.getElementById('headerMapModal');
-            const bsModal = new bootstrap.Modal(modalEl);
-            bsModal.show();
+            if(confirm('현재 위치를 가져오시겠습니까?')){
+                // ① Bootstrap 모달 띄우기
+                const modalEl = document.getElementById('headerMapModal');
+                const bsModal = new bootstrap.Modal(modalEl);
+                bsModal.show();
 
-            // ② 올바른 함수 호출 → location.js 의 openMap 을 사용
-            openMap('headerMap', 'headerMapModal', 'headerAddressOutput');
+                // ② 올바른 함수 호출 → location.js 의 openMap 을 사용
+                openMap('headerMap', 'headerMapModal', 'headerAddressOutput');
+            }
         }
-    </script>
+    </script>-->
 </th:block>

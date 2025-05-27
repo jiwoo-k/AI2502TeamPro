@@ -1,8 +1,28 @@
+$(function() {
+    //위치 설정 클릭 시
+    $('#setLocation').click(function() {
+        if(confirm('현재위치를 가져오시겠습니까?')){
+            const modalEl = document.getElementById('headerMapModal');
+            const bsModal = new bootstrap.Modal(modalEl);
+            bsModal.show();
+
+            openMap('headerMap', 'headerMapModal', 'headerAddressOutput');
+        }
+    });
+
+    $('#headerMapModal').on('hidden.bs.modal', function () {
+        // 이 코드는 모달이 완전히 닫힌 후 실행
+        alert('위치 설정 완료!');
+        location.href = "/home";
+    });
+});
+
 
 function openMap(targetMapId, modalId, addressOutputId) {
     navigator.geolocation.getCurrentPosition(function(pos) {
         const lat = pos.coords.latitude;
         const lng = pos.coords.longitude;
+        let areaName;
 
         const map = new google.maps.Map(document.getElementById(targetMapId), {
             center: { lat, lng },
@@ -18,26 +38,52 @@ function openMap(targetMapId, modalId, addressOutputId) {
         const geocoder = new google.maps.Geocoder();
         geocoder.geocode({ location: { lat, lng } }, (results, status) => {
             if (status === "OK" && results[0]) {
-                const areaName = results[0].formatted_address;
+                for(const component of results[0].address_components){
+                    let types = component.types;
+
+                    if (types.includes('sublocality_level_2') || types.includes('sublocality') || types.includes('neighborhood') || types.includes('administrative_area_level_3')) {
+                        areaName = component.short_name;
+
+                        break;
+                    }
+                }
+
+
+                // const areaName = results[0].formatted_address;
                 document.getElementById(addressOutputId).textContent = areaName;
 
                 if (document.getElementById("area-name-label")) {
                     document.getElementById("area-name-label").textContent = `(${areaName})`;
                 }
 
-                if (document.getElementById("areaName")) document.getElementById("areaName").value = areaName;
+                const locationData = {
+                    lat: lat,
+                    lng: lng,
+                    areaName: areaName,
+                }
+
+                const requestBody = new URLSearchParams(locationData);
+
+                fetch('/location', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+                    body: requestBody,
+                })
+                    .then(response => response.json())
+
+                /*if (document.getElementById("areaName")) document.getElementById("areaName").value = areaName;
                 if (document.getElementById("latitude")) document.getElementById("latitude").value = lat;
-                if (document.getElementById("longitude")) document.getElementById("longitude").value = lng;
+                if (document.getElementById("longitude")) document.getElementById("longitude").value = lng;*/
             }
         });
     });
 }
 
-var lat, lng, areaName;
+/*var lat, lng, areaName;
 
 $(function() {
 
-    const api_key = "AIzaSyC9LBYr1gjZAetK2mVspMEl0Ikekyl6yjA"
+    const api_key = "xxxx"
 
     $('button#getLocation').click(function (){
         navigator.geolocation.getCurrentPosition(
@@ -106,4 +152,4 @@ function parseJSON(data) {
         })
             .then(response => response.json())
     }
-}
+}*/

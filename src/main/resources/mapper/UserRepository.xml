@@ -17,6 +17,7 @@
         ,longitude
         ,status
         ,pause_end_date "pauseEndDate"
+        ,areaname "areaName"
         FROM user
         WHERE 1 = 1
     </sql>
@@ -55,7 +56,7 @@
 
     <update id="updateLocation" parameterType="com.lec.spring.domain.User" flushCache="true">
         update user
-        set latitude=#{latitude}, longitude=#{longitude}
+        set latitude=#{latitude}, longitude=#{longitude}, areaname=#{areaName}
         where id=#{id}
     </update>
 
@@ -75,6 +76,7 @@
         u.providerId "providerId",
         u.latitude "latitude",
         u.longitude "longitude",
+        u.areaname "areaName",
         u.status "status"
         from user u, post p
         where u.id=p.user_id;
