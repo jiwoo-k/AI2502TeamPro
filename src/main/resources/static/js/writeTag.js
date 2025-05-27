@@ -41,7 +41,7 @@ $(function () {
             },
             error: function (xhr) {
                 if (xhr.status === 404) {
-                    alert(categoryId + " 해당 태그가 존재하지 않습니다.");
+                    alert(categoryId + "번 카테고리에 해당 태그가 존재하지 않습니다.");
                     $('#tagAddButton').show();
                 } else {
                     alert("태그 검색 중 오류 발생");

@@ -291,6 +291,7 @@ public class BoardServiceImpl implements BoardService {
             attachmentService.setImage(fileList);
             post.setFileList(fileList);
 
+
             // post_tag 주입
             List<Tag> postTags = postRepository.findTagsByPostId(postId);
             post.setPost_tag(postTags);

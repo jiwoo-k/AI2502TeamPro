@@ -2,12 +2,27 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>관리자 홈</title>
+    <th:block th:replace="~{common/head :: head}"></th:block>
 </head>
+<!--    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>-->
+<!--    &lt;!&ndash; Bootstrap & Header Head&ndash;&gt;-->
+<!--    &lt;!&ndash; Bootstrap CSS: 필수 &ndash;&gt;-->
+<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"-->
+<!--          rel="stylesheet"/>-->
+<!--    <link rel="stylesheet" th:href="@{/css/style.css}">-->
+<!--    <link rel="stylesheet" th:href="@{/css/header.css}">-->
+
+<!--    &lt;!&ndash; 이 4개는 헤더를 사용하는 모든 페이지에 포함되어야합니다. &ndash;&gt;-->
+<!--    &lt;!&ndash; 올바른 순서대로 해야 충돌 없이 작동한답니다... &ndash;&gt;-->
+<!--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>-->
+<!--    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY"></script>-->
+<!--    <script th:src="@{/js/location.js}"></script>-->
+<!--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>-->
+<!--    &lt;!&ndash; Bootstrap & Header Head&ndash;&gt;-->
 <body>
 <!--header-->
-
+<th:block th:replace="~{common/header :: header-fragment}"></th:block>
 <!--header-->
 
 <!--날짜 선택 zone-->
@@ -57,7 +72,6 @@
         let b = Math.floor(Math.random() * 255);
         return {r: r, g: g, b: b};
     }
-
 
 
     let backgroundColors_category = [];
@@ -170,7 +184,7 @@
             plugins: {
                 tooltip: {
                     callbacks: {
-                        label: function(context) {
+                        label: function (context) {
                             let label = context.dataset.label || '';
                             if (label) {
                                 label += ': ';
