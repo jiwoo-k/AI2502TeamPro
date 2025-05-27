@@ -67,6 +67,7 @@ public class HomeController {
 
         model.addAttribute("selectedTags", selectedTags);
         model.addAttribute("areaName", areaName);
+        httpSession.removeAttribute("selectedTags");
     }
 
     @PostMapping("/home")
