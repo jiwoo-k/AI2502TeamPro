@@ -11,126 +11,120 @@
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" th:href="@{/css/header.css}">
     <link rel="stylesheet" th:href="@{/css/detail.css}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
 
     <!-- JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
     <script th:src="@{/js/location.js}"></script>
-
-    <!-- Bootstrap CSS: 필수 -->
-    <!-- Bootstrap CSS (SRI 제거) -->
-    <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-            rel="stylesheet"
-    />
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-    <link rel="stylesheet" th:href="@{/css/header.css}">
-
-    <!-- 이 4개는 헤더를 사용하는 모든 페이지에 포함되어야합니다. -->
-    <!-- 올바른 순서대로 해야 충돌 없이 작동한답니다... -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY"></script>
-    <script th:src="@{/js/location.js}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/comment.js}" defer></script>
 </head>
 
 <body>
 <!-- Header Fragment -->
-<th:block th:replace="~{common/header :: header-fragment}"></th:block>
+<header th:replace="~{common/header :: header-fragment}"></header>
 
-<main class="container">
+<main class="container mt-4">
     <h2>게시물 상세조회</h2>
 
-    <!-- 작성자, 시간 -->
-    <div>
+    <!-- 작성자, 작성일 -->
+    <div class="d-flex justify-content-between mb-3">
         <div th:text="'작성자: ' + ${board.name}"></div>
         <div th:text="${#temporals.format(board.createdat, 'yyyy-MM-dd HH:mm')} + ' 작성'"></div>
     </div>
 
-    <!-- 제목, 내용 -->
-    <div><strong th:text="${board.title}"></strong></div>
-    <div th:text="${board.content}"></div>
+    <!-- 제목 -->
+    <div class="mb-2">
+        <strong th:text="${board.title}" style="font-size: 1.4rem;"></strong>
+    </div>
+
+    <!-- 내용 -->
+    <div class="mb-4 p-3 bg-white rounded shadow-sm" th:text="${board.content}"></div>
 
     <!-- 첨부파일 -->
-    <div class="mt-3 mb-3 border rounded p-2">
-        <label>첨부파일:</label>
+    <div class="mb-4">
+        <label class="fw-bold">첨부파일:</label>
         <ul class="list-group">
             <li class="list-group-item" th:each="attachment : ${board.fileList}">
                 <a th:href="@{/board/download(id=${attachment.id})}" th:text="${attachment.sourceName}"></a>
             </li>
         </ul>
-        <div th:each="attachment : ${board.fileList}" th:if="${attachment.image}" class="image-wrapper mt-2">
-            <img th:src="@{'/upload/' + ${attachment.fileName}}" class="img-thumbnail" alt="image">
+        <div class="mt-2" th:each="attachment : ${board.fileList}" th:if="${attachment.image}" style="max-width: 400px;">
+            <img th:src="@{'/upload/' + ${attachment.fileName}}" class="img-thumbnail" alt="첨부 이미지">
         </div>
     </div>
 
     <!-- FOLLOW / UNFOLLOW -->
-    <div th:if="${id != null and id != board.user_id}">
+    <div th:if="${id != null and id != board.user_id}" class="mb-3">
         <form th:action="@{${board.follow} ? '/board/follow/delete' : '/board/follow/insert'}" method="post" onsubmit="return checkLogin()">
             <input type="hidden" name="followingUserId" th:value="${board.user_id}"/>
             <input type="hidden" name="id" th:value="${board.id}"/>
-            <button type="submit" th:text="${board.follow} ? 'UNFOLLOW' : 'FOLLOW'"></button>
+            <button type="submit" class="btn btn-outline-primary" th:text="${board.follow} ? 'UNFOLLOW' : 'FOLLOW'"></button>
         </form>
     </div>
 
     <!-- 팔로워 수 -->
-    <div th:if="${board.type == 'helper'}" th:text="'팔로워: ' + ${board.followCount}"></div>
+    <div th:if="${board.type == 'helper'}" class="mb-2">
+        <span class="text-muted" th:text="'팔로워: ' + ${board.followCount}"></span>
+    </div>
 
     <!-- 신고 수 -->
-    <div><span th:text="'신고 ' + ${postWarningCount} + '개'"></span></div>
+    <div class="mb-3">
+        <span class="text-danger fw-bold" th:text="'신고 ' + ${postWarningCount} + '개'"></span>
+    </div>
 
     <!-- 태그 -->
-    <div th:if="${board.type == 'guest'}">
-        <span th:each="tag : ${board.post_tag}" class="tagName"
+    <div class="mb-3">
+        <span th:each="tag : ${board.post_tag}" class="badge rounded-pill me-1"
               th:text="'#' + ${tag.name}"
-              th:style="'color:' + ${tag.color} + '; border: 1px solid ' + ${tag.color}"></span>
-    </div>
-    <div th:if="${board.type == 'helper'}">
-        <span th:each="tag : ${board.user_tag}" class="tagName"
-              th:text="'#' + ${tag.name}"
-              th:style="'color:' + ${tag.color} + '; border: 1px solid ' + ${tag.color}"></span>
+              th:style="'background-color:' + ${tag.color} + '; color: white;'"></span>
+        <span th:each="tag : ${board.user_tag}" class="badge rounded-pill me-1"
+              th:style="'background-color:' + ${tag.color} + '; color: white;'"
+              th:text="'#' + ${tag.name}"></span>
     </div>
 
     <!-- 버튼 영역 -->
-    <div class="mt-3">
-        <a th:href="@{'/board/list?type=' + ${board.type}}"><button>목록</button></a>
+    <!-- 목록 -->
+    <a th:href="@{'/board/list?type=' + ${board.type}}" class="btn btn-secondary">목록</a>
 
-        <a th:if="${id == board.user_id}" th:href="@{'/board/update/' + ${board.id}}"><button>수정</button></a>
+    <!-- 수정: 로그인한 사용자 == 작성자일 때만 -->
+    <a th:if="${id == board.user_id}"
+       th:href="@{'/board/update/' + ${board.id}}"
+       class="btn btn-success">수정</a>
 
-        <form th:if="${id == board.user_id}" th:action="@{/board/delete}" method="post" style="display:inline;">
-            <input type="hidden" name="id" th:value="${board.id}"/>
-            <button type="submit">삭제</button>
-        </form>
-    </div>
+    <!-- 삭제: 로그인한 사용자 == 작성자일 때만 -->
+    <form th:if="${id == board.user_id}"
+          th:action="@{/board/delete}" method="post" style="display:inline;">
+        <input type="hidden" name="id" th:value="${board.id}" />
+        <button type="submit" class="btn btn-danger">삭제</button>
+    </form>
 
     <!-- 신고 기능 -->
     <div th:if="${id != null and id != board.user_id and !hasReported}" class="mt-3">
         <form th:action="@{/board/warning}" method="post">
             <input type="hidden" name="postId" th:value="${board.id}"/>
-            <div id="reasonBox" style="display: none;">
-                <label for="reason">신고 사유</label>
-                <textarea name="reason" id="reason"></textarea>
-                <button type="submit">신고 접수</button>
+            <div id="reasonBox" style="display: none;" class="mt-2">
+                <label for="reason" class="form-label">신고 사유</label>
+                <textarea name="reason" id="reason" class="form-control" rows="3"></textarea>
+                <button type="submit" class="btn btn-warning mt-2">신고 접수</button>
             </div>
-            <button type="button" onclick="document.getElementById('reasonBox').style.display = 'block'">신고하기</button>
+            <button type="button" class="btn btn-outline-danger" onclick="document.getElementById('reasonBox').style.display = 'block'">신고하기</button>
         </form>
     </div>
 
     <input type="hidden" th:value="${id}" id="loginUserId">
 </main>
 
-<!-- 댓글 -->
-<div th:replace="board/comment :: comment-fragment"></div>
+<!-- 댓글 영역 -->
+<div th:replace="~{board/comment :: comment-fragment}"></div>
 
-<!-- 댓글 JS 전역 변수 -->
+<!-- 전역 변수 및 로그인 체크 -->
 <script th:inline="javascript">
+    console.log("📌 detail.html loaded");
     window.postId = [[${board.id}]];
     window.loggedUserId = [[${id}]];
     window.postAuthorId = [[${board.user_id}]];
 </script>
-<script th:src="@{/js/comment.js}"></script>
 
-<!-- 로그인 확인 스크립트 -->
 <script>
     function checkLogin() {
         const loginUserId = document.getElementById('loginUserId').value;

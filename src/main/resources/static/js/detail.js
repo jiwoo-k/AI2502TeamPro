@@ -1,2 +1,16 @@
-// detail.js
-console.log("detail.js loaded");  // 향후 게시글 상세 관련 JS 로직이 여기에 들어감
+// detail.js (추가해서 문제 파악)
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("✅ detail.js loaded");
+
+    document.querySelectorAll("form").forEach(form => {
+        form.addEventListener("submit", (e) => {
+            console.log("📤 Form submitting to:", form.action);
+        });
+    });
+
+    document.querySelectorAll("a").forEach(a => {
+        a.addEventListener("click", () => {
+            console.log("🔗 Link clicked:", a.href);
+        });
+    });
+});
