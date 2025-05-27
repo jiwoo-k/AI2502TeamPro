@@ -9,4 +9,8 @@ public interface TagService {
     List<Tag> findTagsByIds(List<Long> ids);
 
     List<Tag> findTagsByBoardId (Long boardId);
+
+    Tag addTag(Tag tag);
+
+    Tag findByName (String name);
 }

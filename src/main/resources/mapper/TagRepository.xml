@@ -10,9 +10,9 @@
     </insert>
 
     <select id="searchTag" parameterType="com.lec.spring.domain.Tag" resultType="com.lec.spring.domain.Tag">
-       select id, category_id, name
-       from tag
-       where category_id = #{category_id} and name = #{name}
+        SELECT id, name, category_id
+        FROM tag
+        WHERE name = #{name} AND category_id = #{category_id}
     </select>
 
     <select id="findPostsByTags" parameterType="arrayList" resultMap="mapPost">
@@ -102,6 +102,9 @@
     </select>
 
 
+    <select id="findByName" resultType="com.lec.spring.domain.Tag">
+        SELECT * FROM tag WHERE name = #{name}
+    </select>
 
 
     <resultMap id="mapTag" type="com.lec.spring.domain.Tag">

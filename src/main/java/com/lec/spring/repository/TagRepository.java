@@ -43,5 +43,7 @@ public interface TagRepository {
 
     Tag findById(Long id);
 
+    Tag findByName(String name);
+
 
 }

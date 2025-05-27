@@ -29,15 +29,11 @@ import java.util.*;
 public class TagController {
     private final TagRepository tagRepository;
     private final CategoryService categoryService;
-    private final TagService tagService;
 
-    public TagController(SqlSession sqlSession, CategoryService categoryService, BoardService boardService,
-                         TagService tagService) {
+    public TagController(SqlSession sqlSession, CategoryService categoryService) {
         this.tagRepository = sqlSession.getMapper(TagRepository.class);
         this.categoryService = categoryService;
-        this.tagService = tagService;
     }
-
     @GetMapping("/tag")
     public String showTag(Model model, HttpSession httpSession) {
         List<Category> categoryList = categoryService.list();
@@ -147,6 +143,7 @@ public class TagController {
     }
 
 
+
     @PostMapping("/tag/remove")
     @ResponseBody
     public Map<String, Object> tagRemove(@RequestBody Tag tag, HttpSession httpSession) {
@@ -176,20 +173,20 @@ public class TagController {
     }
 
 
-    @PostMapping("/tag/save")
-    public void tagSave(List<Tag> tags, HttpSession httpSession) {
-        // 저장 로직 작성 필요
-    }
+//    @PostMapping("/tag/save")
+//    public void tagSave(List<Tag> tags, HttpSession httpSession) {
+//        // 저장 로직 작성 필요
+//    }
 
     @PostMapping("/tag/search")
     @ResponseBody
     public ResponseEntity<Tag> searchTag(
             @RequestParam("name") String name,
-            @RequestParam("category_id") Long categoryId
+            @RequestParam("category_id") Long category_id
     ) {
         Tag tag = new Tag();
         tag.setName(name);
-        tag.setCategory_id(categoryId);
+        tag.setCategory_id(category_id);
 
         Tag searchedTag = tagRepository.searchTag(tag);
         if (searchedTag == null) {
@@ -201,6 +198,58 @@ public class TagController {
 
         return ResponseEntity.ok(searchedTag);
     }
+
+    @PostMapping("/tag/save")
+    @ResponseBody
+    public Map<String, Object> tagsAdd(@RequestBody Tag tag, HttpSession httpSession) {
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("url", "/tag");
+
+        List<Tag> selectedTags = (List<Tag>) httpSession.getAttribute("selectedTags");
+        if (selectedTags == null) {
+            selectedTags = new ArrayList<>();
+        }
+
+        // 최대 개수 제한 먼저 검사
+        if (selectedTags.size() >= 5) {
+            response.put("sizeOverError", "태그는 최대 5개까지 담을 수 있습니다");
+            return response;
+        }
+
+        // DB에서 태그 검색
+        Tag addTag = tagRepository.searchTag(tag);
+        Tag tagToAdd;
+
+        if (addTag != null) {
+            // 기존 태그라면 색상 세팅
+            String tagColor = categoryService.findById(addTag.getCategory_id()).getColor();
+            addTag.setColor(tagColor);
+            tagToAdd = addTag;
+        } else {
+            // 신규 태그 추가 후 검색해서 색상 세팅
+            int result = tagRepository.addTag(tag);
+            tag = tagRepository.searchTag(tag);
+            tag.setColor(categoryService.findById(tag.getCategory_id()).getColor());
+            tagToAdd = tag;
+            response.put("result", result);
+        }
+
+        // 중복 검사 후 추가
+        if (selectedTags.contains(tagToAdd)) {
+            response.put("alreadyInList", "이미 목록에 추가된 태그입니다.");
+            return response;
+        } else {
+            selectedTags.add(tagToAdd);
+            response.put("addTag", tagToAdd);
+        }
+
+        httpSession.setAttribute("selectedTags", selectedTags);
+        System.out.println("현재 selectedTags: " + selectedTags);
+
+        return response;
+    }
+
 
     @Autowired
     TagValidator tagValidator;

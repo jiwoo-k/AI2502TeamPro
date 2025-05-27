@@ -29,4 +29,15 @@ public class TagServiceImpl implements TagService {
     public List<Tag> findTagsByBoardId(Long boardId) {
         return tagRepository.loadPostTags(boardId);
     }
+
+    @Override
+    public Tag addTag(Tag tag) {
+        tagRepository.addTag(tag);
+        return tag;
+    }
+
+    @Override
+    public Tag findByName(String name) {
+        return tagRepository.findByName(name);
+    }
 }

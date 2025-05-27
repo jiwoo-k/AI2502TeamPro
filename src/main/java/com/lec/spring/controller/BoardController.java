@@ -64,6 +64,7 @@ public class BoardController {
     // 수정, 추가. 삭제의 경우 attr name을 result 로 하였음
     @GetMapping("/write")
     public String write(Model model, HttpSession session) {
+        session.removeAttribute("selectedTags");
         // 카테고리 목록 가져오기
         List<Category> categoryList = categoryService.list();
         model.addAttribute("categoryList", categoryList);
@@ -89,10 +90,10 @@ public class BoardController {
     public String write(
             @RequestParam Map<String, MultipartFile> files,
             @Valid Post post,
-            @Valid Tag tag,
+            BindingResult bindingResult,
+            @ModelAttribute Tag tag,
             @RequestParam(required = false) String type,
             @RequestParam(required = false, name = "tagIds[]") List<Long> tagIds,
-            BindingResult bindingResult,
             Model model,
             RedirectAttributes redirectAttributes,
             @AuthenticationPrincipal(expression = "user") User loginUser,
@@ -116,12 +117,25 @@ public class BoardController {
             }
             return "redirect:/board/write";
         }
+        // 새로운 태그 추가 처리
+        if (tag != null && tag.getName() != null && !tag.getName().trim().isEmpty()) {
+            Tag existing = tagService.findByName(tag.getName().trim());            if (existing == null) {
+                tagService.addTag(tag);
+                if (tagIds == null) tagIds = new ArrayList<>();
+                tagIds.add(tag.getId());
+            } else {
+                if (tagIds == null) tagIds = new ArrayList<>();
+                tagIds.add(existing.getId());
+            }
+        }
+
 
         // tagIds로 태그 리스트 조회 (null 체크 포함)
         List<Tag> selectedTags = new ArrayList<>();
-        if (tagIds != null && !tagIds.isEmpty()) {
+        if(tagIds != null && !tagIds.isEmpty()) {
             selectedTags = tagService.findTagsByIds(tagIds);
         }
+
 
         // 로그인한 사용자 ID 세팅
         post.setUser_id(loginUser.getId());
@@ -139,6 +153,7 @@ public class BoardController {
 
         model.addAttribute("result", result);
         model.addAttribute("type", type);
+        System.out.println("addTag" + tagIds);
 
         return "board/writeOk";
     }
@@ -207,7 +222,7 @@ public class BoardController {
 
         List<Post> allPosts = boardService.listByTypeLocation(type, filteredUsers);
 
-        model.addAttribute("id", loginUserId);
+        model.addAttribute("loginUserId", loginUserId);
 
 
 //        List<Post> allPosts = boardService.listByType(type);
@@ -269,6 +284,9 @@ public class BoardController {
 
         int fromIndex = (page - 1) * pageRows;
         int toIndex = Math.min(fromIndex + pageRows, totalCnt);
+        if (fromIndex < 0) {
+            fromIndex = 0;
+        }
         List<Post> pageList = displayList.subList(fromIndex, toIndex);
 
         model.addAttribute("boardList", pageList);
@@ -332,7 +350,7 @@ public class BoardController {
             User loginUser = userService.findByUsername(username);
             loginUserId = loginUser.getId();
         }
-        model.addAttribute("id", loginUserId);
+        model.addAttribute("loginUserId", loginUserId);
 
 
         List<Post> posts = boardService.listByType(type);
@@ -400,6 +418,7 @@ public class BoardController {
                          @AuthenticationPrincipal(expression = "user") User loginUser,
                          @RequestParam(required = false, name = "tagIds[]") List<Long> tagIds,
                          @RequestParam(value = "deletedTagIds", required = false) List<Long> deletedTagIds,
+                         @RequestParam(value = "deletedFileIds", required = false) Long[] deletedFileIds,
                          HttpSession session
     ) {
         if (bindingResult.hasErrors()) {
@@ -417,22 +436,27 @@ public class BoardController {
         if (selectedTags == null) {
             selectedTags = new ArrayList<>();
         }
-        System.out.println("삭제할 태그 ID들: " + deletedTagIds);
         if (deletedTagIds != null) {
-            selectedTags.removeIf(tag -> deletedTagIds.contains(tag.getId()));
+            selectedTags.removeIf(removeTag -> deletedTagIds.contains(removeTag.getId()));
         }
 
-        int updateResult = boardService.write(post, files, selectedTags);
+// 추가로 선택된 태그 ID들 처리
+        List<Tag> updatetags = new ArrayList<>();
+        if (tagIds != null && !tagIds.isEmpty()) {
+            updatetags = tagService.findTagsByIds(tagIds);
+        }
+
+        post.setPost_tag(updatetags);
+
+
+
+        int updateResult = boardService.update(post, files, deletedFileIds, updatetags);
+
         if (updateResult > 0) {
             session.removeAttribute("selectedTags");
         }
-
-
-        // 태그 리스트를 post에 세팅
-        post.setPost_tag(selectedTags);
-
+        model.addAttribute("board", post);
         model.addAttribute("result", updateResult);
-
         return "board/updateOk";
     }
 

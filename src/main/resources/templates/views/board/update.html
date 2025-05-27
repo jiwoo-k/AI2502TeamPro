@@ -30,6 +30,7 @@
     <div th:text="'작성자: ' + ${board.name}"></div>
     <!--        이거 게시판을 올린 날짜로 기준으로 잡을지 수정하고 수정완료 한 날짜를 기준으로 잡아야 할지 모르겠음.-->
     <div th:text="${#temporals.format(board.createdat,  'yyyy-MM-dd HH:mm:ss')}"></div>
+    <input type="hidden" name="user_id" th:value="${loginUserId}">
 </div>
 <form id="writeForm" th:action="@{/board/update}" method="post">
     <input type="hidden" name="id" th:value="${board.id}">
@@ -77,7 +78,7 @@
 
     <div id="tagSearch">
         <div id="searchZone">
-            <input type="text" id="tagSearchInput" name="name" placeholder="태그 검색 (# 제외)" th:value="${tagName}" />
+            <input type="text" id="tagSearchInput" name="tagName" placeholder="태그 검색 (# 제외)" th:value="${tagName}" />
             <input type="hidden" id="categoryIdInput" name="category_id" th:value="${submittedCategoryId}" />
             <button type="button" id="tagSearchButton">검색</button>
             <button type="button" id="tagAddButton" style="display:none;">추가</button>
@@ -122,9 +123,7 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
 <script src="/js/updateTag.js" defer></script>
-<script>
-    const boardId = [[${board.id}]];
-</script>
+
 
 </body>
 

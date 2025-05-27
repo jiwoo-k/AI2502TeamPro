@@ -63,6 +63,35 @@ public class BoardServiceImpl implements BoardService {
         return postRepository.save(post);
     }
 
+
+    @Transactional
+    @Override
+    public int write(Post post, Map<String, MultipartFile> files, List<Tag> tags) {
+        // 현재 로그인한 작성자 정보
+        User user = U.getLoggedUser();
+
+        // 위 정보는 session 의 정보이고, 디시 DB 에서 읽어온다.
+        user = userRepository.findById(user.getId());
+        post.setUser(user);  // 글 작성자 세팅.
+
+        int cnt = postRepository.save(post);   // 글 먼저 저장 - 그래야 AI 된 PK값(id) 를 받아온다.
+
+        // 첨부파일 추가.
+        attachmentService.addFiles(files, post.getId());
+
+
+        if (tags != null && !tags.isEmpty()) {
+
+            Map<String, Object> paramMap = new HashMap<>();
+            paramMap.put("postId", post.getId());
+            paramMap.put("tags", tags);
+            tagRepository.savePostTag(paramMap);
+
+        }
+
+
+        return cnt;
+    }
     // 특정 id 의 글 조회
     // 트랜잭션 처리
     @Override
@@ -94,32 +123,6 @@ public class BoardServiceImpl implements BoardService {
 //            }
         }
         return post;
-    }
-
-    @Transactional
-    @Override
-    public int write(Post post, Map<String, MultipartFile> files, List<Tag> tags) {
-        // 현재 로그인한 작성자 정보
-        User user = U.getLoggedUser();
-
-        // 위 정보는 session 의 정보이고, 디시 DB 에서 읽어온다.
-        user = userRepository.findById(user.getId());
-        post.setUser(user);  // 글 작성자 세팅.
-
-        int cnt = postRepository.save(post);   // 글 먼저 저장 - 그래야 AI 된 PK값(id) 를 받아온다.
-
-        // 첨부파일 추가.
-        attachmentService.addFiles(files, post.getId());
-
-        if (tags != null && !tags.isEmpty()) {
-            Map<String, Object> paramMap = new HashMap<>();
-            paramMap.put("tags", tags);
-            paramMap.put("postId", post.getId());
-            tagRepository.savePostTag(paramMap);  // 이 부분 중요!
-        }
-
-
-        return cnt;
     }
 
 
@@ -222,12 +225,12 @@ public class BoardServiceImpl implements BoardService {
 
 
         if (selectedTags != null && !selectedTags.isEmpty()) {
-            for (Tag tag : selectedTags) {
+
                 Map<String, Object> paramMap = new HashMap<>();
-                paramMap.put("post_id", post.getId());
-                paramMap.put("tag_id", tag.getId());
+                paramMap.put("postId", post.getId());
+                paramMap.put("tags", selectedTags);
                 tagRepository.savePostTag(paramMap);
-            }
+
         }
         return result;
     }

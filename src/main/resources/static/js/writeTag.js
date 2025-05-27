@@ -1,8 +1,8 @@
-$(function() {
+$(function () {
     const $categories = $('div.categoryBox');
 
     // 카테고리 선택
-    $categories.on('click', function() {
+    $categories.on('click', function () {
         $categories.removeClass('selected');
         $(this).addClass('selected');
 
@@ -11,8 +11,8 @@ $(function() {
     });
 
     // 태그 검색
-    $('#tagSearchButton').click(function() {
-        const name = $('input[name="name"]').val();
+    $('#tagSearchButton').click(function () {
+        const name = $('input[name="tagName"]').val();
         const categoryId = Number($('input[name="category_id"]').val());
 
         if (!name || !categoryId) {
@@ -23,8 +23,8 @@ $(function() {
         $.ajax({
             url: '/tag/search',
             type: 'POST',
-            data: { name: name, category_id: categoryId },
-            success: function(tag) {
+            data: {name: name, category_id: categoryId},
+            success: function (tag) {
                 $('#tagAddButton').hide();
 
                 const newTag = `
@@ -39,7 +39,7 @@ $(function() {
                 $('#tagList').append(newTag);
                 $('.searchSucceed').text("검색 성공! 목록에 추가되었습니다.").show();
             },
-            error: function(xhr) {
+            error: function (xhr) {
                 if (xhr.status === 404) {
                     alert(categoryId + " 해당 태그가 존재하지 않습니다.");
                     $('#tagAddButton').show();
@@ -51,11 +51,11 @@ $(function() {
     });
 
     // 태그 추가 (신규 태그 생성 및 목록 저장)
-    $('#tagAddButton').click(function(event) {
+    $('#tagAddButton').click(function (event) {
         event.preventDefault();
 
         const categoryId = Number($("input[name='category_id']").val());
-        const tagName = $("input[name='name']").val();
+        const tagName = $("input[name='tagName']").val();
 
         if (!categoryId || !tagName) {
             alert("카테고리와 태그명을 입력하세요.");
@@ -66,11 +66,10 @@ $(function() {
             name: tagName,
             category_id: categoryId
         };
-        const requestBody = new URLSearchParams(addTagInfo);
-
-        fetch('/tag/add', {
+        const requestBody = JSON.stringify(addTagInfo);
+        fetch('/tag/save', {
             method: 'POST',
-            headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+            headers: {"Content-Type": "application/json"},
             body: requestBody,
         })
             .then(response => response.json())
@@ -87,46 +86,49 @@ $(function() {
                 }
                 if (data.addExistingTag) {
                     alert('검색 태그 목록에 저장 성공!');
-                    location.href = '/board/write';
                     return;
                 }
-                if (data.result > 0) {
-                    alert('신규 태그 생성 및 목록에 저장 성공!');
-                    // 태그 추가 UI 업데이트
+                if (data.addTag) { // data.result 대신 data.addTag 존재 여부로 판단
+                    const addedTag = data.addTag;
                     $('#tagList').append(`
-                    <div class="selectedTag">
-                        <input name="tagName" type="hidden" value="${tagName}">
-                        <input name="categoryId" type="hidden" value="${categoryId}">
-                        <input name="tagId" type="hidden" value="${data.result}"> <!-- 신규 태그 ID -->
-                        <span># ${tagName}</span>
-                        <button class="deleteTag">X</button>
-                    </div>
-                `);
-                    location.href = '/board/write';
+               <div class="selectedTag">
+                <input name="name" type="hidden" value="${addedTag.name}">
+                <input name="category_id" type="hidden" value="${addedTag.category_id}">
+                <input name="id" type="hidden" value="${addedTag.id}">
+                <span style="background-color:${addedTag.color}"># ${addedTag.name}</span>
+                <button class="deleteTag">X</button>
+            </div>
+            `);
+                    if (data.result > 0) {
+                        alert('신규 태그 생성 및 목록에 저장 성공!');
+                    } else {
+                        alert('기존 태그 목록에 추가 성공!');
+                    }
                 }
             });
+
     });
 
     // 태그 삭제 (이벤트 위임)
-    $(document).on('click', 'button.deleteTag', function() {
+    $(document).on('click', 'button.deleteTag', function () {
         if (confirm('해당 태그를 목록에서 삭제하시겠습니까?')) {
             $(this).parent().remove();
         }
     });
 
 // 폼 제출 직전에 실행
-    $('#writeForm').on('submit', function(e) {
+    $('#writeForm').on('submit', function (e) {
         // hiddenTagsContainer 비우기 (중복 방지)
         $('#hiddenTagsContainer').empty();
 
         // 화면에 보이는 선택 태그 각각에 대해 처리
-        $('#tagList .selectedTag').each(function() {
+        $('#tagList .selectedTag').each(function () {
             var tagId = $(this).find('input[name="tagId"]').val();
             if (tagId) {
                 // hidden input 생성
                 var input = $('<input>')
                     .attr('type', 'hidden')
-                    .attr('name', 'tagIds[]')  // 서버에서 받을 파라미터 이름
+                    .attr('name', 'tagIds[]')
                     .val(tagId);
 
                 $('#hiddenTagsContainer').append(input);

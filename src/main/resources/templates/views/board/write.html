@@ -23,7 +23,7 @@
         <div class="writeTitle">
             <div>
                 <span>제목을 입력하세요</span>
-                <input type="text" th:value="${title}" placeholder="제목을 입력하세요" name="title" required />
+                <input type="text" th:value="${title}" placeholder="제목을 입력하세요" name="title"  />
             </div>
             <div th:if="${error_title}" th:text="${error_title}" style="color: red"></div>
         </div>
@@ -32,7 +32,7 @@
 
         <div class="writeContent">
             <span>내용을 입력하세요</span>
-            <textarea placeholder="글을 작성하세요" name="content" required
+            <textarea placeholder="글을 작성하세요" name="content"
                       th:text="${content}"></textarea>
             <div th:if="${error_content}" th:text="${error_content}" style="color: red"></div>
         </div>
@@ -56,7 +56,7 @@
 
         <div id="tagSearch">
             <div id="searchZone">
-                <input type="text" id="tagSearchInput" name="name" placeholder="태그 검색 (# 제외)" th:value="${name}" />
+                <input type="text" id="tagSearchInput" name="tagName" placeholder="태그 검색 (# 제외)" th:value="${name}" />
                 <input type="hidden" id="categoryIdInput" name="category_id" th:value="${submittedCategoryId}" />
                 <button type="button" id="tagSearchButton">검색</button>
                 <button type="button" id="tagAddButton" style="display:none;">추가</button>
@@ -83,12 +83,13 @@
             <p>담은 태그 목록</p>
             <div id="tagList">
                 <div th:each="tag : ${selectedTags}" class="selectedTag">
-                    <input name="tagName" type="hidden" th:value="${tag.name}" />
-                    <input name="categoryId" type="hidden" th:value="${tag.category_id}" />
-                    <input name="tagId" type="hidden" th:value="${tag.id}" />
+                    <input name="name" type="hidden" th:value="${tag.name}" />
+                    <input name="category_id" type="hidden" th:value="${tag.category_id}" />
+                    <input name="id" type="hidden" th:value="${tag.id}" />
                     <span th:text="'# ' + ${tag.name}" th:style="'background-color: ' + ${tag.color}"></span>
                     <button type="button" class="deleteTag">X</button>
                 </div>
+
             </div>
         </div>
 
