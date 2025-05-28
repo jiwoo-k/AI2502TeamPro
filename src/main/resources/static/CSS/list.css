@@ -37,27 +37,28 @@ body {
     display: block;
     text-align: center;
 }
-#text-area{
-    height: 100%;
+#text-area {
+    flex: 1;
     margin-left: 30px;
-    margin-top: 5px;
-
-}
-#board{
-    background-position: center ;
-    width: 95%;
-    height: 250px;
-    border-radius: 2px;
-    padding: 15px;
     display: flex;
-    margin: auto;
-    position: relative;
-    margin-bottom: 10px;
-    background-color: #888;
-    border: 1px solid #888;
-    box-shadow: 0px 4px 10px #0000;
-    transition: box-shadow 0.2s ease-in-out;
+    flex-direction: column;
+    gap: 8px;
 }
+
+#board {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    width: 95%;
+    min-height: 250px;
+    margin: 10px auto;
+    padding: 15px;
+    border: 1px solid #ccc;
+    background-color: #f2f2f2;
+    border-radius: 6px;
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.05);
+}
+
 #board:hover{
     box-shadow: 2px 4px 10px #f005;
 }
@@ -181,6 +182,7 @@ a{
 .image-wrapper {
     width: 200px;
     height: 200px;
+    flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -203,8 +205,8 @@ a{
     margin: auto;
     position: relative;
     margin-bottom: 10px;
-    background-color: #fdd;
-    border: 1px solid #fdd;
+    background-color: #ccc;
+    border: 1px solid #ccc;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0);
     transition: box-shadow 0.2s ease-in-out;
 }
@@ -229,3 +231,26 @@ a{
 .page-link:hover {
     background-color: #e2e6ea;
 }
+
+.name {
+    font-size: 18px;
+    color: navy;
+}
+
+
+.content {
+    font-size: 16px;
+    font-family: "Jua", sans-serif;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.tagType, .followCount, .day, .follow {
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+
