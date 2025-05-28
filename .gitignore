@@ -37,3 +37,7 @@ out/
 .vscode/
 .idea/
 
+application-dev.yml
+application.yml
+
+/upload
