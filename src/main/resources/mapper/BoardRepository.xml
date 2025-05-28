@@ -17,10 +17,10 @@
                     ofType="com.lec.spring.domain.Tag"
                     column="p_id"
                     select="findTagsByPostId"/>
-        <collection property="user_tag"
+        <!--<collection property="user_tag"
                     ofType="com.lec.spring.domain.Tag"
                     column="p_id"
-                    select="findTagsByUserId"/>
+                    select="findTagsByUserId"/>-->
 
     </resultMap>
 
@@ -127,7 +127,7 @@
             c.color AS color
         FROM tag t
                  JOIN category c ON t.category_id = c.id
-                 JOIN user_tag ut ON ut.tag_id = t.id
+--                  JOIN user_tag ut ON ut.tag_id = t.id
                  JOIN post p ON ut.user_id = p.user_id
         WHERE p.id = #{id}
     </select>
