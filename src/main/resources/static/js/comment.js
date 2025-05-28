@@ -163,17 +163,12 @@ function createCommentEl(comment) {
     const el = document.createElement("div");
     el.className = "comment mb-2 p-2 border rounded";
 
-    // (1) 피커 권한이 있고, 댓글 작성자가 로그인 사용자와 다를 때만 버튼 보이기
-    const canPick = window.loggedUserId === window.postAuthorId
-        && comment.user?.id !== window.loggedUserId;
-
-    const pickButton = canPick
+    const pickButton = (window.loggedUserId === window.postAuthorId)
         ? `<button class="btn btn-sm ${comment.isPicked ? 'btn-success' : 'btn-outline-success'}"
-                  onclick="togglePick(${comment.id}, ${comment.isPicked})">
-           ${comment.isPicked ? '✔ PICK 해제' : '✔ PICK'}
-       </button>`
+                      onclick="togglePick(${comment.id}, ${comment.isPicked})">
+               ${comment.isPicked ? '✔ PICK 해제' : '✔ PICK'}
+           </button>`
         : (comment.isPicked ? `<span class="badge bg-success">✔ PICK</span>` : '');
-
 
     el.innerHTML = `
         <div>

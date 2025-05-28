@@ -219,37 +219,4 @@
         WHERE id = #{id}
     </update>
 
-    <!-- 내가 포스트에서 픽한 댓글이 있는 게시글 조회 (페이징) -->
-    <select id="selectMyPickedCommentPostsPaged"
-            parameterType="map"
-            resultMap="PostResultMap">
-        SELECT
-        p.id,
-        p.user_id       AS userId,
-        p.type          AS type,
-        p.title         AS title,
-        p.content       AS content,
-        p.createdat     AS createdAt,
-        p.isdeleted     AS isdeleted,
-        p.deletedat     AS deletedAt
-        FROM post p
-        JOIN comment c ON c.post_id = p.id
-        WHERE p.user_id   = #{userId}      <!-- 내가 작성한 포스트 -->
-        AND c.ispicked  = TRUE           <!-- 그 포스트에서 내가 픽한 댓글 -->
-        ORDER BY p.createdat DESC
-        LIMIT #{limit} OFFSET #{offset}
-    </select>
-
-    <!-- 내가 포스트에서 픽한 댓글이 있는 게시글 총건수 -->
-    <select id="countMyPickedCommentPosts"
-            parameterType="long"
-            resultType="long">
-        SELECT COUNT(DISTINCT c.post_id)
-        FROM comment c
-        JOIN post p ON c.post_id = p.id
-        WHERE p.user_id  = #{userId}
-        AND c.ispicked = TRUE
-    </select>
-
-
 </mapper>
