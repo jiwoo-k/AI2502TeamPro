@@ -1,0 +1,24 @@
+/* /static/css/home.css 또는 /resources/static/css/home.css */
+
+main.layout-center {
+    display: flex;
+    justify-content: center;
+    padding: 50px 20px;
+    background-color: #f9f9f9;
+}
+
+/* 메인 콘텐츠 박스 스타일 */
+.main-center {
+    width: 100%;
+    max-width: 800px;
+    padding: 30px;
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* 각 섹션 간 간격 */
+.main-center > * {
+    margin-bottom: 20px;
+}
