@@ -16,18 +16,43 @@
         <result property="deletedat" column="deletedat"/>
     </resultMap>
 
+    <resultMap id="UserResultMap" type="com.lec.spring.domain.User">
+        <id property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="name" column="name"/>
+        <result property="password" column="password"/>
+        <result property="createdAt" column="createdAt"/>
+        <result property="latitude" column="latitude"/>
+        <result property="longitude" column="longitude"/>
+        <result property="status" column="status"/>
+        <result property="followersCount" column="followersCount"/>
+        <result property="warningCount" column="warningCount"/>
+    </resultMap>
+
     <!-- 1) 회원 정보 조회 -->
     <select id="selectUserById"
             parameterType="long"
-            resultType="com.lec.spring.domain.User">
-        SELECT u.id,
+            resultMap="UserResultMap">
+        SELECT
+        u.id,
         u.username,
         u.name,
         u.password,
         u.createdAt AS createdAt,
         u.latitude,
         u.longitude,
-        u.status
+        u.status,
+        -- 팔로워 수 (domain.followersCount)
+        (SELECT COUNT(*)
+        FROM user_follow uf
+        WHERE uf.followed_userid = u.id
+        ) AS followersCount,
+        (SELECT COUNT(*)
+        FROM warning w
+        JOIN post p
+        ON w.post_id = p.id
+        WHERE p.user_id = u.id
+        ) AS warningCount
         FROM user u
         WHERE u.id = #{userId}
     </select>
