@@ -1,256 +1,94 @@
 body {
-    margin: 0;
-    width: 1400px;
-    margin: 0 auto;
-    padding-top: 100px;
-    background-color: #fff;
+    background-color: #f1f1f1;
+    font-family: 'Noto Sans KR', sans-serif;
 }
 
-#button{
-    position: relative;
-    left: 85%;
-    top: -20px;
+#button {
+    text-align: right;
+    margin: 20px auto;
+    max-width: 1000px;
 }
-.writeBtn{
-    width: 150px;
-    height: 30px;
-    font-size: 15px;
-    border: none;
-    border-radius: 15px;
-    background-color: #afd57e;
-    transition: 0.5s ease-in-out;
-}
-.writeBtn:hover{
-    background-color: #c4e43a;
-}
-.writeBtn a{
+
+.writeBtn {
+    background-color: #5cb85c;
     color: white;
-}
-.selectType{
-    position: relative;
-    left: 30px;
-    width: 100px;
-    height: 20px;
-
-}
-.selectType option{
-    display: block;
-    text-align: center;
-}
-#text-area {
-    flex: 1;
-    margin-left: 30px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-#board {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    width: 95%;
-    min-height: 250px;
-    margin: 10px auto;
-    padding: 15px;
-    border: 1px solid #ccc;
-    background-color: #f2f2f2;
-    border-radius: 6px;
-    box-shadow: 0px 4px 10px rgba(0,0,0,0.05);
-}
-
-#board:hover{
-    box-shadow: 2px 4px 10px #f005;
-}
-.attachment{
-    border: 1px solid black;
-    background-color: #000;
-    width: 300px;
-}
-a{
-    text-decoration: none;
-    color: black;
-}
-.name-wrapper {
-    display: flex;
-    align-items: center;
-    margin-top: 45px; /* 기존 top 값 대체 */
-    margin-left: 350px; /* 기존 left 값 대체 */
-}
-
-
-.title{
-    font-size: 40px;
-    font-weight: bold;
-    /* position: absolute; 제거 */
-    width: 500px;
-    white-space: normal;
-    word-break: break-word;
-    overflow-wrap: break-word;
-
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-
-    overflow: hidden;
-    text-overflow: ellipsis;
-
-
-    /* 위치 관련 속성 제거 */
-    position: relative;  /* or remove `position` */
-    height: auto; /* 명시된 높이 제거 */
-    font-family: "Black Han Sans", sans-serif;
-    font-weight: 300;
-    font-style: normal;
-}
-.name {
-    font-size: 25px;
-    color: orchid;
-}
-.tagType{
-    width: 250px;
-    height: 70px;
-    position: absolute;
-    left: 140px;
-    top: 50px;
-
-}
-.day{
-    position: absolute;
-    left: 87%;
-    top: 20px;
-    display: flex;
-    align-items: center;
-    font-size: 15px;
-    color: #1758e6;
-}
-.follow{
-    position: absolute;
-    border: 0px solid black;
+    padding: 8px 16px;
     border-radius: 20px;
-    background-color: #9e22c5;
-    padding: 3px 10px 3px 10px;
-    bottom: 130px;
-    color : #f8f8f8;
-
-}
-.followCount {
-    font-size: 14px;
+    text-decoration: none;
     font-weight: bold;
-    color: #333;
-    position: relative;
-    top: 30px;
-    left: 40px;
-    width: 170px;
-    height: 70px;
 }
-.tagName{
-    border-radius: 50px;
-    padding: 3px;
-    margin-right: 10px;
-    font-size: 10px;
-    margin-top: 20px ;
-    left: 210px;
-    top: 110px;
-    position: relative;
-}
-.content {
-    font-size: 15px;
-    line-height: 1.5; /* 줄 간격 명시 */
-    width: 800px;
 
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-
+.board {
+    display: flex;
+    max-width: 1000px;
+    margin: 20px auto;
+    background-color: white;
+    border-radius: 10px;
     overflow: hidden;
-    text-overflow: ellipsis;
-
-    white-space: normal;
-    word-break: break-word;
-
-
-    /* 위치 관련 속성 제거 */
-    position: relative;  /* or remove `position` */
-    top: 100px;
-    height: auto; /* 명시된 높이 제거 */
-    font-family: "Jua", sans-serif;
-    font-weight: 400;
-    font-style: normal;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .image-wrapper {
     width: 200px;
-    height: 200px;
-    flex-shrink: 0;
+    height: 150px;
+    background-color: #ccc;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #888;
+    flex-shrink: 0;
 }
 
-.img-thumbnail {
+.image-wrapper img {
     max-width: 100%;
     max-height: 100%;
-    object-fit: contain;
+    object-fit: cover;
 }
 
-.board {
-    background-position: center;
-    width: 95%;
-    height: 250px;
-    border-radius: 2px;
-    padding: 15px;
-    display: flex;
-    margin: auto;
-    position: relative;
-    margin-bottom: 10px;
-    background-color: #ccc;
-    border: 1px solid #ccc;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0);
-    transition: box-shadow 0.2s ease-in-out;
-}
-.board:hover {
-    box-shadow: 2px 4px 10px rgba(248, 0, 0, 0.5);
-}
-.text-area {
+.image-thumbnail {
+    width: 100%;
     height: 100%;
-    margin-left: 30px;
-    margin-top: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
 }
 
-/* pagination 강조 */
-.page-item.active .page-link {
-    color: #f00;
-}
-.page-link {
-    color: #333;
-    border: 0px solid #dee2e6;
-    margin: 0 2px;
-}
-.page-link:hover {
-    background-color: #e2e6ea;
+#text-area {
+    padding: 20px;
+    flex-grow: 1;
 }
 
-.name {
+.title {
     font-size: 18px;
-    color: navy;
+    font-weight: bold;
+    color: #333;
+    text-decoration: none;
 }
-
 
 .content {
-    font-size: 16px;
-    font-family: "Jua", sans-serif;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
+    margin-top: 8px;
+    color: #555;
+    display: block;
 }
 
-.tagType, .followCount, .day, .follow {
-    font-size: 13px;
-    margin-top: 5px;
+.tagName {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 10px;
+    margin-right: 6px;
+    font-size: 12px;
+    margin-top: 6px;
 }
 
+.day {
+    font-size: 12px;
+    color: #999;
+    margin-top: 10px;
+    display: block;
+}
 
+#listControlForm .form-select {
+    height: 38px;
+    font-size: 14px;
+}

@@ -101,6 +101,7 @@ CREATE TABLE user
   latitude   DOUBLE       NULL    ,
   longitude  DOUBLE       NULL    ,
   status     ENUM('active', 'paused', 'banned')         NOT NULL DEFAULT 'active' COMMENT '계정상태(active, paused, banned)',
+  areaname   VARCHAR(50) NULL,
   PRIMARY KEY (id)
 ) COMMENT '사용자';
 
