@@ -1,3 +1,6 @@
+ALTER TABLE `user`
+    DROP COLUMN `juminNo`;
+
 insert into user(username, name, password, juminNo)
 values ('USER1', '회원1', '$2a$10$6gVaMy7.lbezp8bGRlV2fOArmA3WAk2EHxSKxncnzs28/m3DXPyA2', '0009254222222')
 ;

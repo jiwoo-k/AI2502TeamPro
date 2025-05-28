@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>게시물 목록</title>
     <th:block th:replace="~{common/header :: headline-fragment}"></th:block>
-    <link rel="stylesheet" th:href="@{/css/list.css}">
+<!--    <link rel="stylesheet" th:href="@{/css/list.css}">-->
+    <link rel="stylesheet" th:href="@{/css/design/board.css}">
 </head>
 
 
@@ -70,10 +71,10 @@
 
 
         <select class="form-select w-auto" name="pageRows" onchange="submitListForm()">
-            <option value="10" th:selected="${pageRows == 10}">10개씩 보기</option>
-            <option value="15" th:selected="${pageRows == 15}">15개씩 보기</option>
-            <option value="20" th:selected="${pageRows == 20}">20개씩 보기</option>
-            <option value="50" th:selected="${pageRows == 50}">50개씩 보기</option>
+            <option value="10" th:selected="${pageRows == 10}">10개</option>
+            <option value="15" th:selected="${pageRows == 15}">15개</option>
+            <option value="20" th:selected="${pageRows == 20}">20개</option>
+            <option value="50" th:selected="${pageRows == 50}">50개</option>
         </select>
 
 

@@ -1,0 +1,616 @@
+/* ===========================================
+   관리자 페이지 전체 공통 스타일
+   =========================================== */
+
+/* 기본 설정 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', sans-serif;
+    background-color: #f8f9fa;
+    color: #333333;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* ===========================================
+   관리자 헤더
+   =========================================== */
+
+.admin-header {
+    background-color: #ffffff;
+    border-bottom: 2px solid #e9ecef;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    padding: 15px 0;
+}
+
+.admin-header strong {
+    font-size: 24px;
+    color: #212529;
+    font-weight: 700;
+}
+
+.admin-header a {
+    color: #6c757d;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.admin-header a:hover {
+    color: #212529;
+}
+
+/* ===========================================
+   관리자 메인 페이지 (main.html)
+   =========================================== */
+
+/* 페이지 제목 */
+h1 {
+    color: #212529;
+    font-weight: 600;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+/* 날짜 선택 영역 */
+#dateSelect {
+    background-color: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+#dateSelect label {
+    display: inline-block;
+    margin-right: 10px;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #495057;
+}
+
+#dateSelect input[type="date"] {
+    padding: 8px 12px;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    margin-right: 15px;
+    margin-bottom: 10px;
+    background-color: #ffffff;
+    font-size: 14px;
+}
+
+#dateSelect input[type="date"]:focus {
+    border-color: #6c757d;
+    box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.25);
+    outline: none;
+}
+
+#showChartButton {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#showChartButton:hover {
+    background-color: #5a6268;
+    transform: translateY(-1px);
+}
+
+/* 차트 영역 */
+#loginHistoryChart, #categoryPieChart {
+    background-color: #ffffff;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* 네비게이션 버튼들 */
+.admin-nav {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin: 40px 0;
+}
+
+.admin-nav a {
+    background-color: #6c757d;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.admin-nav a:hover {
+    background-color: #5a6268;
+    transform: translateY(-1px);
+    color: white;
+}
+
+/* ===========================================
+   카테고리 관리 페이지 (category/*.html)
+   =========================================== */
+
+/* 카테고리 목록 */
+.category-list {
+    margin: 30px 0;
+}
+
+.category-item {
+    background-color: #ffffff;
+    border: 1px solid #e9ecef !important;
+    border-radius: 8px;
+    padding: 20px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.category-item:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+    border-color: #dee2e6 !important;
+}
+
+.category-item input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    margin-right: 15px;
+}
+
+.category-item .fw-bold {
+    font-size: 16px;
+    color: #212529;
+    margin-bottom: 5px;
+}
+
+.category-item .text-muted {
+    font-size: 12px;
+    color: #6c757d;
+}
+
+/* 카테고리 액션 버튼 */
+.category-actions {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* 카테고리 폼 */
+.category-form {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 30px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.category-form .form-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 8px;
+}
+
+.category-form .form-control {
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    padding: 12px 15px;
+    margin-bottom: 20px;
+    background-color: #ffffff;
+}
+
+.category-form .form-control:focus {
+    border-color: #6c757d;
+    box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.25);
+}
+
+.category-form .form-control-color {
+    height: 45px;
+    border: 1px solid #dee2e6;
+}
+
+/* ===========================================
+   사용자 관리 페이지 (users.html, userDetail.html)
+   =========================================== */
+
+/* 사용자 관리 폼 */
+#warnCountForm {
+    background-color: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+#warnCountForm label {
+    font-weight: 600;
+    color: #495057;
+    margin-right: 15px;
+}
+
+#warnCountForm select {
+    padding: 8px 15px;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    background-color: #ffffff;
+    font-size: 14px;
+}
+
+#warnCountForm select:focus {
+    border-color: #6c757d;
+    box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.25);
+    outline: none;
+}
+
+/* 사용자 목록 테이블 */
+#showUserList {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    overflow-x: auto;
+}
+
+#showUserList table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+}
+
+#showUserList table th {
+    background-color: #f8f9fa;
+    color: #495057;
+    font-weight: 600;
+    padding: 15px 10px;
+    text-align: left;
+    border-bottom: 2px solid #dee2e6;
+    font-size: 14px;
+}
+
+#showUserList table td {
+    padding: 15px 10px;
+    border-bottom: 1px solid #e9ecef;
+    vertical-align: middle;
+}
+
+#showUserList table tr:hover {
+    background-color: #f8f9fa;
+}
+
+#showUserList table a {
+    color: #6c757d;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+#showUserList table a:hover {
+    color: #212529;
+    text-decoration: underline;
+}
+
+/* 사용자 상세 테이블 */
+table {
+    width: 100%;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    overflow: hidden;
+    border-collapse: collapse;
+}
+
+table th {
+    background-color: #f8f9fa;
+    color: #495057;
+    font-weight: 600;
+    padding: 15px;
+    text-align: left;
+    border-bottom: 2px solid #dee2e6;
+}
+
+table td {
+    padding: 15px;
+    border-bottom: 1px solid #e9ecef;
+    vertical-align: middle;
+}
+
+table tr:hover {
+    background-color: #f8f9fa;
+}
+
+table a {
+    color: #6c757d;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+table a:hover {
+    color: #212529;
+    text-decoration: underline;
+}
+
+/* ===========================================
+   버튼 스타일
+   =========================================== */
+
+.btn {
+    border-radius: 6px;
+    font-weight: 500;
+    padding: 10px 20px;
+    border: none;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-block;
+    cursor: pointer;
+    font-size: 14px;
+    margin: 2px;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    text-decoration: none;
+}
+
+.btn-primary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #5a6268;
+    color: white;
+}
+
+.btn-secondary {
+    background-color: #adb5bd;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #95a3b3;
+    color: white;
+}
+
+.btn-warning {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.btn-warning:hover {
+    background-color: #e0a800;
+    color: #212529;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+    color: white;
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 12px;
+}
+
+/* 특별한 버튼들 */
+.checkPause, .checkBan, .followReset {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.checkPause:hover, .followReset:hover {
+    background-color: #5a6268;
+    transform: translateY(-1px);
+}
+
+.checkBan {
+    background-color: #dc3545;
+}
+
+.checkBan:hover {
+    background-color: #c82333;
+    transform: translateY(-1px);
+}
+
+/* ===========================================
+   상태 메시지
+   =========================================== */
+
+.status-paused {
+    color: #ffc107;
+    font-weight: 600;
+}
+
+.status-banned {
+    color: #dc3545;
+    font-weight: 600;
+}
+
+.status-active {
+    color: #28a745;
+    font-weight: 600;
+}
+
+.text-danger {
+    color: #dc3545;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.text-success {
+    color: #28a745;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+/* ===========================================
+   폼 요소들
+   =========================================== */
+
+.form-control, .form-select {
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    padding: 10px 15px;
+    background-color: #ffffff;
+    color: #495057;
+    font-size: 14px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #6c757d;
+    box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.25);
+    outline: none;
+}
+
+.form-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 8px;
+    display: block;
+}
+
+/* ===========================================
+   카드 및 섹션
+   =========================================== */
+
+.admin-card {
+    background-color: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+}
+
+.admin-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+
+.admin-section {
+    margin: 40px 0;
+}
+
+.admin-section h2 {
+    color: #212529;
+    font-weight: 600;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e9ecef;
+}
+
+/* ===========================================
+   반응형 디자인
+   =========================================== */
+
+@media (max-width: 768px) {
+    .container {
+        padding: 0 15px;
+    }
+
+    .admin-nav {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .admin-nav a {
+        width: 200px;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    .category-item {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .category-item input[type="radio"] {
+        margin-bottom: 15px;
+    }
+
+    #showUserList {
+        padding: 15px;
+    }
+
+    #showUserList table {
+        font-size: 12px;
+    }
+
+    #showUserList table th,
+    #showUserList table td {
+        padding: 10px 5px;
+    }
+
+    .btn {
+        padding: 8px 16px;
+        font-size: 12px;
+    }
+
+    #dateSelect {
+        padding: 20px;
+    }
+
+    #dateSelect input[type="date"] {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
+    #showChartButton {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .category-actions {
+        padding: 15px;
+    }
+
+    .category-actions .btn {
+        display: block;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    table {
+        font-size: 11px;
+    }
+
+    table th,
+    table td {
+        padding: 8px 4px;
+    }
+}
