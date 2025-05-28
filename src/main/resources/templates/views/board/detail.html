@@ -97,7 +97,7 @@
 
         <a th:if="${loginUserId == board.user_id}" th:href="@{'/board/update/' + ${board.id}}"><button>수정</button></a>
 
-        <form th:if="${loginUserId == board.user_id}" th:action="@{/board/delete}" method="post" style="display:inline;">
+        <form th:if="${loginUserId == board.user_id or adminIds.contains(loginUserId) and adminIds != null}" th:action="@{/board/delete}" method="post" style="display:inline;">
             <input type="hidden" name="id" th:value="${board.id}"/>
             <button type="submit">삭제</button>
         </form>

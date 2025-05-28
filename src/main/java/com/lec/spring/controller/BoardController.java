@@ -180,6 +180,13 @@ public class BoardController {
         Long loginUserId = null;
         User loginUser;
 
+        List<Long> adminIds = boardService.adminId();
+        if (adminIds == null) {
+            adminIds = new ArrayList<>();
+        }
+        model.addAttribute("adminIds", adminIds);
+
+
         //위도, 경도
         Double lat1, lng1;
 
@@ -356,30 +363,34 @@ public class BoardController {
                          @RequestParam(required = false) Boolean follow,
                          Principal principal
     ) {
-        // 없는 페이지나 삭제한 페이지만 list로 back
-        Post post = boardService.detail(id);
-
-        if (post == null || (post.getIsdeleted() != null && post.getIsdeleted())) {
-            System.out.println("게시물이 존재하지 않습니다. id=" + id);
-            return "redirect:/board/list?notFound=true";
-        }
-
-
-
-        model.addAttribute("board", post);
-
-
-
-
-        if (type == null || type.isBlank()) {
-            type = "guest";
-        }
 
         Long loginUserId = null;
         if (principal != null) {
             String username = principal.getName();
             User loginUser = userService.findByUsername(username);
             loginUserId = loginUser.getId();
+        }
+
+        List<Long> adminIds = boardService.adminId();
+        boolean isAdmin = loginUserId != null && adminIds != null && adminIds.contains(loginUserId);
+        // 없는 페이지나 삭제한 페이지만 list로 back
+        Post post = boardService.detail(id);
+        if (post == null || (post.getIsdeleted() != null && post.getIsdeleted()) && !isAdmin) {
+            System.out.println("게시물이 존재하지 않습니다. id=" + id);
+            return "redirect:/board/list?notFound=true";
+        }
+        if (adminIds == null) {
+            adminIds = new ArrayList<>();
+        }
+        model.addAttribute("adminIds", adminIds);
+
+
+
+        model.addAttribute("board", post);
+
+
+        if (type == null || type.isBlank()) {
+            type = "guest";
         }
         model.addAttribute("loginUserId", loginUserId);
 
@@ -390,10 +401,10 @@ public class BoardController {
         }
         model.addAttribute("postList", posts);
 
+
         boolean isFollowed = loginUserId != null && userFollowingService.isFollowing(loginUserId, post.getUser_id());
         post.setFollow(isFollowed);
-
-
+        model.addAttribute("board", post);
 
         //  신고 횟수
         int warningCount = userWarningService.postWarningCount(id); // id는 게시물 id
@@ -442,7 +453,7 @@ public class BoardController {
 
     @PostMapping("/update")
     public String update(@ModelAttribute Post post,
-                         @PathVariable Long id,
+                         @RequestParam Long id,
                          BindingResult bindingResult,
                          Model model,
                          RedirectAttributes redirectAttributes,
