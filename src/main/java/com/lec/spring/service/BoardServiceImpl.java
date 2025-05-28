@@ -1,9 +1,6 @@
 package com.lec.spring.service;
 
-import com.lec.spring.domain.Attachment;
-import com.lec.spring.domain.Post;
-import com.lec.spring.domain.Tag;
-import com.lec.spring.domain.User;
+import com.lec.spring.domain.*;
 import com.lec.spring.repository.*;
 import com.lec.spring.util.U;
 import jakarta.servlet.http.HttpSession;
@@ -47,8 +44,10 @@ public class BoardServiceImpl implements BoardService {
     private final AttachmentRepository attachmentRepository;
     private final AttachmentService attachmentService;
     private final TagRepository tagRepository;
+    private final AuthorityRepository authorityRepository;
 
-    public BoardServiceImpl(SqlSession sqlSession, AttachmentService attachmentService) {
+
+    public BoardServiceImpl(SqlSession sqlSession, AttachmentService attachmentService, AuthorityRepository authorityRepository) {
         System.out.println("[ACTIVE] BoardServiceImpl");
         this.postRepository = sqlSession.getMapper(PostRepository.class);
         this.userRepository = sqlSession.getMapper(UserRepository.class);
@@ -56,6 +55,7 @@ public class BoardServiceImpl implements BoardService {
         this.attachmentRepository = sqlSession.getMapper(AttachmentRepository.class);
         this.tagRepository = sqlSession.getMapper(TagRepository.class);
         this.attachmentService = attachmentService;
+        this.authorityRepository = authorityRepository;
     }
 
     @Override
@@ -99,13 +99,27 @@ public class BoardServiceImpl implements BoardService {
     public Post detail(Long id) {
         System.out.println("PostId : " + id);
         Post post = postRepository.findById(id);
-        if (post == null) {
+
+
+        if (post == null ) {
             System.out.println("게시물이 없습니다. id=" + id);
             return null;
         }
 
+        User currentUser = U.getLoggedUser();
+
+        // 관리자 id 목록
+        List<Long> adminList = authorityRepository.adminId();
+
+        boolean isAdmin = currentUser != null && adminList.contains(currentUser.getId());
+
         Integer followCount = userFollowingRepository.followCount(post.getUser_id());
         post.setFollowCount(followCount);
+
+        if (post.getIsdeleted() && !isAdmin) {
+            System.out.println("삭제된 게시물입니다. id=" + id);
+            return null;
+        }
 
         if (post != null) {
             // 첨부파일(들) 정보 가져오기
@@ -323,4 +337,12 @@ public class BoardServiceImpl implements BoardService {
         //특정 게시물의 태그목록을 가져오자
         return postRepository.findTagsByPostId(post_id);
     }
+
+    @Override
+    public List<Long> adminId( ) {
+
+        return authorityRepository.adminId();
+    }
+
+
 }

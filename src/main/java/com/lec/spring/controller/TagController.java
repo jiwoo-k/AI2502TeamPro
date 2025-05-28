@@ -185,7 +185,7 @@ public class TagController {
             @RequestParam("category_id") Long category_id
     ) {
         Tag tag = new Tag();
-        tag.setName(name);
+        tag.setName(name.trim());
         tag.setCategory_id(category_id);
 
         Tag searchedTag = tagRepository.searchTag(tag);

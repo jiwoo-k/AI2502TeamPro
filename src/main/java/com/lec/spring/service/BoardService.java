@@ -1,8 +1,6 @@
 package com.lec.spring.service;
 
-import com.lec.spring.domain.Post;
-import com.lec.spring.domain.Tag;
-import com.lec.spring.domain.User;
+import com.lec.spring.domain.*;
 import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -42,6 +40,8 @@ public interface BoardService {
     void deleteTime(Long id);
 
     public List<Tag> postTagList(Long post_id);
+
+    List<Long> adminId ();
 
 
 }
