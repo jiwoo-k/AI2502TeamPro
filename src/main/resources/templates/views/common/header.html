@@ -22,8 +22,9 @@
 
                         </span>
                     </li>
-                    <li sec:authorize="hasRole('MEMBER')">
-                       <span class="nav-item" th:text="${#authentication.principal.user.areaName != null ? #authentication.principal.user.areaName : '위치 정보 없음'}">
+                    <li sec:authorize="hasRole('MEMBER') and !hasRole('ADMIN')">
+                       <span class="nav-item"
+                             th:text="${#authentication.principal.user.areaName != null ? #authentication.principal.user.areaName : '위치 정보 없음'}">
 
                         </span>
                     </li>
