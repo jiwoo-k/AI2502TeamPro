@@ -1,0 +1,41 @@
+:root {
+  --main-color: #5D9AB2;
+  --accent-color: #BF6A7A;
+  --bg-color: #f1f1f1;
+  --text-color: #333;
+  --font-title: 'Noto Sans KR', sans-serif;
+  --font-content: 'Noto Sans KR', sans-serif;
+}
+
+.card {
+  border-radius: 10px;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.button-primary {
+  background-color: var(--main-color);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 5px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.button-primary:hover {
+  background-color: var(--accent-color);
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.flex-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

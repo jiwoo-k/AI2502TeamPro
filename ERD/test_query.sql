@@ -198,3 +198,7 @@ group by loginAt
 order by loginAt;
 
 select * from attachment;
+
+select * from post;
+
+select * from category;

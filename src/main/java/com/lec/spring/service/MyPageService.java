@@ -14,9 +14,6 @@ public interface MyPageService {
     Page<Post> getMyPosts(Long userId, String selectedType, Pageable pageable);
     Page<Comment> getMyComments(Long userId, Pageable pageable);
 
-    Page<Post> getMyPickedCommentPosts(Long userId, Pageable pageable);
-
-
     Page<User> getMyFollowing(Long userId, Pageable pageable);
 
     void updateUser(User user);
