@@ -252,4 +252,21 @@ public class MyPageController {
         return "redirect:/mypage";
     }
 
+    @GetMapping("/mypage/my-picked-posts")
+    public String myPickedPosts(
+            Model model,
+            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC)
+            Pageable pageable) {
+
+        // 현재 로그인 사용자 ID 가져오기
+        Long userId = ((PrincipalDetails)
+                SecurityContextHolder.getContext().getAuthentication().getPrincipal())
+                .getUser().getId();
+
+        Page<Post> page = myPageService.getMyPickedCommentPosts(userId, pageable);
+        model.addAttribute("pickedPosts", page);
+        return "mypage/myPickedPosts";
+    }
+
+
 }

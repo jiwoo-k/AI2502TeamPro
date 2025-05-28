@@ -128,6 +128,18 @@ public class MyPageServiceImpl implements MyPageService {
             throw new RuntimeException("회원정보 수정 실패: 업데이트된 행이 없습니다.");
         }
     }
+    @Override
+    public Page<Post> getMyPickedCommentPosts(Long userId, Pageable pageable) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("userId",  userId);
+        params.put("limit",   pageable.getPageSize());
+        params.put("offset",  pageable.getOffset());
+
+        List<Post> list  = repo.selectMyPickedCommentPostsPaged(params);
+        long total       = repo.countMyPickedCommentPosts(userId);
+        return new PageImpl<>(list, pageable, total);
+    }
+
 
 
     @Override
