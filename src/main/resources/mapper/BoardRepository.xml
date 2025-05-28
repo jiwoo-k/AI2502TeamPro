@@ -73,7 +73,6 @@
         p.title,
         p.content,
         p.createdat,
-        p.type,
         p.isdeleted,
         p.deletedat,
         u.id "user_id",

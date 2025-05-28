@@ -174,7 +174,8 @@ public class BoardController {
                        @RequestParam(required = false) Boolean follow,
                        Model model,
                        Principal principal,
-                       HttpSession httpSession) {
+                       HttpSession httpSession,
+                       RedirectAttributes redirectAttributes) {
 
         // 로그인 사용자 ID 추출
         Long loginUserId = null;
@@ -228,6 +229,11 @@ public class BoardController {
             if(distance <= 3){
                 filteredUsers.add(user);
             }
+        }
+
+        if(filteredUsers.isEmpty()){
+            redirectAttributes.addFlashAttribute("postNotFound", "현재 위치에서 조회되는 게시물이 없습니다.");
+            return "redirect:/home";
         }
 
         if (type == null || type.isBlank()) {
