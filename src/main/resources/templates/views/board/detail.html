@@ -2,8 +2,6 @@
 <html lang="ko"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -120,7 +118,7 @@
 </main>
 
 <!-- 댓글 영역 -->
-<div th:replace="~{board/comment :: comment-fragment}"></div>
+<div th:replace="~{board/comment :: comment-fragment(post=${board})}"></div>
 
 <!-- 전역 변수 및 로그인 체크 -->
 <script th:inline="javascript">
