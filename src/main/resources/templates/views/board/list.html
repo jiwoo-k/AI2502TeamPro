@@ -51,41 +51,36 @@
 <!--header-->
 <th:block th:replace="~{common/header :: header-fragment}"></th:block>
 
-<!-- 게시판 유형 + 페이지 행 수 선택 form -->
-<form method="get" action="/board/list" id="listControlForm">
+<!-- 정렬을 위한 wrapper -->
+<div class="list-header d-flex justify-content-between align-items-center flex-wrap px-3 py-2 mb-3">
 
-    <!-- 게시판 유형 -->
-    <select class="form-select w-auto" name="type" onchange="submitListForm()">
-        <option value="guest" th:selected="${selectedType == 'guest'}">손님</option>
-        <option value="helper" th:selected="${selectedType == 'helper'}">도우미</option>
-    </select>
+    <!-- 좌측: type + pageRows -->
+    <form method="get" action="/board/list" id="listControlForm" class="d-flex gap-2 align-items-center">
+        <select class="form-select w-auto" name="type" onchange="submitListForm()">
+            <option value="guest" th:selected="${selectedType == 'guest'}">손님</option>
+            <option value="helper" th:selected="${selectedType == 'helper'}">도우미</option>
+        </select>
 
-    <!-- 페이지 행 수 -->
-    <select class="form-select w-auto ms-2" name="pageRows" onchange="submitListForm()">
-        <option value="10" th:selected="${pageRows == 10}">10개씩 보기</option>
-        <option value="15" th:selected="${pageRows == 15}">15개씩 보기</option>
-        <option value="20" th:selected="${pageRows == 20}">20개씩 보기</option>
-        <option value="50" th:selected="${pageRows == 50}">50개씩 보기</option>
-    </select>
+        <select class="form-select w-auto" name="pageRows" onchange="submitListForm()">
+            <option value="10" th:selected="${pageRows == 10}">10개씩 보기</option>
+            <option value="15" th:selected="${pageRows == 15}">15개씩 보기</option>
+            <option value="20" th:selected="${pageRows == 20}">20개씩 보기</option>
+            <option value="50" th:selected="${pageRows == 50}">50개씩 보기</option>
+        </select>
 
-    <!-- 유지해야 할 페이지 번호 (현재 페이지 유지) -->
-    <input type="hidden" name="page" th:value="${page}"/>
-</form>
-<script>
-    function submitListForm() {
-        document.getElementById('listControlForm').submit();
-    }
-</script>
+        <input type="hidden" name="page" th:value="${page}" />
+    </form>
 
-<input type="hidden" th:value="${loginUserId}" id="loginUserId">
-<div id="button">
-    <a class="writeBtn" th:href="@{/board/write}" onclick="return checkLogin()">게시물 작성하기</a>
-</div>
+    <!-- 중앙 정렬된 페이징 텍스트 -->
+    <div class="text-center flex-grow-1">
+        <span th:text="'총 ' + ${cnt} + '개'"></span>&nbsp;
+        <span th:text="'page ' + ${page} + '/' + ${totalPage}"></span>
+    </div>
 
-<!-- 페이징 헤더 -->
-<div class="mb-3 mt-3 clearfix">
-    <span class="float-start me-2" th:text="${'총 ' + cnt + '개'}"></span>
-    <span class="float-start" th:text="${'page ' + page + '/' + totalPage}"></span>
+    <!-- 우측: 작성 버튼 -->
+    <div id="button">
+        <a class="btn btn-success writeBtn" th:href="@{/board/write}" onclick="return checkLogin()">게시물 작성하기</a>
+    </div>
 </div>
 
 <!-- 카드형 게시글 목록 -->
