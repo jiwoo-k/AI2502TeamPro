@@ -1,6 +1,7 @@
 package com.lec.spring.controller;
 
 import com.lec.spring.domain.*;
+import com.lec.spring.repository.AuthorityRepository;
 import com.lec.spring.repository.TagRepository;
 import com.lec.spring.service.*;
 import com.lec.spring.domain.Post;
@@ -42,6 +43,7 @@ public class BoardController {
     private final TagRepository tagRepository;
     private final AttachmentService attachmentService;
     private final TagService tagService;
+    private final AuthorityRepository authorityRepository;
 
     public BoardController(BoardService boardService,
                            UserFollowingService userFollowingService,
@@ -50,7 +52,8 @@ public class BoardController {
                            AttachmentService attachmentService,
                            CategoryService categoryService,
                            TagRepository tagRepository,
-                           TagService tagService
+                           TagService tagService,
+                           AuthorityRepository authorityRepository
     ) {
         System.out.println("[ACTIVE] BoardController");
         this.boardService = boardService;
@@ -61,6 +64,7 @@ public class BoardController {
         this.categoryService = categoryService;
         this.tagRepository = tagRepository;
         this.tagService = tagService;
+        this.authorityRepository= authorityRepository;
     }
 
     // 수정, 추가. 삭제의 경우 attr name을 result 로 하였음
@@ -178,9 +182,13 @@ public class BoardController {
                        RedirectAttributes redirectAttributes
                        ) {
 
+        if (type == null || type.isBlank()) {
+            type = "guest";
+        }
+
         // 로그인 사용자 ID 추출
         Long loginUserId = null;
-        User loginUser;
+        User loginUser = null;
 
         List<Long> adminIds = boardService.adminId();
         if (adminIds == null) {
@@ -190,21 +198,30 @@ public class BoardController {
 
 
         //위도, 경도
-        Double lat1, lng1;
+        Double lat1 = null;
+        Double lng1 = null;
+        List<Post> allPosts;
 
+        //로그인한 사람 중 관리자 X, 로그인 안한 사람 위치 정보 들고 오게 하기
         if (principal != null) {
             String username = principal.getName();
             loginUser = userService.findByUsername(username);
             loginUserId = loginUser.getId();
 
-            //로그인한 사용자 위치검증
-            if(loginUser.getLatitude() == null || loginUser.getLongitude() == null) {
-                model.addAttribute("locationMissing", "위치 정보 없음");
-                return "board/list";
-            }
-            else{
-                lat1 = loginUser.getLatitude();
-                lng1 = loginUser.getLongitude();
+            List<Authority> loginUserAuthorities = authorityRepository.findByUser(loginUser);
+            Authority adminAuthority = authorityRepository.findByName("ROLE_ADMIN");
+
+            //관리자가 아니라면..
+            if(!loginUserAuthorities.contains(adminAuthority)) {
+                //로그인한 사용자가 관리자가 아니라면. 위치검증
+                if(loginUser.getLatitude() == null || loginUser.getLongitude() == null) {
+                    model.addAttribute("locationMissing", "위치 정보 없음");
+                    return "board/list";
+                }
+                else{
+                    lat1 = loginUser.getLatitude();
+                    lng1 = loginUser.getLongitude();
+                }
             }
         } else {
             //로그인 안한 사용자 위치검증
@@ -217,31 +234,33 @@ public class BoardController {
             }
         }
 
-        //1. 사용자 3km 이내 보여주기
-        List<User> allUsers = userService.findNearUsers();
-        List<User> filteredUsers = new ArrayList<>();
-        for (User user : allUsers) {
-            Double lat2 = user.getLatitude();
-            Double lng2 = user.getLongitude();
+        //관리자는 모든 게시물, 아니면 위치 3km 반경 사용자의 게시물만 보이게..
+        if(loginUser != null && authorityRepository.findByUser(loginUser).contains(authorityRepository.findByName("ROLE_ADMIN"))){
+            allPosts = boardService.listByType(type);
+        }
+        else{
+            //1. 사용자 3km 이내 보여주기
+            List<User> allUsers = userService.findNearUsers();
+            List<User> filteredUsers = new ArrayList<>();
+            for (User user : allUsers) {
+                Double lat2 = user.getLatitude();
+                Double lng2 = user.getLongitude();
 
-            if (lat2 == null || lng2 == null) continue;
+                if (lat2 == null || lng2 == null) continue;
 
-            double distance = calcDistance(lat1, lat2, lng1, lng2);
-            if(distance <= 3){
-                filteredUsers.add(user);
+                double distance = calcDistance(lat1, lat2, lng1, lng2);
+                if(distance <= 3){
+                    filteredUsers.add(user);
+                }
             }
-        }
 
-        if (type == null || type.isBlank()) {
-            type = "guest";
-        }
+            if(filteredUsers.isEmpty()){
+                redirectAttributes.addFlashAttribute("postNotFound", "현재 위치에서 조회되는 게시물이 없습니다.");
+                return "redirect:/home";
+            }
 
-        if(filteredUsers.isEmpty()){
-            redirectAttributes.addFlashAttribute("postNotFound", "현재 위치에서 조회되는 게시물이 없습니다.");
-            return "redirect:/home";
+            allPosts = boardService.listByTypeLocation(type, filteredUsers);
         }
-
-        List<Post> allPosts = boardService.listByTypeLocation(type, filteredUsers);
 
         model.addAttribute("loginUserId", loginUserId);
 

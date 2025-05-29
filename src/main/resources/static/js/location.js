@@ -1,7 +1,7 @@
-$(function() {
+$(function () {
     //위치 설정 클릭 시
-    $('#setLocation').click(function() {
-        if(confirm('현재위치를 가져오시겠습니까?')){
+    $('#setLocation').click(function () {
+        if (confirm('현재위치를 가져오시겠습니까?')) {
             const modalEl = document.getElementById('headerMapModal');
             const bsModal = new bootstrap.Modal(modalEl);
             bsModal.show();
@@ -12,71 +12,92 @@ $(function() {
 
     $('#headerMapModal').on('hidden.bs.modal', function () {
         // 이 코드는 모달이 완전히 닫힌 후 실행
-        alert('위치 설정 완료!');
-        location.href = "/home";
+        const status = $(this).data('locationStatus');
+
+        if (status === 'success') {
+            alert('위치 설정 완료!');
+            location.href = "/home";
+        } else if (status === 'error') {
+            alert('위치 설정 실패!');
+            // 실패 시에는 현재 페이지에 머무름
+        } else {
+            alert('위치 설정이 완료되지 않았거나 취소되었습니다.');
+        }
     });
 });
 
 
 function openMap(targetMapId, modalId, addressOutputId) {
-    navigator.geolocation.getCurrentPosition(function(pos) {
-        const lat = pos.coords.latitude;
-        const lng = pos.coords.longitude;
-        let areaName;
+    const modalEl = document.getElementById(modalId);
 
-        const map = new google.maps.Map(document.getElementById(targetMapId), {
-            center: { lat, lng },
-            zoom: 15,
-        });
+    $(modalEl).data('locationStatus', 'pending');
 
-        new google.maps.Marker({
-            position: { lat, lng },
-            map: map,
-            title: "내 위치"
-        });
+    navigator.geolocation.getCurrentPosition(
+        function (pos) {
+            const lat = pos.coords.latitude;
+            const lng = pos.coords.longitude;
+            let areaName;
 
-        const geocoder = new google.maps.Geocoder();
-        geocoder.geocode({ location: { lat, lng } }, (results, status) => {
-            if (status === "OK" && results[0]) {
-                for(const component of results[0].address_components){
-                    let types = component.types;
+            const map = new google.maps.Map(document.getElementById(targetMapId), {
+                center: {lat, lng},
+                zoom: 15,
+            });
 
-                    if (types.includes('sublocality_level_2') || types.includes('sublocality') || types.includes('neighborhood') || types.includes('administrative_area_level_3')) {
-                        areaName = component.short_name;
+            new google.maps.Marker({
+                position: {lat, lng},
+                map: map,
+                title: "내 위치"
+            });
 
-                        break;
+            const geocoder = new google.maps.Geocoder();
+            geocoder.geocode({location: {lat, lng}}, (results, status) => {
+                if (status === "OK" && results[0]) {
+                    for (const component of results[0].address_components) {
+                        let types = component.types;
+
+                        if (types.includes('sublocality_level_2') || types.includes('sublocality') || types.includes('neighborhood') || types.includes('administrative_area_level_3')) {
+                            areaName = component.short_name;
+
+                            break;
+                        }
                     }
+
+
+                    // const areaName = results[0].formatted_address;
+                    document.getElementById(addressOutputId).textContent = areaName;
+
+                    if (document.getElementById("area-name-label")) {
+                        document.getElementById("area-name-label").textContent = `(${areaName})`;
+                    }
+
+                    const locationData = {
+                        lat: lat,
+                        lng: lng,
+                        areaName: areaName,
+                    }
+
+                    const requestBody = new URLSearchParams(locationData);
+
+                    fetch('/location', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+                        body: requestBody,
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            $(modalEl).data('locationStatus', 'success');
+                        })
+
+                    /*if (document.getElementById("areaName")) document.getElementById("areaName").value = areaName;
+                    if (document.getElementById("latitude")) document.getElementById("latitude").value = lat;
+                    if (document.getElementById("longitude")) document.getElementById("longitude").value = lng;*/
                 }
-
-
-                // const areaName = results[0].formatted_address;
-                document.getElementById(addressOutputId).textContent = areaName;
-
-                if (document.getElementById("area-name-label")) {
-                    document.getElementById("area-name-label").textContent = `(${areaName})`;
-                }
-
-                const locationData = {
-                    lat: lat,
-                    lng: lng,
-                    areaName: areaName,
-                }
-
-                const requestBody = new URLSearchParams(locationData);
-
-                fetch('/location', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-                    body: requestBody,
-                })
-                    .then(response => response.json())
-
-                /*if (document.getElementById("areaName")) document.getElementById("areaName").value = areaName;
-                if (document.getElementById("latitude")) document.getElementById("latitude").value = lat;
-                if (document.getElementById("longitude")) document.getElementById("longitude").value = lng;*/
-            }
+            });
+        },
+        function (error) {
+            console.log(error);
+            $(modalEl).data('locationStatus', 'error'); // Geolocation API 실패
         });
-    });
 }
 
 /*var lat, lng, areaName;
