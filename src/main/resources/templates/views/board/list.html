@@ -18,10 +18,12 @@
     <!-- 필요 시 list.css 또는 다른 CSS 파일 한 줄만 추가 -->
     <!-- <link rel="stylesheet" th:href="@{/css/list.css}"> -->
 
+
     <!-- JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
     <script th:src="@{/js/location.js}"></script>
     <script th:src="@{/js/locationOk.js}"></script>
+
 
     <!-- Google Maps (필요할 때만 사용) -->
     <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY"></script>
@@ -114,7 +116,7 @@
                   th:style="'color:' + ${tag.color} + '; border: 1px solid ' + ${tag.color}"></span>
         </div>
         <div class="tagType" th:if="${board.type == 'helper'}">
-            <span class="tagName" th:each="tag : ${board.user_tag}" th:text="'#' + ${tag.name}"
+            <span class="tagName" th:each="tag : ${board.post_tag}" th:text="'#' + ${tag.name}"
                   th:style="'color:' + ${tag.color} + '; border: 1px solid ' + ${tag.color}"></span>
         </div>
 
