@@ -115,13 +115,18 @@ body {
     flex: 1;
 }
 
+
 #text-area .title {
-    font-size: 18px;
+    font-size: 30px;
     font-weight: 600;
     color: #212529;
     text-decoration: none;
     display: block;
     margin-bottom: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 80%;
 }
 
 #text-area .name {
@@ -145,7 +150,6 @@ body {
 
 #text-area .follow {
     font-size: 12px;
-    color: #6c757d;
     text-decoration: none;
     margin-bottom: 10px;
     display: block;
@@ -249,7 +253,6 @@ main h2 {
 
 /* 버튼 */
 button, .btn {
-    background-color: #6c757d;
     color: white;
     border: none;
     padding: 10px 20px;
@@ -277,6 +280,9 @@ button:hover, .btn:hover {
 .btn-outline-primary:hover {
     background-color: #6c757d;
     color: white;
+}
+.btn-primary {
+    background-color: #0084f1;
 }
 
 .btn-outline-danger {
@@ -346,7 +352,6 @@ button:hover, .btn:hover {
 .alert-info {
     background-color: #e3f2fd;
     border: 1px solid #bbdefb;
-    color: #1976d2;
     border-radius: 6px;
     padding: 15px;
     text-align: center;
@@ -467,6 +472,8 @@ button:hover, .btn:hover {
     gap: 8px;
 }
 
+
+
 .selectedTag {
     display: flex;
     align-items: center;
@@ -582,6 +589,15 @@ button:hover, .btn:hover {
     color: #28a745;
     font-size: 14px;
     margin-top: 5px;
+}
+/* CSS 파일 맨 아래에 추가 */
+.btn-info {
+    color: #17a2b8 !important;
+}
+
+.btn-danger {
+
+    color: #dc3545 !important;
 }
 
 /* ===========================================

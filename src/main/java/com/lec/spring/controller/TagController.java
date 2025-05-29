@@ -36,6 +36,7 @@ public class TagController {
     }
     @GetMapping("/tag")
     public String showTag(Model model, HttpSession httpSession) {
+        httpSession.removeAttribute("selectedTag");
         List<Category> categoryList = categoryService.list();
         model.addAttribute("categoryList", categoryList);
 
@@ -57,6 +58,7 @@ public class TagController {
                             RedirectAttributes redirectAttributes,
                             HttpSession httpSession) {
 
+        httpSession.setAttribute("selectedTags", new ArrayList<Tag>());
         String path = "/";
         if (referer != null && !referer.isEmpty()) {
             try {
@@ -77,11 +79,18 @@ public class TagController {
             return "redirect:" + path;
         }
 
+        List<Tag> selectedTags = (List<Tag>) httpSession.getAttribute("selectedTags");
+
         Tag searchedTag = tagRepository.searchTag(tag);
         String color = categoryService.findById(searchedTag.getCategory_id()).getColor();
         searchedTag.setColor(color);
 
-        List<Tag> selectedTags = (List<Tag>) httpSession.getAttribute("selectedTags");
+        if (!selectedTags.contains(searchedTag)) {
+            selectedTags.add(searchedTag);
+            httpSession.setAttribute("selectedTags", selectedTags);
+        }
+
+
         model.addAttribute("selectedTags", selectedTags);
         model.addAttribute("categoryList", categoryService.list());
         model.addAttribute("searchedTag", searchedTag);
@@ -130,7 +139,7 @@ public class TagController {
 
         // 중복 검사 후 추가
         if (selectedTags.contains(tagToAdd)) {
-            response.put("alreadyInList", "이미 목록에 추가된 태그입니다.");
+            response.put("alreadyInList", "이미 추가된 태그 입니다");
         } else {
             selectedTags.add(tagToAdd);
             response.put("addTag", tagToAdd);
