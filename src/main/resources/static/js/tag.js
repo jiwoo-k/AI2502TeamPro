@@ -52,13 +52,12 @@ $(function(){
                     const addedTag = data.addTag;
                     // 현재 태그 목록에 추가하는 로직
                     $('#tagList').append(`
-                        <div class="selectedTag">
-                            <input type="hidden" name="deleteTagName" value="${addedTag.name}">
-                            <input type="hidden" name="deleteCategoryId" value="${addedTag.category_id}">
-                            <input type="hidden" name="deleteTagId" value="${addedTag.id}">
-                            <input type="hidden" name="deleteTagColor" value="${addedTag.color}">
-                            <span style="background-color:${addedTag.color}"># ${addedTag.name}</span>
-                            <button class="deleteTag">X</button>
+                   <div class="selectedTag tagName" style="color:${addedTag.color}; border: 1px solid ${addedTag.color}">
+                            <input name="name" type="hidden" value="${addedTag.name}">
+                            <input name="category_id" type="hidden" value="${addedTag.category_id}">
+                            <input name="id" type="hidden" value="${addedTag.id}">
+                            <span th:style="${addedTag.color}"># ${addedTag.name}</span>
+                            <button class="deleteTag" th:style="${addedTag.color}">X</button>
                         </div>
                     `);
                     return;
