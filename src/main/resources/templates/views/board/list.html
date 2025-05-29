@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>게시물 목록</title>
     <th:block th:replace="~{common/header :: headline-fragment}"></th:block>
-<!--    <link rel="stylesheet" th:href="@{/css/list.css}">-->
     <link rel="stylesheet" th:href="@{/css/design/board.css}">
 </head>
 
@@ -29,7 +28,6 @@
 <!--    <meta charset="UTF-8">-->
 <!--    <meta name="viewport" content="width=device-width, initial-scale=1">-->
 <!--    <title>게시물 목록</title>-->
-<!--    <link rel="stylesheet" href="/css/list.css">-->
 <!--    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Jua&family=Noto+Sans+KR:wght@100..900&display=swap"-->
 <!--          rel="stylesheet">-->
 <!--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>-->
@@ -122,7 +120,7 @@
         <div class="name-wrapper">
             <a class="name" th:text="${board.name}"></a>
         </div>
-        <a class="content" th:text="${board.content}"></a>
+
 
         <div th:unless="${id} == ${board.user_id}">
             <a class="follow" th:if="${board.type == 'helper'}"
@@ -134,7 +132,7 @@
                   th:style="'color:' + ${tag.color} + '; border: 1px solid ' + ${tag.color}"></span>
         </div>
         <div class="tagType" th:if="${board.type == 'helper'}">
-            <span class="tagName" th:each="tag : ${board.user_tag}" th:text="'#' + ${tag.name}"
+            <span class="tagName" th:each="tag : ${board.post_tag}" th:text="'#' + ${tag.name}"
                   th:style="'color:' + ${tag.color} + '; border: 1px solid ' + ${tag.color}"></span>
         </div>
 

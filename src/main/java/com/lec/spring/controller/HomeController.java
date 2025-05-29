@@ -54,6 +54,7 @@ public class HomeController {
 
     @RequestMapping("/home")
     public void home(Model model, HttpSession httpSession){
+        httpSession.removeAttribute("selectedTags");
         List<Category> categoryList = categoryService.list();
         model.addAttribute("categoryList", categoryList);
 
@@ -67,7 +68,6 @@ public class HomeController {
 
         model.addAttribute("selectedTags", selectedTags);
         model.addAttribute("areaName", areaName);
-        httpSession.removeAttribute("selectedTags");
     }
 
     @PostMapping("/home")

@@ -6,7 +6,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>게시글 수정</title>
-<!--    <link rel="stylesheet" th:href="@{/css/update.css}">-->
     <link rel="stylesheet" th:href="@{/css/design/board.css}">
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" th:href="@{/css/header.css}">
@@ -118,13 +117,13 @@
 
         <p class="mt-3">담은 태그 목록</p>
         <div id="tagList">
-            <div th:each="tag : ${selectedTags}" class="selectedTag">
-                <input name="tagName" type="hidden" th:value="${tag.name}"/>
+            <div th:each="tag : ${selectedTags}" class="selectedTag tagName" th:style="'border: 1px solid' +  ${tag.color}">
+                <input name="tagName" type="hidden" th:value="${tag.name}" />
                 <input name="categoryId" type="hidden" th:value="${tag.category_id}"/>
                 <input name="color" type="hidden" th:value="${tag.color}"/>
                 <input name="tagId" type="hidden" th:value="${tag.id}"/>
-                <span th:text="'# ' + ${tag.name}" th:style="'background-color: ' + ${tag.color}"></span>
-                <button type="button" class="deleteTag">X</button>
+                <span th:text="'# ' + ${tag.name}" th:style="'color : ' + ${tag.color}" ></span>
+                <button type="button" class="deleteTag" th:style="'color : ' + ${tag.color}">X</button>
             </div>
         </div>
     </div>
