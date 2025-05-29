@@ -70,57 +70,69 @@
             <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
         </div>
 
+        <!-- 닉네임 입력 블록 끝난 뒤에 추가 -->
+        <button type="button"
+                id="togglePassword"
+                class="btn btn-secondary mb-3">
+            비밀번호 수정하기
+        </button>
+
+
         <!-- 3. 새로운 비밀번호 입력 -->
-        <div style="border:1px solid #ccc;padding:15px;margin-bottom:10px;">
-        <input id="newPassword"
-               th:field="*{newPassword}"
-               type="password"
-               placeholder="새 비밀번호"
-               style="width:100%; margin-top:5px; padding:8px;"/>
-        <!-- 검증 에러 출력 추가 -->
-        <div th:if="${#fields.hasErrors('newPassword')}" th:errors="*{newPassword}"></div>
+        <div id="passwordSection" style="display:none; border:1px solid #ccc; padding:15px; margin-bottom:10px;">
+            <input id="newPassword"
+                   th:field="*{newPassword}"
+                   type="password"
+                   placeholder="새 비밀번호"
+                   readonly
+                   style="width:100%; margin-top:5px; padding:8px;"/>
+            <!-- 검증 에러 출력 추가 -->
+            <div th:if="${#fields.hasErrors('newPassword')}" th:errors="*{newPassword}"></div>
             비밀번호 재입력
             <input id="confirmPassword"
                    th:field="*{confirmPassword}"
                    type="password"
                    placeholder="비밀번호 확인"
+                   readonly
                    style="width:100%; margin-top:5px; padding:8px;"/>
             <!-- 검증 에러 출력 추가 -->
             <div th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></div>
         </div>
 
-        <!-- 비밀번호 수정 토글 -->
-        <button type="button"
-                id="togglePassword"
-                style="margin-bottom:20px;padding:8px 16px;">
-            비밀번호 수정하기
-        </button>
+
 
         <!-- 5. 태그 form -->
-        <div style="border:1px solid #ccc;padding:15px;margin-bottom:20px;">
-            태그 추가
-            <input th:field="*{tags}"
-                   type="text"
-                   placeholder="관심사 태그 입력"
-                   style="width:100%;margin-top:5px;padding:8px;"/>
-            <!-- 검증 에러 출력 추가 -->
-            <div th:if="${#fields.hasErrors('tags')}" th:errors="*{tags}"></div>
-        </div>
+        <!--        <div style="border:1px solid #ccc;padding:15px;margin-bottom:20px;">-->
+        <!--            태그 추가-->
+        <!--            <input th:field="*{tags}"-->
+        <!--                   type="text"-->
+        <!--                   placeholder="관심사 태그 입력"-->
+        <!--                   style="width:100%;margin-top:5px;padding:8px;"/>-->
+        <!--            &lt;!&ndash; 검증 에러 출력 추가 &ndash;&gt;-->
+        <!--            <div th:if="${#fields.hasErrors('tags')}" th:errors="*{tags}"></div>-->
+        <!--        </div>-->
 
         <!-- 6. 수정 완료 버튼 -->
-        <button type="submit" style="padding:10px 20px;">
+        <button type="submit" class="btn btn-secondary mb-3">
             수정 완료
         </button>
     </form>
 
     <script>
         const toggleBtn = document.getElementById('togglePassword');
-        const pwInput = document.getElementById('newPassword');
-        const confirmInput = document.getElementById('confirmPassword');
+        const pwSection = document.getElementById('passwordSection');
         toggleBtn.addEventListener('click', () => {
-            // readonly 속성 토글
-            pwInput.readOnly = !pwInput.readOnly;
-            confirmInput.readOnly = !confirmInput.readOnly;
+            if (pwSection.style.display === 'none') {
+                pwSection.style.display = 'block';
+                toggleBtn.textContent = '비밀번호 수정 취소';
+                document.getElementById('newPassword').readOnly = false;
+                document.getElementById('confirmPassword').readOnly = false;
+            } else {
+                pwSection.style.display = 'none';
+                toggleBtn.textContent = '비밀번호 수정하기';
+                document.getElementById('newPassword').readOnly = true;
+                document.getElementById('confirmPassword').readOnly = true;
+            }
         });
     </script>
 

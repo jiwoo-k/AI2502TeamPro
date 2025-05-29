@@ -28,15 +28,14 @@ $(function() {
                 $('#tagAddButton').hide();
 
                 const newTag = `
-        <div class="selectedTag">
-            <input name="tagName" type="hidden" value="${tag.name}">
-            <input name="categoryId" type="hidden" value="${tag.category_id}">
-            <input name="color" type="hidden" value="${tag.color}">
-            <input name="tagId" type="hidden" value="${tag.id}">
-            <span style="background-color:${tag.color}"># ${tag.name}</span>
-            <button class="deleteTag">X</button>
-        </div>
-    `;
+             <div class="selectedTag tagName" style="color:${tag.color}; border: 1px solid ${tag.color}">
+                        <input name="tagName" type="hidden" value="${tag.name}">
+                        <input name="categoryId" type="hidden" value="${tag.category_id}">
+                        <input name="tagId" type="hidden" value="${tag.id}">
+                        <span># ${tag.name}</span>
+                        <button class="deleteTag">X</button>
+                    </div>
+                `;
                 $('#tagList').append(newTag);
                 $('.searchSucceed').text("검색 성공! 목록에 추가되었습니다.").show();
             },
@@ -93,13 +92,13 @@ $(function() {
                 if (data.addTag) { // data.result 대신 data.addTag 존재 여부로 판단
                     const addedTag = data.addTag; // 응답 데이터에서 addTag 추출
                     $('#tagList').append(`
-                   <div class="selectedTag">
-                    <input name="name" type="hidden" value="${addedTag.name}">
-                    <input name="category_id" type="hidden" value="${addedTag.category_id}">
-                    <input name="tagId" type="hidden" value="${addedTag.id}">
-                    <span style="background-color:${addedTag.color}"># ${addedTag.name}</span>
-                    <button class="deleteTag">X</button>
-                </div>
+                <div class="selectedTag tagName" style="color:${addedTag.color}; border: 1px solid ${addedTag.color}">
+                            <input name="name" type="hidden" value="${addedTag.name}">
+                            <input name="category_id" type="hidden" value="${addedTag.category_id}">
+                            <input name="id" type="hidden" value="${addedTag.id}">
+                            <span># ${addedTag.name}</span>
+                            <button class="deleteTag">X</button>
+                        </div>
             `);
                     if (data.result > 0) {
                         alert('신규 태그 생성 및 목록에 저장 성공!');

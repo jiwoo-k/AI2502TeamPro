@@ -29,7 +29,7 @@
         <result column="u_name" property="name"/>
     </resultMap>
     <!--write / 게시판 작성 후 저장 mapper-->
-    <insert id="save" flushCache="true" keyProperty="id" parameterType="com.lec.spring.domain.Post" useGeneratedKeys="true">
+    <insert id="save" flushCache="true" keyProperty="id" parameterType="com.lec.spring.domain.Post" useGeneratedKeys="true" keyColumn="id">
         insert into post
             (user_id, title, content, type)
         values

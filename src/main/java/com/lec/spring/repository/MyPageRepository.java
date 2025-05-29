@@ -26,6 +26,12 @@ public interface MyPageRepository {
     List<User> selectMyFollowing(@Param("userId") Long userId);
     List<User> selectMyFollowingPaged(Map<String,Object> params);
 
+    /** 내가 포스트에서 픽한 댓글이 있는 게시글 목록 (페이징) */
+    List<Post> selectMyPickedCommentPostsPaged(Map<String, Object> params);
+
+    /** 내가 포스트에서 픽한 댓글이 있는 게시글 개수 */
+    long countMyPickedCommentPosts(@Param("userId") Long userId);
+
 
     long countMyFollowing(@Param("userId") Long userId);
 
