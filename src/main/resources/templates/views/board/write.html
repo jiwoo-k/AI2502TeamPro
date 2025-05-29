@@ -9,8 +9,9 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
     <script src="/js/writeTag.js"></script>
     <script th:src="@{/js/write.js}"></script>
-<!--    <link rel="stylesheet" th:href="@{/css/write.css}" />-->
+    <link rel="stylesheet" th:href="@{/css/write.css}" />
     <link rel="stylesheet" th:href="@{/css/update.css}" />
+    
 
 <!--    &lt;!&ndash; Bootstrap CSS: 필수 &ndash;&gt;-->
 <!--    &lt;!&ndash; Bootstrap CSS (SRI 제거) &ndash;&gt;-->
@@ -32,6 +33,7 @@
     <title>글쓰기</title>
 <th:block th:replace="~{common/header :: headline-fragment}"></th:block>
 </head>
+
 <body>
 <header th:replace="~{common/header :: header-fragment}"></header>
 <!--<h2>게시물 작성</h2>-->
