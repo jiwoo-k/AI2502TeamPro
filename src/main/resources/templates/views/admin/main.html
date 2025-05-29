@@ -3,12 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <title>관리자 홈</title>
-    <th:block th:replace="~{common/header :: headline-fragment}"></th:block>
-<!--    <link rel="stylesheet" href="/css/admin/board.css">-->
-    <link rel="stylesheet" href="/css/design/admin.css">
+<!--    <th:block th:replace="~{common/head :: head}"></th:block>-->
 </head>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Bootstrap & Header Head-->
+    <!-- Bootstrap CSS: 필수 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+          rel="stylesheet"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
 
-
+    <!-- 이 4개는 헤더를 사용하는 모든 페이지에 포함되어야합니다. -->
+    <!-- 올바른 순서대로 해야 충돌 없이 작동한답니다... -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY"></script>
+    <script th:src="@{/js/location.js}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap & Header Head-->
+<th:block th:replace="~{common/header :: headline-fragment}"></th:block>
 <body>
 <!--header-->
 <th:block th:replace="~{common/header :: header-fragment}"></th:block>
@@ -39,8 +51,8 @@
 <!--x축 선택 zone-->
 
 <!--다른 페이지 이동 버튼들-->
-<a class="btn" th:href="@{/admin/users}">사용자 관리</a>
-<a class="btn" th:href="@{/admin/category/list}">카테고리 관리</a>
+<a th:href="@{/admin/users}">사용자 관리</a>
+<a th:href="@{/admin/category/list}">카테고리 관리</a>
 <!--다른 페이지 이동 버튼들-->
 </body>
 
