@@ -3,19 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>나의 게시글 조회</title>
-    <!-- Bootstrap CSS: 필수 -->
-    <!-- Bootstrap CSS (SRI 제거) -->
-    <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-            rel="stylesheet"
-    />
+    <!-- Bootstrap CSS: -->
+    <link ref="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+          rel="stylesheet"/>
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" th:href="@{/css/header.css}">
     <link rel="stylesheet" th:href="@{/css/design/mypage.css}">
 
-
-    <!-- 이 4개는 헤더를 사용하는 모든 페이지에 포함되어야합니다. -->
-    <!-- 올바른 순서대로 해야 충돌 없이 작동한답니다... -->
+    <!-- JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY"></script>
     <script th:src="@{/js/location.js}"></script>

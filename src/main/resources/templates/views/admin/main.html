@@ -6,8 +6,9 @@
     <th:block th:replace="~{common/header :: headline-fragment}"></th:block>
 <!--    <link rel="stylesheet" href="/css/admin/board.css">-->
     <link rel="stylesheet" href="/css/design/admin.css">
-
 </head>
+
+
 <body>
 <!--header-->
 <th:block th:replace="~{common/header :: header-fragment}"></th:block>
@@ -38,8 +39,8 @@
 <!--x축 선택 zone-->
 
 <!--다른 페이지 이동 버튼들-->
-<a th:href="@{/admin/users}">사용자 관리</a>
-<a th:href="@{/admin/category/list}">카테고리 관리</a>
+<a class="btn" th:href="@{/admin/users}">사용자 관리</a>
+<a class="btn" th:href="@{/admin/category/list}">카테고리 관리</a>
 <!--다른 페이지 이동 버튼들-->
 </body>
 
