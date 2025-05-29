@@ -443,10 +443,12 @@ button:hover, .btn:hover {
     margin: 5px 10px 5px 0;
     border-radius: 20px;
     cursor: pointer;
-    border: 2px solid transparent;
+    border: 2px solid #000000;  /* 검은 테두리 */
     transition: all 0.2s ease;
     font-size: 14px;
     font-weight: 500;
+    color: #ffffff;
+    background-color: transparent;
 }
 
 .categoryBox:hover {

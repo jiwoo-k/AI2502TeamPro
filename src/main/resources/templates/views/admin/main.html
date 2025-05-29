@@ -26,22 +26,55 @@
 <th:block th:replace="~{common/header :: header-fragment}"></th:block>
 <!--header-->
 
-<!--날짜 선택 zone-->
-<form id="dateSelect" method="get">
-    <label for="startDate">시작 날짜:</label>
-    <input type="date" id="startDate" name="startDate" required>
+<!--다른 페이지 이동 버튼들-->
+<!-- footer-style 버튼 박스 -->
+<!-- 관리 기능 버튼 영역 -->
+<div class="container mt-5 mb-5">
+    <div class="p-4 border rounded text-center shadow-sm bg-white admin-box">
+        <h5 class="mb-4 fw-bold">관리자 기능</h5>
+        <a th:href="@{/admin/users}" class="btn btn-outline-secondary me-3">사용자 관리</a>
+        <a th:href="@{/admin/category/list}" class="btn btn-outline-primary">카테고리 관리</a>
+    </div>
+</div>
+<!--다른 페이지 이동 버튼들-->
 
-    <label for="endDate">종료 날짜:</label>
-    <input type="date" id="endDate" name="endDate" required>
+<!-- 날짜 선택 영역 -->
+<div class="chart-section container mt-4 mb-5">
+    <div class="card p-4 shadow-sm">
+        <form id="dateSelect" method="get" class="row g-3 align-items-center">
+            <div class="col-auto">
+                <label for="startDate" class="col-form-label fw-bold">시작 날짜:</label>
+            </div>
+            <div class="col-auto">
+                <input type="date" id="startDate" name="startDate" class="form-control" required>
+            </div>
 
-    <button id="showChartButton" type="submit">차트 보기</button>
-    <div th:text="${dateError}"></div>
-</form>
-<!--날짜 선택 zone-->
+            <div class="col-auto">
+                <label for="endDate" class="col-form-label fw-bold">종료 날짜:</label>
+            </div>
+            <div class="col-auto">
+                <input type="date" id="endDate" name="endDate" class="form-control" required>
+            </div>
+
+            <div class="col-auto">
+                <button id="showChartButton" class="btn btn-outline-primary" type="submit">차트 보기</button>
+            </div>
+        </form>
+        <div class="text-danger mt-2" th:text="${dateError}"></div>
+    </div>
+</div>
 
 <!--chart-->
-<canvas id="loginHistoryChart"></canvas>
-<canvas id="categoryPieChart"></canvas>
+<!-- 차트 영역 -->
+<div class="chart-wrapper container mb-5">
+    <div class="card p-4 shadow-sm">
+        <canvas id="loginHistoryChart" style="max-height: 400px;"></canvas>
+    </div>
+
+    <div class="card mt-4 p-4 shadow-sm">
+        <canvas id="categoryPieChart" style="max-height: 400px;"></canvas>
+    </div>
+</div>
 <!--chart-->
 
 <!--x축 선택 zone-->
@@ -50,10 +83,6 @@
 </div>
 <!--x축 선택 zone-->
 
-<!--다른 페이지 이동 버튼들-->
-<a th:href="@{/admin/users}">사용자 관리</a>
-<a th:href="@{/admin/category/list}">카테고리 관리</a>
-<!--다른 페이지 이동 버튼들-->
 </body>
 
 <script th:inline="javascript">
@@ -136,7 +165,6 @@
             }
         },
     });
-
 
     let backgroundColors_login = [];
     let borderColors_login = [];
