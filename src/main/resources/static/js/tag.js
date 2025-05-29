@@ -21,6 +21,7 @@ $(function(){
     });
 
     $('button#tagAddButton').click(function (){
+        event.preventDefault();
         let categoryId = $("input[name='category_id']").val();
         let tagName = $("input[name='name']").val();
 
@@ -50,15 +51,17 @@ $(function(){
 
                 if(data.addTag){ // 서버에서 추가된 태그 정보를 받았다면
                     const addedTag = data.addTag;
+                    document.querySelector("input[name='name']").value = "";
                     // 현재 태그 목록에 추가하는 로직
                     $('#tagList').append(`
-                   <div class="selectedTag tagName" style="color:${addedTag.color}; border: 1px solid ${addedTag.color}">
-                            <input name="name" type="hidden" value="${addedTag.name}">
-                            <input name="category_id" type="hidden" value="${addedTag.category_id}">
-                            <input name="id" type="hidden" value="${addedTag.id}">
-                            <span th:style="${addedTag.color}"># ${addedTag.name}</span>
-                            <button class="deleteTag" th:style="${addedTag.color}">X</button>
-                        </div>
+         <div class="selectedTag tagName" style="color:${addedTag.color}; border: 1px solid ${addedTag.color}">
+            <input name="name" type="hidden" value="${addedTag.name}">
+            <input name="category_id" type="hidden" value="${addedTag.category_id}">
+            <input name="id" type="hidden" value="${addedTag.id}">
+            <input name="deleteTagColor" type="hidden" value="${addedTag.color}">
+            <span th:style="color:${addedTag.color}"># ${addedTag.name}</span>
+            <button class="deleteTag" th:style=" color: ${addedTag.color}">X</button>
+         </div>
                     `);
                     return;
                 }
@@ -69,7 +72,6 @@ $(function(){
             });
 
     });
-
 
     let isExistError = $("input[name='existError']").val();
     if(isExistError){
@@ -82,11 +84,16 @@ $(function(){
         history.back();
     }
 
-    $('button.deleteTag').click(function(){
+    $('#tagList').on('click', 'button.deleteTag', function(){
         if(confirm('해당 태그를 목록에서 삭제하시겠습니까?')){
-            let deleteTagName = $("div input[name = 'deleteTagName']").val();
-            let deleteCategoryId = $("div input[name = 'deleteCategoryId']").val();
-            let deleteTagId = $("div input[name = 'deleteTagId']").val();
+
+            // 삭제할 div 요소
+            const $tagDiv = $(this).closest('.selectedTag');
+
+            // 태그 정보 추출
+            let deleteTagName = $tagDiv.find("input[name='name']").val();
+            let deleteCategoryId = $tagDiv.find("input[name='category_id']").val();
+            let deleteTagId = $tagDiv.find("input[name='id']").val();
 
             const removeTagInfo = {
                 name: deleteTagName,
@@ -113,24 +120,6 @@ $(function(){
         }
     });
 
-    $('button#saveTagList').click(function(){
-        if(confirm('저장하시겠습니까?')){
-            //1. 태그 목록 가져와서,
-            let tagList = getTagList();
-
-            //2. 서버로 전송
-            fetch('/tag/save', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(tagList)
-            })
-                .then(response => response.json())
-
-
-            alert('저장 성공');
-        }
-    });
-
 });
 
 function getTagList(){
@@ -138,13 +127,12 @@ function getTagList(){
     const tagList = document.querySelectorAll("div.selectedTag");
     let tags = [];
 
-
     //핸들러에 전송할 tag 형 배열 생성
-    tagList.forEach(tag =>{
-        const tagName = tag.querySelector("input[name='deleteTagName']").val();
-        const categoryId = tag.querySelector("input[name='deleteCategoryId']").val();
-        const tagId = tag.querySelector("input[name='deleteTagId']").val();
-        const tagColor = tag.querySelector("input[name='deleteTagColor']").val();
+    tagList.forEach(tag => {
+        const tagName = tag.querySelector("input[name='name']").value;
+        const categoryId = tag.querySelector("input[name='category_id']").value;
+        const tagId = tag.querySelector("input[name='id']").value;
+        const tagColor = tag.querySelector("input[name='deleteTagColor']").value;
 
         tags.push({
             id: tagId,

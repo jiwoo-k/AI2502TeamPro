@@ -68,8 +68,10 @@
         <form th:action="@{${board.follow} ? '/board/follow/delete' : '/board/follow/insert'}" method="post" onsubmit="return checkLogin()">
             <input type="hidden" name="followedUserId" th:value="${board.user_id}"/>
             <input type="hidden" name="id" th:value="${board.id}"/>
-            <button type="submit" class="btn btn-outline-primary" th:text="${board.follow} ? 'UNFOLLOW' : 'FOLLOW'"></button>
-        </form>
+            <button type="submit"
+                    th:class="'btn ' + (${board.follow} ? 'btn-outline-danger' : 'btn-primary')"
+                    th:text="${board.follow} ? 'UNFOLLOW' : 'FOLLOW'">
+            </button>        </form>
     </div>
 
     <!-- 팔로워 수 -->
