@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>태그Form</title>
     <link rel="stylesheet" th:href="@{/css/tag.css}">
+    <link rel="stylesheet" th:href="@{/css/design/common.css}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
     <script src="/js/tag.js"></script>
 </head>
@@ -55,13 +56,13 @@
                 <!--담은 태그 목록-->
                 <p>담은 태그 목록</p>
                 <div id="tagList">
-                    <div th:each="tag : ${selectedTags}" class="selectedTag">
-                        <input name="deleteTagName" type="hidden" th:value="${tag.name}">
-                        <input name="deleteCategoryId" type="hidden" th:value="${tag.category_id}">
-                        <input name="deleteTagId" type="hidden" th:value="${tag.id}">
-                        <input name="deleteTagColor" type="hidden" th:value="${tag.color}">
-                        <span th:text="'# ' + ${tag.name}" th:style="'background-color: ' + ${tag.color}"></span>
-                        <button class="deleteTag">X</button>
+                    <div th:each="tag : ${selectedTags}" class="selectedTag tagName" th:style="'border: 1px solid' +  ${tag.color}">
+                        <input name="tagName" type="hidden" th:value="${tag.name}" />
+                        <input name="categoryId" type="hidden" th:value="${tag.category_id}"/>
+                        <input name="color" type="hidden" th:value="${tag.color}"/>
+                        <input name="tagId" type="hidden" th:value="${tag.id}"/>
+                        <span th:text="'# ' + ${tag.name}" th:style="'color : ' + ${tag.color}" ></span>
+                        <button type="button" class="deleteTag" th:style="'color : ' + ${tag.color}">X</button>
                     </div>
                 </div>
 

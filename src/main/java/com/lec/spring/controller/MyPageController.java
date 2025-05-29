@@ -28,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -231,16 +232,41 @@ public class MyPageController {
         if (form.getNewPassword() != null && !form.getNewPassword().isBlank()) {
             user.setPassword(form.getNewPassword());
         }
-        user.setTags(Arrays.stream(form.getTags().split(","))
-                .map(String::trim)
-                .filter(s -> !s.isEmpty())
-                .collect(Collectors.toList()));
+
+        // ↓ tags가 null 또는 빈 칸일 때 빈 리스트 처리하도록 변경
+        if (form.getTags() != null && !form.getTags().isBlank()) {
+            user.setTags(Arrays.stream(form.getTags().split(","))
+                    .map(String::trim)
+                    .filter(s -> !s.isEmpty())
+                    .collect(Collectors.toList()));
+        } else {
+            user.setTags(Collections.emptyList());
+        }
+
 
         // ⑤ 로그, 서비스 호출, 플래시 메시지
         logger.info("▶▶ MyPageController.updateProfile 진입: {}", form);
         myPageService.updateUserProfile(user);
+        principal.getUser().setName(form.getName());
         redirectAttrs.addFlashAttribute("msg", "회원정보가 정상적으로 수정되었습니다.");
         return "redirect:/mypage";
     }
+
+    @GetMapping("/mypage/my-picked-posts")
+    public String myPickedPosts(
+            Model model,
+            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC)
+            Pageable pageable) {
+
+        // 현재 로그인 사용자 ID 가져오기
+        Long userId = ((PrincipalDetails)
+                SecurityContextHolder.getContext().getAuthentication().getPrincipal())
+                .getUser().getId();
+
+        Page<Post> page = myPageService.getMyPickedCommentPosts(userId, pageable);
+        model.addAttribute("pickedPosts", page);
+        return "mypage/myPickedPosts";
+    }
+
 
 }

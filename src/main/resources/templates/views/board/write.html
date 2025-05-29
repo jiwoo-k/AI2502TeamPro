@@ -10,8 +10,7 @@
     <script src="/js/writeTag.js"></script>
     <script th:src="@{/js/write.js}"></script>
     <link rel="stylesheet" th:href="@{/css/write.css}" />
-    <link rel="stylesheet" th:href="@{/css/update.css}" />
-    
+    <link rel="stylesheet" th:href="@{/css/design/board.css}">
 
 <!--    &lt;!&ndash; Bootstrap CSS: 필수 &ndash;&gt;-->
 <!--    &lt;!&ndash; Bootstrap CSS (SRI 제거) &ndash;&gt;-->
@@ -33,7 +32,6 @@
     <title>글쓰기</title>
 <th:block th:replace="~{common/header :: headline-fragment}"></th:block>
 </head>
-
 <body>
 <header th:replace="~{common/header :: header-fragment}"></header>
 <!--<h2>게시물 작성</h2>-->
@@ -104,12 +102,16 @@
 
             <p>담은 태그 목록</p>
             <div id="tagList">
-                <div th:each="tag : ${selectedTags}" class="selectedTag"  th:style="'background-color: ' + ${tag.color} + '; color: white;'">
+                <div th:each="tag : ${selectedTags}" class="selectedTag"
+                     th:style="'background-color: ' + ${tag.color} + '; color: white; display: inline-flex; align-items: center; padding: 6px 12px; margin: 5px; border-radius: 16px;'">
                     <input name="name" type="hidden" th:value="${tag.name}" />
                     <input name="category_id" type="hidden" th:value="${tag.category_id}" />
                     <input name="id" type="hidden" th:value="${tag.id}" />
                     <span th:text="'# ' + ${tag.name}" th:style="'background-color: ' + ${tag.color}"></span>
-                    <button type="button" class="deleteTag">X</button>
+                    <button type="submit" class="deleteTag"
+                            style="background: none; border: none; color: inherit; cursor: pointer; font-size: 12px; padding: 2px 6px; border-radius: 50%; background-color: rgba(255,255,255,0.2);">
+                        ×
+                    </button>
                 </div>
             </div>
         </div>

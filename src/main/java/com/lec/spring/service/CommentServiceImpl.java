@@ -97,17 +97,22 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = commentRepository.findById(commentId);
         if (comment == null) throw new IllegalArgumentException("존재하지 않는 댓글입니다.");
 
+        if (comment.getUserId().equals(userId)) {
+            throw new AccessDeniedException("자신의 댓글은 픽할 수 없습니다.");
+        }
+
         Post post = postRepository.findById(comment.getPostId());
         if (post == null || post.getUser_id() == null || !post.getUser_id().equals(userId)) {
             throw new AccessDeniedException("픽 권한 없음");
         }
 
-        List<Comment> all = commentRepository.findByPostId(post.getId());
-        for (Comment c : all) {
-            if (Boolean.TRUE.equals(c.getIsPicked())) {
-                commentRepository.updateIsPicked(c.getId(), false);
-            }
-        }
+        // 여러개 픽할 수 있도록 수정하겠습니다
+//        List<Comment> all = commentRepository.findByPostId(post.getId());
+//        for (Comment c : all) {
+//            if (Boolean.TRUE.equals(c.getIsPicked())) {
+//                commentRepository.updateIsPicked(c.getId(), false);
+//            }
+//        }
 
         return commentRepository.updateIsPicked(commentId, true);
     }

@@ -104,16 +104,43 @@ public class MyPageServiceImpl implements MyPageService {
     @Override
     @Transactional
     public void updateUserProfile(User user) {
-        // ② repo.updateUser(...)가 영향을 준 행 수 받아오기
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        logger.info("▶▶ updateUserProfile 호출 → id={}, 새닉네임='{}', 새비밀번호='{}'",
-                user.getId(), user.getName(), user.getPassword());
+        // 1) 닉네임, 태그 등 필드 업데이트 로직은 그대로 유지
+        //    (repo.updateUser(user)가 name, tags, password를 모두 처리한다면,
+        //     password는 다음 조건에서만 세팅됩니다.)
+
+        // 2) 새 비밀번호가 실제 넘어왔을 때만 인코딩하여 세팅
+        String rawPw = user.getPassword();
+        if (rawPw != null && !rawPw.isBlank()) {
+            user.setPassword(passwordEncoder.encode(rawPw));
+            logger.info("▶▶ updateUserProfile 호출 → id={}, 새닉네임='{}', 새비밀번호 적용됨",
+                    user.getId(), user.getName());
+        } else {
+            // 비밀번호 변경 요청이 없으면 user.password를 null로 두거나
+            // Mapper에서 password 필드를 IGNORE하도록 설정해야 합니다.
+            user.setPassword(null);
+            logger.info("▶▶ updateUserProfile 호출 → id={}, 새닉네임='{}', 비밀번호 미변경",
+                    user.getId(), user.getName());
+        }
+
         int updatedCount = repo.updateUser(user);
         logger.info("▶▶ updateUserProfile 결과 → 업데이트 행 수 = {}", updatedCount);
         if (updatedCount == 0) {
             throw new RuntimeException("회원정보 수정 실패: 업데이트된 행이 없습니다.");
         }
     }
+    @Override
+    public Page<Post> getMyPickedCommentPosts(Long userId, Pageable pageable) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("userId",  userId);
+        params.put("limit",   pageable.getPageSize());
+        params.put("offset",  pageable.getOffset());
+
+        List<Post> list  = repo.selectMyPickedCommentPostsPaged(params);
+        long total       = repo.countMyPickedCommentPosts(userId);
+        return new PageImpl<>(list, pageable, total);
+    }
+
+
 
     @Override
     public void followUser(Long userId, Long followedUserId) {
