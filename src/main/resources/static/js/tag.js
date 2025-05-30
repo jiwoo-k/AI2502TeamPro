@@ -54,13 +54,13 @@ $(function(){
                     document.querySelector("input[name='name']").value = "";
                     // 현재 태그 목록에 추가하는 로직
                     $('#tagList').append(`
-         <div class="selectedTag tagName" style="color:${addedTag.color}; border: 2px solid ${addedTag.color}">
-            <input name="name" type="hidden" value="${addedTag.name}">
-            <input name="category_id" type="hidden" value="${addedTag.category_id}">
-            <input name="id" type="hidden" value="${addedTag.id}">
-            <input name="deleteTagColor" type="hidden" value="${addedTag.color}">
-            <span th:style="color:${addedTag.color}"># ${addedTag.name}</span>
-            <button class="deleteTag" th:style=" color: ${addedTag.color}">X</button>
+          <div class="selectedTag tagName" style="color:${addedTag.color}; border: 2px solid ${addedTag.color}">
+            <input name="tagName" type="hidden" value="${addedTag.name}">
+            <input name="categoryId" type="hidden" value="${addedTag.category_id}">
+            <input name="tagId" type="hidden" value="${addedTag.id}">
+            <input name="color" type="hidden" value="${addedTag.color}">
+            <span style="color:${addedTag.color}"># ${addedTag.name}</span>
+            <button class="deleteTag" style="color: ${addedTag.color}">X</button>
          </div>
                     `);
                 }
@@ -101,12 +101,11 @@ $(function(){
                 id: deleteTagId,
             }
 
-            const requestBody = new URLSearchParams(removeTagInfo);
 
             fetch('/tag/remove', {
                 method: 'POST',
-                headers: {"Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"},
-                body: requestBody
+                headers: {"Content-Type": "application/json;charset=UTF-8"},
+                body: JSON.stringify(removeTagInfo)
             })
                 .then(response => response.json())
                 .then(data => {
@@ -122,10 +121,9 @@ $(function(){
 
 });
 $(function(){
-    // ... (기존 코드)
 
     $('button#tagSearchButton').click(function(event) {
-        event.preventDefault(); // form submit 방지
+        event.preventDefault();
 
         const tagName = $("input[name='name']").val();
         const categoryId = $("input[name='category_id']").val();
@@ -143,6 +141,8 @@ $(function(){
             .then(response => response.json())
             .then(data => {
                 if (data) {
+                    document.querySelector("input[name='name']").value = "";
+
                     // 검색 성공 시 UI 업데이트 (예: 검색 결과 영역에 보여주기)
                     $('.searchSucceed').text('검색 성공! 추가 가능합니다.');
                     // 검색된 태그 정보를 어딘가에 저장하거나 바로 추가 버튼 활성화 등의 처리
