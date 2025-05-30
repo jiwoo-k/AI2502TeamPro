@@ -15,6 +15,22 @@
         <!--form1: 태그 검색하고 목록에 담기-->
         <form id="searchForm" method="post">
             <div id="tagSearch">
+
+            <!--카테고리 보여주기-->
+            <div id="categoryZone">
+
+
+                <p>카테고리 선택</p>
+                <div th:each="category : ${categoryList}" th:text="${category.name}"
+                     th:style="'background-color: ' + ${category.color} + '; display: inline-block'"
+                     class="categoryBox"
+                     th:id="${category.id}"
+                     th:classappend="${submittedCategoryId != null and category.id == submittedCategoryId} ? 'selected' : ''">
+                </div>
+            </div>
+
+
+
                 <!--태그 검색 및 추가-->
                 <div id="searchZone">
                     <input type="text" name="name" placeholder="태그 검색 (# 제외)" th:value="${name}">
@@ -32,19 +48,6 @@
                     <!--                    <input id="addSearchedTag" name="addedTagName" type="hidden" th:value="${searchedTag != null ? searchedTag.name : ''}">-->
                 </div>
 
-                <!--카테고리 보여주기-->
-                <div id="categoryZone">
-
-
-                    <p>카테고리 선택</p>
-                    <div th:each="category : ${categoryList}" th:text="${category.name}"
-                         th:style="'background-color: ' + ${category.color} + '; display: inline-block'"
-                         class="categoryBox"
-                         th:id="${category.id}"
-                         th:classappend="${submittedCategoryId != null and category.id == submittedCategoryId} ? 'selected' : ''">
-                    </div>
-                </div>
-
                 <!--validation 문구-->
                 <div>
                     <div class="showError"><span th:if="${error_name}" th:utext="${error_name}"></span></div>
@@ -52,16 +55,16 @@
                     </div>
                     <div class="showError"><span th:if="${error_id}" th:utext="${error_id}"></span></div>
                 </div>
-
                 <!--담은 태그 목록-->
                 <p>담은 태그 목록</p>
                 <div id="tagList">
-                    <div th:each="tag : ${selectedTags}" class="selectedTag tagName" th:style="'border: 1px solid' +  ${tag.color}">
-                        <input name="tagName" type="hidden" th:value="${tag.name}" />
+                    <div th:each="tag : ${selectedTags}" class="selectedTag tagName"
+                         th:style="'border: 1px solid' +  ${tag.color}">
+                        <input name="tagName" type="hidden" th:value="${tag.name}"/>
                         <input name="categoryId" type="hidden" th:value="${tag.category_id}"/>
                         <input name="color" type="hidden" th:value="${tag.color}"/>
                         <input name="tagId" type="hidden" th:value="${tag.id}"/>
-                        <span th:text="'# ' + ${tag.name}" th:style="'color : ' + ${tag.color}" ></span>
+                        <span th:text="'# ' + ${tag.name}" th:style="'color : ' + ${tag.color}"></span>
                         <button type="button" class="deleteTag" th:style="'color : ' + ${tag.color}">X</button>
                     </div>
                 </div>
