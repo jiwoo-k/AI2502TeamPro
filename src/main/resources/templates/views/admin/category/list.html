@@ -28,7 +28,7 @@
 
 <!-- ② 카테고리 목록 -->
 
-<form method="post">
+<form class="categoryPage" method="post">
     <!-- 스크롤 가능 목록 -->
     <div class="category-scroll-area">
         <div class="category-list container mt-4">
@@ -53,6 +53,7 @@
             </div>
         </div>
     </div>
+</form>
 
     <!-- ③ 버튼 영역 -->
     <!-- 고정된 하단 버튼 -->
@@ -62,7 +63,6 @@
         <button type="submit" class="btn btn-danger" formaction="/admin/category/delete" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</button>
     </footer>
 
-</form>
 
 <script src="/js/adminCategory.js"></script>
 </body>

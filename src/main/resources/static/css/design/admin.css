@@ -137,7 +137,18 @@ canvas {
 form {
     display: flex;
     flex-direction: column;
-    height: 10vh;
+}
+
+.categoryPage {
+    display: flex;
+    flex-direction: column;
+    height: 100vh
+}
+
+.warnTable {
+    display: flex;
+    flex-direction: column;
+    height: 10vh
 }
 
 .category-scroll-area {
