@@ -202,3 +202,6 @@ select * from attachment;
 select * from post;
 
 select * from category;
+select * from user;
+
+delete from user;

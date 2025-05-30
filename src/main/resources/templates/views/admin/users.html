@@ -44,19 +44,19 @@
             <td th:text="${user.warningCount}"></td>
             <td>
 
-                <form id="pause3Form" th:if="${cnt == 5 && user.status == 'active'}" th:action="@{/admin/account/limit/{userId}(userId=${user.id})}" method="post">
+                <form th:if="${cnt == 5 && user.status == 'active'}" th:action="@{/admin/account/limit/{userId}(userId=${user.id})}" method="post">
                     <input type="hidden" name="days" value="3" />
-                    <button type="submit" class="btn btn-sm btn-warning checkPause">3일 정지</button>
+                    <button type="button" class="btn btn-sm btn-warning checkPause3">3일 정지</button>
                 </form>
 
-                <form id="pause5Form" th:if="${cnt == 10 && user.status == 'active'}" th:action="@{/admin/account/limit/{userId}(userId=${user.id})}" method="post">
+                <form th:if="${cnt == 10 && user.status == 'active'}" th:action="@{/admin/account/limit/{userId}(userId=${user.id})}" method="post">
                     <input type="hidden" name="days" value="7" />
-                    <button type="submit" class="btn btn-sm btn-warning checkPause">7일 정지</button>
+                    <button type="button" class="btn btn-sm btn-warning checkPause7">7일 정지</button>
                 </form>
 
-                <form id="banForm" th:if="${cnt == 15 && user.status == 'active'}" th:action="@{/admin/account/limit/{userId}(userId=${user.id})}" method="post">
+                <form th:if="${cnt == 15 && user.status == 'active'}" th:action="@{/admin/account/limit/{userId}(userId=${user.id})}" method="post">
 <!--                    <input type="hidden" name="days" value="" />-->
-                    <button type="submit" class="btn btn-sm btn-danger checkBan">영구 정지</button>
+                    <button type="button" class="btn btn-sm btn-danger checkBan">영구 정지</button>
                 </form>
 
                 <span th:if="${user.status == 'paused' && user.pauseEndDate != null}"
@@ -73,7 +73,7 @@
                 <span th:if="${cnt == 10 && user.followersCount == 0}">팔로워 없음</span>
 
                 <form th:if="${cnt == 10 && user.followersCount > 0}" th:action="@{/admin/follower/reset/{userId}(userId=${user.id})}" method="post">
-                    <button class="followReset">팔로워 초기화</button>
+                    <button type="button" class="followReset">팔로워 초기화</button>
                 </form>
             </td>
         </tr>
