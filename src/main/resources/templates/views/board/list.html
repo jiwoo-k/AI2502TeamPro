@@ -77,6 +77,11 @@
                 </select>
                 <input type="hidden" name="page" th:value="${page}"/>
             </form>
+            <script>
+                function submitListForm() {
+                    document.getElementById('listControlForm').submit();
+                }
+            </script>
         </div>
 
         <!-- 중간 : 전체 페이지 수-->
