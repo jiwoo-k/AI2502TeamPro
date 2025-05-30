@@ -41,6 +41,8 @@ body {
     background-color: #ffffff;
     color: #495057;
     font-size: 14px;
+    min-width: 120px;
+    width: auto;
 }
 
 .list-header .btn {
@@ -50,6 +52,44 @@ body {
     border: none;
     transition: all 0.2s ease;
 }
+
+.inner-header {
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    border: none;
+}
+
+.pagination-wrapper {
+    max-width: 600px;    /* 원하는 너비 */
+    margin: 0 auto;      /* 가운데 정렬 */
+}
+
+.list-header {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+}
+.pagination-wrapper {
+    margin-top: 1rem; /* 너무 높으면 줄이기 */
+}
+
+.inner-header {
+    position: relative; /* 기준이 될 부모 */
+}
+
+.inner-header .center-text {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/*
+==========
+버튼
+==========
+*/
 
 .writeBtn {
     background-color: #6c757d;
@@ -63,18 +103,33 @@ body {
     transform: translateY(-1px);
 }
 
+.board-space {
+    max-width: 1200px;      /* 최대 넓이 설정 */
+    margin: 0 auto;         /* 가운데 정렬 */
+    padding: 20px;          /* 내부 여백 */
+    display: flex;          /* 가로 정렬 활성화 */
+    flex-wrap: wrap;        /* 줄바꿈 허용 */
+    gap: 20px;              /* 카드 간 간격 */
+    justify-content: center; /* 카드들을 가운데 정렬 */
+}
+
 /* 게시글 카드 */
 .board {
-    background-color: #ffffff;
-    border: 1px solid #e9ecef;
-    border-radius: 8px;
-    margin-bottom: 20px;
+    width: 100%; /* 고정 카드 너비 */
+
+    background-color: #fff;
+    border: 1px solid #ccc; /* 부드러운 테두리 색상 */
+    border-radius: 10px;
+
     padding: 20px;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+
     display: flex;
     align-items: flex-start;
     gap: 20px;
+
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease;
 }
 
 .board:hover {
@@ -253,6 +308,7 @@ main h2 {
 
 /* 버튼 */
 button, .btn {
+    background-color: #444;
     color: white;
     border: none;
     padding: 10px 20px;
@@ -267,13 +323,13 @@ button, .btn {
 }
 
 button:hover, .btn:hover {
-    background-color: #5a6268;
+    background-color: #888;
     transform: translateY(-1px);
 }
 
 .btn-outline-primary {
     background-color: transparent;
-    color: #6c757d;
+    color: #aaa;
     border: 1px solid #6c757d;
 }
 
@@ -444,26 +500,36 @@ button:hover, .btn:hover {
     margin-bottom: 15px;
 }
 
+
 .categoryBox {
     padding: 8px 16px;
     margin: 5px 10px 5px 0;
     border-radius: 20px;
     cursor: pointer;
-    border: 2px solid transparent;
     transition: all 0.2s ease;
     font-size: 14px;
     font-weight: 500;
+    color: #fff;
+    text-shadow: 0.5px 0.5px 1px #888888;
+    border: none;
+    background-color: transparent;
 }
 
 .categoryBox:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px #888;
+    background-color: #ffffff;
+    color: #000000;
 }
 
 .categoryBox.selected {
-    border: 2px solid #212529;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    background-color: #ccc;
+    color: #222;
+    border: 0px solid var(--text-color);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
 }
+
 
 /* 선택된 태그 목록 */
 #tagList {
@@ -504,6 +570,7 @@ button:hover, .btn:hover {
     background-color: rgba(255,255,255,0.4);
 }
 
+
 /* 타입 선택 */
 .select-wrapper {
     margin: 30px 0;
@@ -518,6 +585,12 @@ button:hover, .btn:hover {
     font-size: 14px;
 }
 
+#board-selector {
+    text-align: left;
+    margin: 0;          /* 중앙 정렬 해제 */
+    padding: 0;
+}
+
 /* 버튼 영역 */
 .button-wrapper {
     text-align: center;
@@ -525,7 +598,7 @@ button:hover, .btn:hover {
 }
 
 .writeBtn, .listBtn {
-    background-color: #6c757d;
+    background-color: #444;
     color: white;
     padding: 12px 30px;
     border: none;
@@ -539,7 +612,7 @@ button:hover, .btn:hover {
 }
 
 .writeBtn:hover, .listBtn:hover {
-    background-color: #5a6268;
+    background-color: #888;
     transform: translateY(-1px);
     color: white;
 }
@@ -555,7 +628,7 @@ button:hover, .btn:hover {
 .page-item .page-link {
     color: #6c757d;
     border: 1px solid #dee2e6;
-    padding: 10px 15px;
+    padding: 5px 10px;
     text-decoration: none;
     background-color: white;
     border-radius: 6px;

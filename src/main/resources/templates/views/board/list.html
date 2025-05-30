@@ -9,7 +9,12 @@
     <th:block th:replace="~{common/header :: headline-fragment}"></th:block>
 
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Jua&family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Jua&family=Noto+Sans+KR:wght@100..900&display=swap"
+          rel="stylesheet">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- CSS -->
     <link rel="stylesheet" th:href="@{/css/style.css}">
@@ -28,9 +33,6 @@
     <!-- Google Maps (필요할 때만 사용) -->
     <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY"></script>
 
-    <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 
 <!--    &lt;!&ndash; 이 4개는 헤더를 사용하는 모든 페이지에 포함되어야합니다. &ndash;&gt;-->
@@ -48,33 +50,101 @@
 <!--header-->
 <th:block th:replace="~{common/header :: header-fragment}"></th:block>
 
-<!-- 정렬을 위한 wrapper -->
-<div class="list-header d-flex justify-content-between align-items-center flex-wrap px-3 py-2 mb-3">
+<!-- header 정렬을 위한 wrapper -->
+<div class="list-header px-3 py-2 mb-3">
 
-    <!-- 좌측: type + pageRows -->
-    <form method="get" action="/board/list" id="listControlForm" class="d-flex gap-2 align-items-center">
-        <select class="form-select w-auto" name="type" onchange="submitListForm()">
-            <option value="guest" th:selected="${selectedType == 'guest'}">손님</option>
-            <option value="helper" th:selected="${selectedType == 'helper'}">도우미</option>
-        </select>
+    <!-- 페이지 정보 및 페이지네이션: 한 줄 아래로 -->
+    <div class="pagination-wrapper mt-1 text-center">
+        <th:block th:insert="~{board/pagination::pagination}"></th:block>
+    </div>
 
+    <!-- 내부 정렬 영역 -->
+    <div class="inner-header d-flex justify-content-between align-items-center flex-wrap gap-3 mx-auto "
+         style="max-width: 1200px; border-top: 1px solid #eee; border-bottom: 0; padding-top: 1rem">
 
-        <select class="form-select w-auto" name="pageRows" onchange="submitListForm()">
-            <option value="10" th:selected="${pageRows == 10}">10개</option>
-            <option value="15" th:selected="${pageRows == 15}">15개</option>
-            <option value="20" th:selected="${pageRows == 20}">20개</option>
-            <option value="50" th:selected="${pageRows == 50}">50개</option>
-        </select>
+        <!-- 왼쪽: 필터 -->
+        <div class="d-flex gap-2 align-items-center">
+            <form method="get" action="/board/list" id="listControlForm" class="d-flex gap-2 align-items-center">
+                <select class="form-select form-select-sm w-auto" name="type" onchange="submitListForm()">
+                    <option value="guest" th:selected="${selectedType == 'guest'}">손님</option>
+                    <option value="helper" th:selected="${selectedType == 'helper'}">도우미</option>
+                </select>
+                <select class="form-select form-select-sm w-auto" name="pageRows" onchange="submitListForm()">
+                    <option value="10" th:selected="${pageRows == 10}">10개</option>
+                    <option value="15" th:selected="${pageRows == 15}">15개</option>
+                    <option value="20" th:selected="${pageRows == 20}">20개</option>
+                    <option value="50" th:selected="${pageRows == 50}">50개</option>
+                </select>
+                <input type="hidden" name="page" th:value="${page}"/>
+            </form>
+        </div>
 
+        <!-- 중간 : 전체 페이지 수-->
+        <div class="small text-muted center-text">
+            <span th:text="'총 ' + ${cnt} + '개'"></span>&nbsp;
+            <span th:text="'page ' + ${page} + '/' + ${totalPage}"></span>
+        </div>
 
-        <!-- 유지해야 할 페이지 번호 (현재 페이지 유지) -->
-        <input type="hidden" name="page" th:value="${page}"/>
-    </form>
-    <script>
-        function submitListForm() {
-            document.getElementById('listControlForm').submit();
-        }
-    </script>
+        <!-- 오른쪽: 버튼 -->
+        <div class="mt-2 ms-auto">
+            <a class="btn btn-sm btn-outline-primary" th:href="@{/board/write}" onclick="return checkLogin()">게시물
+                작성하기</a>
+        </div>
+    </div>
+
+</div>
+
+<!-- 카드형 게시글 목록 -->
+<div class="board-space">
+
+    <div th:each="board : ${boardList}" class="board" th:attr="data-id=${board.id}"
+         onclick="location.href='/board/detail/' + this.getAttribute('data-id')" style="cursor:pointer;">
+
+        <div id="attachment">
+            <div class="container mt-3 mb-3 border rounded">
+                <div class="image-wrapper">
+                    <img th:if="${not #lists.isEmpty(board.fileList) and board.fileList[0].image == true}"
+                         th:src="@{'/upload/' + ${board.fileList[0].fileName}}"
+                         class="img-thumbnail" alt="image">
+                    <div th:if="${#lists.isEmpty(board.fileList) or !board.fileList[0].image}"
+                         class="image-thumbnail" style="background-color: #888; color: white;">
+                        <span>이미지 없음</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="text-area">
+            <a class="title" th:text="${board.title}"></a>
+            <div class="name-wrapper">
+                <a class="name" th:text="${board.name}"></a>
+            </div>
+
+            <div th:unless="${loginUserId} == ${board.user_id}">
+                <a class="follow"
+                   th:text="${board.follow} == true ? 'FOLLOWING' : 'UNFOLLOWING'"
+                   th:classappend="${board.follow} ? 'btn-info' : 'btn-danger'"></a>
+            </div>
+
+            <div class="tagType" th:if="${board.type == 'guest'}">
+            <span class="tagName" th:each="tag : ${board.post_tag}" th:text="'#' + ${tag.name}"
+                  th:style="'color:' + ${tag.color} + '; border: 1px solid ' + ${tag.color}"></span>
+            </div>
+            <div class="tagType" th:if="${board.type == 'helper'}">
+            <span class="tagName" th:each="tag : ${board.post_tag}" th:text="'#' + ${tag.name}"
+                  th:style="'color:' + ${tag.color} + '; border: 1px solid ' + ${tag.color}"></span>
+            </div>
+
+            <a class="followCount" th:if="${board.type == 'helper'}" th:text="'팔로워 : ' + ${board.followCount}"></a>
+            <a class="day"
+               th:text="${#temporals.format(board.createdat, board.createdat.monthValue >= 10 ? 'yy년 MM월 dd일 HH시' : 'yy년 M월 d일 H시')}"></a>
+        </div>
+    </div>
+
+    <!-- pagination -->
+    <div class="container mt-4">
+        <th:block th:insert="~{board/pagination::pagination}"></th:block>
+    </div>
 
     <!-- 중앙 정렬된 페이징 텍스트 -->
     <div class="text-center flex-grow-1">
@@ -82,70 +152,17 @@
         <span th:text="'page ' + ${page} + '/' + ${totalPage}"></span>
     </div>
 
-    <!-- 우측: 작성 버튼 -->
-    <div id="button">
-        <a class="btn btn-success writeBtn" th:href="@{/board/write}" onclick="return checkLogin()">게시물 작성하기</a>
-    </div>
-</div>
-
-<!-- 카드형 게시글 목록 -->
-<div th:each="board : ${boardList}" class="board" th:attr="data-id=${board.id}"
-     onclick="location.href='/board/detail/' + this.getAttribute('data-id')" style="cursor:pointer;">
-
-    <div id="attachment">
-        <div class="container mt-3 mb-3 border rounded">
-            <div class="image-wrapper">
-                <img th:if="${not #lists.isEmpty(board.fileList) and board.fileList[0].image == true}"
-                     th:src="@{'/upload/' + ${board.fileList[0].fileName}}"
-                     class="img-thumbnail" alt="image">
-                <div th:if="${#lists.isEmpty(board.fileList) or !board.fileList[0].image}"
-                     class="image-thumbnail" style="background-color: #888; color: white;">
-                    <span>이미지 없음</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="text-area">
-        <a class="title" th:text="${board.title}"></a>
-        <div class="name-wrapper">
-            <a class="name" th:text="${board.name}"></a>
-        </div>
-
-        <div th:unless="${loginUserId} == ${board.user_id}">
-            <a class="follow"
-               th:text="${board.follow} == true ? 'FOLLOWING' : 'UNFOLLOWING'"
-               th:classappend="${board.follow} ? 'btn-info' : 'btn-danger'"></a>
-        </div>
-
-        <div class="tagType" th:if="${board.type == 'guest'}">
-            <span class="tagName" th:each="tag : ${board.post_tag}" th:text="'#' + ${tag.name}"
-                  th:style="'color:' + ${tag.color} + '; border: 1px solid ' + ${tag.color}"></span>
-        </div>
-        <div class="tagType" th:if="${board.type == 'helper'}">
-            <span class="tagName" th:each="tag : ${board.post_tag}" th:text="'#' + ${tag.name}"
-                  th:style="'color:' + ${tag.color} + '; border: 1px solid ' + ${tag.color}"></span>
-        </div>
-
-        <a class="followCount" th:if="${board.type == 'helper'}" th:text="'팔로워 : ' + ${board.followCount}"></a>
-        <a class="day"
-           th:text="${#temporals.format(board.createdat, board.createdat.monthValue >= 10 ? 'yy년 MM월 dd일 HH시' : 'yy년 M월 d일 H시')}"></a>
-    </div>
-</div>
-
-<!-- pagination -->
-<th:block th:insert="~{board/pagination::pagination}"></th:block>
-
-<script>
-    function checkLogin() {
-        const loginUserId = document.getElementById('loginUserId').value;
-        if (!loginUserId) {
-            alert("로그인 하셔야 합니다");
-            location.href = "/user/login";
-            return false;
+    <script>
+        function checkLogin() {
+            const loginUserId = document.getElementById('loginUserId').value;
+            if (!loginUserId) {
+                alert("로그인 하셔야 합니다");
+                location.href = "/user/login";
+                return false;
+            }
+            return true;
         }
-        return true;
-    }
-</script>
+    </script>
+</div>
 </body>
 </html>

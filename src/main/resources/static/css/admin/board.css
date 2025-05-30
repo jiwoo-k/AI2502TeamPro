@@ -248,7 +248,7 @@ main h2 {
 
 /* 버튼 */
 button, .btn {
-    background-color: #6c757d;
+    background-color: #444;
     color: white;
     border: none;
     padding: 10px 20px;
@@ -463,6 +463,12 @@ button:hover, .btn:hover {
 
 /* 선택된 태그 목록 */
 #tagList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+#tagChoice {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;

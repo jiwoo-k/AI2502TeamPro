@@ -161,7 +161,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // ─── 댓글 요소 생성 헬퍼 ─────────────────────────────────
 function createCommentEl(comment) {
     const el = document.createElement("div");
-    el.className = "comment mb-2 p-2 border rounded";
+    el.className = "comment mx-2 my-2 p-2 border rounded";
 
     // (1) 피커 권한이 있고, 댓글 작성자가 로그인 사용자와 다를 때만 버튼 보이기
     const canPick = window.loggedUserId === window.postAuthorId

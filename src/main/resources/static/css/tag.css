@@ -15,9 +15,19 @@
 /*에러 문구*/
 div.showError span{
     color: #d22;
+    font-size: 14px;
+    background-color: #d222;
+    padding: 8px 12px;
+    border-radius: 5px;
+    display: inline-block
 }
 
 /*검색 성공 문구*/
 div.searchSucceed{
-    color: #11e;
+    color: #22d;
+    font-size: 14px;
+    background-color: #22d2;
+    padding: 8px 12px;
+    border-radius: 5px;
+    display: inline-block
 }

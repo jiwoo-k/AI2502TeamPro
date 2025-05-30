@@ -37,7 +37,7 @@
 
 
                     <p>카테고리 선택</p>
-                    <div th:each="category : ${categoryList}" th:text="${category.name}"
+                    <div id="tagChoice" th:each="category : ${categoryList}" th:text="${category.name}"
                          th:style="'background-color: ' + ${category.color} + '; display: inline-block'"
                          class="categoryBox"
                          th:id="${category.id}"
