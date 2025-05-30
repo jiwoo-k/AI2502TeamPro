@@ -35,20 +35,27 @@ public class TagController {
         this.categoryService = categoryService;
     }
     @GetMapping("/tag")
-    public String showTag(Model model, HttpSession httpSession) {
-        httpSession.removeAttribute("selectedTag");
+    public String showTag(Model model, HttpSession session) {
+
+
+        // 카테고리 목록 설정
         List<Category> categoryList = categoryService.list();
         model.addAttribute("categoryList", categoryList);
 
-        List<Tag> selectedTags = (List<Tag>) httpSession.getAttribute("selectedTags");
-        if (selectedTags == null) {
+        // 기존에 선택된 태그 세션에서 불러오기 (초기화 없이 유지)
+        List<Tag> selectedTags = (List<Tag>) session.getAttribute("selectedTags");
+
+        // 세션에 selectedTags가 없을 때만 한 번 초기화
+        if (selectedTags == null || selectedTags.isEmpty()) {
             selectedTags = new ArrayList<>();
-            httpSession.setAttribute("selectedTags", selectedTags);
+            session.setAttribute("selectedTags", selectedTags);
         }
 
         model.addAttribute("selectedTags", selectedTags);
         return "common/tag";
     }
+
+
 
     @PostMapping("/tag")
     public String searchTag(@Valid Tag tag,
@@ -58,7 +65,6 @@ public class TagController {
                             RedirectAttributes redirectAttributes,
                             HttpSession httpSession) {
 
-        httpSession.setAttribute("selectedTags", new ArrayList<Tag>());
         String path = "/";
         if (referer != null && !referer.isEmpty()) {
             try {
@@ -69,36 +75,54 @@ public class TagController {
             }
         }
 
+        List<Category> categoryList = categoryService.list();
+        model.addAttribute("categoryList", categoryList);
+
+        List<Tag> selectedTags = (List<Tag>) httpSession.getAttribute("selectedTags");
+        if (selectedTags == null) {
+            selectedTags = new ArrayList<>();
+            httpSession.setAttribute("selectedTags", selectedTags);
+        }
+        model.addAttribute("selectedTags", selectedTags); // 기존 태그 목록을 모델에 담기
+
         if (result.hasErrors()) {
             for (FieldError err : result.getFieldErrors()) {
                 redirectAttributes.addFlashAttribute("error_" + err.getField(), err.getCode());
                 redirectAttributes.addFlashAttribute("name", tag.getName());
                 redirectAttributes.addFlashAttribute("submittedCategoryId", tag.getCategory_id());
-                redirectAttributes.addFlashAttribute("categoryList", categoryService.list());
             }
             return "redirect:" + path;
         }
 
-        List<Tag> selectedTags = (List<Tag>) httpSession.getAttribute("selectedTags");
-
         Tag searchedTag = tagRepository.searchTag(tag);
-        String color = categoryService.findById(searchedTag.getCategory_id()).getColor();
-        searchedTag.setColor(color);
+        if (searchedTag != null) {
+            String color = categoryService.findById(searchedTag.getCategory_id()).getColor();
+            searchedTag.setColor(color);
 
-        if (!selectedTags.contains(searchedTag)) {
-            selectedTags.add(searchedTag);
-            httpSession.setAttribute("selectedTags", selectedTags);
+            boolean alreadyExists = false;
+            for (Tag selectedTag : selectedTags) {
+                if (selectedTag.getId() != null && selectedTag.getId().equals(searchedTag.getId())) {
+                    alreadyExists = true;
+                    break;
+                } else if (selectedTag.getName().equals(searchedTag.getName()) && selectedTag.getCategory_id().equals(searchedTag.getCategory_id())) {
+                    alreadyExists = true;
+                    break;
+                }
+            }
+
+            if (!alreadyExists) {
+                model.addAttribute("searchedTag", searchedTag);
+            } else {
+                model.addAttribute("error_isExist", "이미 목록에 추가된 태그입니다.");
+            }
+            model.addAttribute("name", searchedTag != null ? searchedTag.getName() : tag.getName());
+            model.addAttribute("submittedCategoryId", tag.getCategory_id());
+        } else {
+            model.addAttribute("name", tag.getName());
+            model.addAttribute("submittedCategoryId", tag.getCategory_id());
         }
 
-
-        model.addAttribute("selectedTags", selectedTags);
-        model.addAttribute("categoryList", categoryService.list());
-        model.addAttribute("searchedTag", searchedTag);
-        model.addAttribute("name", searchedTag.getName());
-        model.addAttribute("submittedCategoryId", searchedTag.getCategory_id());
-        model.addAttribute("searchedTagCategoryName", categoryService.findById(searchedTag.getCategory_id()).getName());
-
-        return path.substring(1);
+        return path.substring(1); 
     }
 
     @PostMapping("/tag/add")
@@ -111,7 +135,9 @@ public class TagController {
         List<Tag> selectedTags = (List<Tag>) httpSession.getAttribute("selectedTags");
         if (selectedTags == null) {
             selectedTags = new ArrayList<>();
+            httpSession.setAttribute("selectedTags", selectedTags);
         }
+
 
         // 최대 개수 제한 먼저 검사
         if (selectedTags.size() >= 5) {
@@ -190,12 +216,12 @@ public class TagController {
     @PostMapping("/tag/search")
     @ResponseBody
     public ResponseEntity<Tag> searchTag(
-            @RequestParam("name") String name,
-            @RequestParam("category_id") Long category_id
+            @RequestParam("name") String tagName,
+            @RequestParam("category_id") Long categoryId
     ) {
         Tag tag = new Tag();
-        tag.setName(name.trim());
-        tag.setCategory_id(category_id);
+        tag.setName(tagName.trim());
+        tag.setCategory_id(categoryId);
 
         Tag searchedTag = tagRepository.searchTag(tag);
         if (searchedTag == null) {
@@ -268,3 +294,5 @@ public class TagController {
         binder.setValidator(tagValidator);
     }
 }
+
+

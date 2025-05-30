@@ -180,7 +180,7 @@ public class BoardController {
                        Principal principal,
                        HttpSession httpSession,
                        RedirectAttributes redirectAttributes
-                       ) {
+    ) {
 
         if (type == null || type.isBlank()) {
             type = "guest";
@@ -374,7 +374,7 @@ public class BoardController {
         double sinDeltaLng = Math.sin(deltaLng / 2);
         double squareRoot = Math.sqrt(
                 sinDeltaLat * sinDeltaLat +
-                Math.cos(lng1 * radian) * Math.cos(lng2 * radian) * sinDeltaLng * sinDeltaLng);
+                        Math.cos(lng1 * radian) * Math.cos(lng2 * radian) * sinDeltaLng * sinDeltaLng);
 
         distance = 2 * radius * Math.asin(squareRoot);
 

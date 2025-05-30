@@ -55,15 +55,14 @@ $(function(){
                     // 현재 태그 목록에 추가하는 로직
                     $('#tagList').append(`
          <div class="selectedTag tagName" style="color:${addedTag.color}; border: 1px solid ${addedTag.color}">
-            <input name="name" type="hidden" value="${addedTag.name}">
-            <input name="category_id" type="hidden" value="${addedTag.category_id}">
-            <input name="id" type="hidden" value="${addedTag.id}">
+            <input name="tagName" type="hidden" value="${addedTag.name}">
+            <input name="categoryId" type="hidden" value="${addedTag.category_id}">
+            <input name="tagId" type="hidden" value="${addedTag.id}">
             <input name="deleteTagColor" type="hidden" value="${addedTag.color}">
             <span th:style="color:${addedTag.color}"># ${addedTag.name}</span>
             <button class="deleteTag" th:style=" color: ${addedTag.color}">X</button>
          </div>
                     `);
-                    return;
                 }
                 if(data.result > 0){
                     alert('신규 태그 생성 및 목록에 저장 성공!');
@@ -76,12 +75,12 @@ $(function(){
     let isExistError = $("input[name='existError']").val();
     if(isExistError){
         alert('목록에 이미 추가된 태그입니다.');
-        history.back();
+        return
     }
 
     if($("input[name='sizeOverError']").val()){
         alert('태그는 최대 5개까지 담을 수 있습니다.');
-        history.back();
+        return;
     }
 
     $('#tagList').on('click', 'button.deleteTag', function(){
@@ -91,9 +90,10 @@ $(function(){
             const $tagDiv = $(this).closest('.selectedTag');
 
             // 태그 정보 추출
-            let deleteTagName = $tagDiv.find("input[name='name']").val();
-            let deleteCategoryId = $tagDiv.find("input[name='category_id']").val();
-            let deleteTagId = $tagDiv.find("input[name='id']").val();
+            let deleteTagName = $tagDiv.find("input[name='tagName']").val();
+            let deleteCategoryId = $tagDiv.find("input[name='categoryId']").val();
+            let deleteTagId = $tagDiv.find("input[name='tagId']").val();
+
 
             const removeTagInfo = {
                 name: deleteTagName,
@@ -112,7 +112,7 @@ $(function(){
                 .then(data => {
                     if(data.deleteSuccess){
                         alert(data.deleteSuccess);
-                        history.back();
+
                     }
                 })
 
@@ -121,26 +121,42 @@ $(function(){
     });
 
 });
+$(function(){
+    // ... (기존 코드)
 
-function getTagList(){
-    //HTML 에서 태그 갖고와서 배열로 전환
-    const tagList = document.querySelectorAll("div.selectedTag");
-    let tags = [];
+    $('button#tagSearchButton').click(function(event) {
+        event.preventDefault(); // form submit 방지
 
-    //핸들러에 전송할 tag 형 배열 생성
-    tagList.forEach(tag => {
-        const tagName = tag.querySelector("input[name='name']").value;
-        const categoryId = tag.querySelector("input[name='category_id']").value;
-        const tagId = tag.querySelector("input[name='id']").value;
-        const tagColor = tag.querySelector("input[name='deleteTagColor']").value;
+        const tagName = $("input[name='name']").val();
+        const categoryId = $("input[name='category_id']").val();
 
-        tags.push({
-            id: tagId,
-            name: tagName,
-            category_id: categoryId,
-            color: tagColor,
-        });
+        fetch('/tag/search', { // 새로운 검색 API 엔드포인트
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+            },
+            body: new URLSearchParams({
+                name: tagName,
+                category_id: categoryId
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data) {
+                    // 검색 성공 시 UI 업데이트 (예: 검색 결과 영역에 보여주기)
+                    $('.searchSucceed').text('검색 성공! 추가 가능합니다.');
+                    // 검색된 태그 정보를 어딘가에 저장하거나 바로 추가 버튼 활성화 등의 처리
+                    // 예시:
+                    // $('#addSearchedTag').data('tag', data);
+                    // $('#tagAddButton').prop('disabled', false);
+                } else {
+                    $('.searchSucceed').text(''); // 검색 실패 메시지 처리
+                    alert('검색된 태그가 없습니다.');
+                }
+            });
     });
 
-    return tags;
-}
+    // ... (나머지 JavaScript 코드 - tagAddButton 클릭 이벤트 등은 그대로 두세요)
+});
+
+

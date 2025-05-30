@@ -13,9 +13,9 @@ $(function(){
         i++;
     });
 
-    // Summernote 추가
-    $("#content").summernote({
-        height: 300,
-    });
+    // // Summernote 추가
+    // $("#content").summernote({
+    //     height: 300,
+    // });
 
 });

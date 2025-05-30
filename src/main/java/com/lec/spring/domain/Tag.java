@@ -27,11 +27,12 @@ public class Tag {
         if (this == o) return true;
         if (!(o instanceof Tag)) return false;
         Tag tag = (Tag) o;
-        return Objects.equals(id, tag.id);
-    }
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
+        return Objects.equals(name, tag.name) &&
+                Objects.equals(category_id, tag.category_id);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, category_id);
+    }
 }
