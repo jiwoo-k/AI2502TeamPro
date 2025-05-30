@@ -54,7 +54,7 @@ public class HomeController {
 
     @RequestMapping("/home")
     public void home(Model model, HttpSession httpSession){
-        httpSession.removeAttribute("selectedTags");
+//        httpSession.removeAttribute("selectedTags");
         List<Category> categoryList = categoryService.list();
         model.addAttribute("categoryList", categoryList);
 
