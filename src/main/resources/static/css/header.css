@@ -7,6 +7,12 @@
     background-color: #ffffff;       /* 배경색 */
     border-bottom: 1px solid #e0e0e0;/* 하단 경계선 */
     padding: 0.5rem 1rem;            /* 위아래 8px, 좌우 16px */
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 999; /* 다른 요소 위에 뜨게 */
+    border-bottom: 1px solid #e0e0e0;
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────

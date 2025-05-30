@@ -189,7 +189,7 @@ function createCommentEl(comment) {
                          onclick="deleteComment(${comment.id})">삭제</button>`
         : ""}
             ${pickButton}
-            <button class="btn btn-sm btn-link reply-btn"
+            <button class="btn btn-primary btn-sm btn-link reply-btn"
                     data-parent-id="${comment.id}">답글</button>
         </div>
     `;

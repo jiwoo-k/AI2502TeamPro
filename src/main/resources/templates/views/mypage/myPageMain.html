@@ -36,23 +36,12 @@
         <span>누적 신고 횟수: <strong th:text="${user.warningCount}">0</strong></span>
     </div>
     <!-- 3~6. 기능 버튼 -->
-    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px;">
-        <a th:href="@{/mypage/post}"
-           style="padding: 20px 30px; background-color: #e0f7fa; border-radius: 8px; text-decoration: none; color: black;">내가
-            작성한 글</a>
-        <a th:href="@{/mypage/comment}"
-           style="padding: 20px 30px; background-color: #e0f7fa; border-radius: 8px; text-decoration: none; color: black;">내가
-            쓴 댓글</a>
-        <a th:href="@{/mypage/my-picked-posts}"
-           style="padding: 20px 30px; background-color: #e0f7fa; border-radius: 8px; text-decoration: none; color: black;">
-            내가 PICK 한 댓글
-        </a>
-        <a th:href="@{/mypage/edit}"
-           style="padding: 20px 30px; background-color: #e0f7fa; border-radius: 8px; text-decoration: none; color: black;">회원정보
-            수정</a>
-        <a th:href="@{/mypage/follow}"
-           style="padding: 20px 30px; background-color: #e0f7fa; border-radius: 8px; text-decoration: none; color: black;">팔로잉
-            목록</a>
+    <div class="d-flex flex-wrap justify-content-center gap-3">
+        <a th:href="@{/mypage/post}" class="mypage-button">내가 작성한 글</a>
+        <a th:href="@{/mypage/comment}" class="mypage-button">내가 쓴 댓글</a>
+        <a th:href="@{/mypage/my-picked-posts}" class="mypage-button">내가 PICK 한 댓글</a>
+        <a th:href="@{/mypage/edit}" class="mypage-button">회원정보 수정</a>
+        <a th:href="@{/mypage/follow}" class="mypage-button">팔로잉 목록</a>
     </div>
 </main>
 </body>

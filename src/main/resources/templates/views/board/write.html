@@ -79,13 +79,6 @@
         <!-- 여기서부터 태그 검색 및 추가 영역 -->
 
         <div id="tagSearch">
-            <div id="searchZone">
-                <input type="text" id="tagSearchInput" name="tagName" placeholder="태그 검색 (# 제외)" th:value="${name}"/>
-                <input type="hidden" id="categoryIdInput" name="category_id" th:value="${submittedCategoryId}"/>
-                <button type="button" id="tagSearchButton">검색</button>
-                <button type="button" id="tagAddButton" style="display:none;">추가</button>
-                <div class="searchSucceed" th:if="${searchedTag != null}" th:text="'검색 성공! 목록에 추가 가능합니다.'"></div>
-            </div>
 
             <div id="categoryZone">
                 <p>카테고리 선택</p>
@@ -96,6 +89,14 @@
                      th:id="${category.id}"
                      th:classappend="${submittedCategoryId != null and category.id == submittedCategoryId} ? 'selected' : ''">
                 </div>
+            </div>
+
+            <div id="searchZone">
+                <input type="text" id="tagSearchInput" name="tagName" placeholder="태그 검색 (# 제외)" th:value="${name}"/>
+                <input type="hidden" id="categoryIdInput" name="category_id" th:value="${submittedCategoryId}"/>
+                <button type="button" id="tagSearchButton">검색</button>
+                <button type="button" id="tagAddButton" style="display:none;">추가</button>
+                <div class="searchSucceed" th:if="${searchedTag != null}" th:text="'검색 성공! 목록에 추가 가능합니다.'"></div>
             </div>
 
             <div>

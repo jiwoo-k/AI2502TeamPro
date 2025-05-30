@@ -36,11 +36,12 @@ main {
 .back-to-mypage {
     display: inline-block;
     padding: 10px 18px;
-    background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%);
+    /*background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%);*/
+    background: #444c;
     border-radius: 8px;
     text-decoration: none;
     font-weight: 600;
-    color: #006064;
+    color: #fff;
     margin-bottom: 30px;
     transition: all 0.3s ease;
     border: 1px solid transparent;
@@ -48,10 +49,11 @@ main {
 }
 
 .back-to-mypage:hover {
-    background: linear-gradient(135deg, #b2ebf2 0%, #80deea 100%);
+    /*background: linear-gradient(135deg, #b2ebf2 0%, #80deea 100%);*/
+    background: #444c;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    color: #004d40;
+    color: #fff;
 }
 
 /* 페이지 제목 */
@@ -113,10 +115,11 @@ h2::after {
 
 .feature-card {
     padding: 25px 20px;
-    background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%);
+    /*background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%);*/
+    background: #444c;
     border-radius: 12px;
     text-decoration: none;
-    color: #006064;
+    color: #fff;
     text-align: center;
     font-weight: 600;
     font-size: 16px;

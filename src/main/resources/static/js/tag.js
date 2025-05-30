@@ -54,7 +54,7 @@ $(function(){
                     document.querySelector("input[name='name']").value = "";
                     // 현재 태그 목록에 추가하는 로직
                     $('#tagList').append(`
-         <div class="selectedTag tagName" style="color:${addedTag.color}; border: 1px solid ${addedTag.color}">
+         <div class="selectedTag tagName" style="color:${addedTag.color}; border: 2px solid ${addedTag.color}">
             <input name="name" type="hidden" value="${addedTag.name}">
             <input name="category_id" type="hidden" value="${addedTag.category_id}">
             <input name="id" type="hidden" value="${addedTag.id}">

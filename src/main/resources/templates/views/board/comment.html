@@ -2,6 +2,8 @@
         xmlns:th="http://www.thymeleaf.org"
         xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
         th:fragment="comment-fragment(post)">
+    <link rel="stylesheet" th:href="@{/css/design/common.css}">
+
 
     <div id="comment-section" class="container my-3">
         <h4 class="mb-3">댓글 <span id="comment-count" class="badge bg-secondary">0</span></h4>

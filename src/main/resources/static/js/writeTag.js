@@ -28,7 +28,7 @@ $(function () {
                 $('#tagAddButton').hide();
 
                 const newTag = `
-             <div class="selectedTag tagName" style="color:${tag.color}; border: 1px solid ${tag.color}">
+             <div class="selectedTag tagName" style="color:${tag.color}; border: 2px solid ${tag.color}">
                         <input name="tagName" type="hidden" value="${tag.name}">
                         <input name="categoryId" type="hidden" value="${tag.category_id}">
                         <input name="tagId" type="hidden" value="${tag.id}">
@@ -91,7 +91,7 @@ $(function () {
                 if (data.addTag) { // data.result 대신 data.addTag 존재 여부로 판단
                     const addedTag = data.addTag;
                     $('#tagList').append(`
-                  <div class="selectedTag tagName" style="color:${addedTag.color}; border: 1px solid ${addedTag.color}">
+                  <div class="selectedTag tagName" style="color:${addedTag.color}; border: 2px solid ${addedTag.color}">
                             <input name="name" type="hidden" value="${addedTag.name}">
                             <input name="category_id" type="hidden" value="${addedTag.category_id}">
                             <input name="id" type="hidden" value="${addedTag.id}">

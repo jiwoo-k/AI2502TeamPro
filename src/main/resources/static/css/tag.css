@@ -29,5 +29,6 @@ div.searchSucceed{
     background-color: #22d2;
     padding: 8px 12px;
     border-radius: 5px;
-    display: inline-block
+    display: inline-block;
+    margin-left: 1rem;
 }
