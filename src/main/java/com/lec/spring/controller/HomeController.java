@@ -54,7 +54,7 @@ public class HomeController {
 
     @RequestMapping("/home")
     public void home(Model model, HttpSession httpSession){
-        httpSession.removeAttribute("selectedTags");
+//        httpSession.removeAttribute("selectedTags");
         List<Category> categoryList = categoryService.list();
         model.addAttribute("categoryList", categoryList);
 
@@ -137,7 +137,7 @@ public class HomeController {
 
     @PostMapping("/location")
     @ResponseBody
-    public User location(LocationInfo locationInfo){
+    public LocationInfo location(LocationInfo locationInfo){
         System.out.println(locationInfo);
 
         User user = U.getLoggedUser();
@@ -155,7 +155,7 @@ public class HomeController {
         U.getSession().setAttribute("areaName", locationInfo.getAreaName());
 
         System.out.println(user);
-        return user;
+        return locationInfo;
     }
 
     @Autowired

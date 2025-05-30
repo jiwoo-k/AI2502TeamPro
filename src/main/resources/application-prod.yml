@@ -43,8 +43,8 @@ app:
 
     #kakao 로그인 관련 세팅값
     kakao:
-      client-id: xxxxxxxx # 앱 키
-      redirect-uri: xxxxxxxxxxxx # Redirect URI
+      client-id: ${KAKAO_CLIENT_ID} # 앱 키
+      redirect-uri: ${KAKAO_REDIRECT_URI} # Redirect URI
       token-uri: https://kauth.kakao.com/oauth/token # access token
       user-info-uri: https://kapi.kakao.com/v2/user/me # 사용자 profile 요청
 

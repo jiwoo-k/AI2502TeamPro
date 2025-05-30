@@ -59,20 +59,23 @@
                 <a th:href="@{/board/download(id=${attachment.id})}" th:text="${attachment.sourceName}"></a>
             </li>
         </ul>
-        <div class="mt-2" th:each="attachment : ${board.fileList}" th:if="${attachment.image}" style="max-width: 400px;">
+        <div class="mt-2" th:each="attachment : ${board.fileList}" th:if="${attachment.image}"
+             style="max-width: 400px;">
             <img th:src="@{'/upload/' + ${attachment.fileName}}" class="img-thumbnail" alt="첨부 이미지">
         </div>
     </div>
 
     <!-- FOLLOW / UNFOLLOW -->
     <div th:if="${loginUserId != null and loginUserId != board.user_id}">
-        <form th:action="@{${board.follow} ? '/board/follow/delete' : '/board/follow/insert'}" method="post" onsubmit="return checkLogin()">
+        <form th:action="@{${board.follow} ? '/board/follow/delete' : '/board/follow/insert'}" method="post"
+              onsubmit="return checkLogin()">
             <input type="hidden" name="followedUserId" th:value="${board.user_id}"/>
             <input type="hidden" name="id" th:value="${board.id}"/>
             <button type="submit"
                     th:class="'btn ' + (${board.follow} ? 'btn-outline-danger' : 'btn-primary')"
                     th:text="${board.follow} ? 'UNFOLLOW' : 'FOLLOW'">
-            </button>        </form>
+            </button>
+        </form>
     </div>
 
     <!-- 팔로워 수 -->
@@ -87,12 +90,12 @@
     <div th:if="${board.type == 'guest'}">
         <span th:each="tag : ${board.post_tag}" class="tagName"
               th:text="'#' + ${tag.name}"
-              th:style="'color:' + ${tag.color} + '; border: 1px solid ' + ${tag.color}"></span>
+              th:style="'color:' + ${tag.color} + '; border: 2px solid ' + ${tag.color}"></span>
     </div>
     <div th:if="${board.type == 'helper'}">
         <span th:each="tag : ${board.post_tag}" class="tagName"
               th:text="'#' + ${tag.name}"
-              th:style="'color:' + ${tag.color} + '; border: 1px solid ' + ${tag.color}"></span>
+              th:style="'color:' + ${tag.color} + '; border: 2px solid ' + ${tag.color}"></span>
     </div>
 
     <!-- 버튼 영역 -->
@@ -120,7 +123,7 @@
                 <textarea name="reason" id="reason" class="form-control" rows="3"></textarea>
                 <button type="submit" class="btn btn-warning mt-2">신고 접수</button>
             </div>
-            <button type="button" class="btn btn-outline-danger" onclick="document.getElementById('reasonBox').style.display = 'block'">신고하기</button>
+            <button type="button" class="btn btn-outline-danger" id="reportButton" onclick="toggleWarning()">신고하기</button>
         </form>
     </div>
 
@@ -149,6 +152,17 @@
         }
         return true;
     }
+
+    function toggleWarning() {
+        document.getElementById('reasonBox').style.display = 'block';
+        document.getElementById('reportButton').style.display = 'none';
+    }
+
+</script>
+
+<script>
+
+
 </script>
 
 </body>

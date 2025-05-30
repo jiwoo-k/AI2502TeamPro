@@ -10,6 +10,16 @@ $(function () {
         $("input[name='category_id']").val(categoryId);
     });
 
+    // 클라이언트 사이드 중복 검사 함수
+    function isTagAlreadyAdded(tagId) {
+        return $('#tagList').find(`input[name="tagId"][value="${tagId}"]`).length > 0;
+    }
+
+    // 클라이언트 사이드 개수 제한 검사 함수
+    function isTagLimitExceeded() {
+        return $('#tagList .selectedTag').length >= 5;
+    }
+
     // 태그 검색
     $('#tagSearchButton').click(function () {
         const name = $('input[name="tagName"]').val();
@@ -25,6 +35,17 @@ $(function () {
             type: 'POST',
             data: {name: name, category_id: categoryId},
             success: function (tag) {
+                // 클라이언트 사이드 검사
+                if (isTagAlreadyAdded(tag.id)) {
+                    alert('이미 목록에 추가된 태그입니다.');
+                    return;
+                }
+
+                if (isTagLimitExceeded()) {
+                    alert('태그는 최대 5개까지 담을 수 있습니다.');
+                    return;
+                }
+
                 $('#tagAddButton').hide();
 
                 const newTag = `
@@ -38,6 +59,9 @@ $(function () {
                 `;
                 $('#tagList').append(newTag);
                 $('.searchSucceed').text("검색 성공! 목록에 추가되었습니다.").show();
+
+                // 검색 입력 필드 초기화
+                $('input[name="tagName"]').val('');
             },
             error: function (xhr) {
                 if (xhr.status === 404) {
@@ -62,11 +86,18 @@ $(function () {
             return;
         }
 
+        // 클라이언트 사이드 개수 제한 검사
+        if (isTagLimitExceeded()) {
+            alert('태그는 최대 5개까지 담을 수 있습니다.');
+            return;
+        }
+
         const addTagInfo = {
             name: tagName,
             category_id: categoryId
         };
         const requestBody = JSON.stringify(addTagInfo);
+
         fetch('/tag/save', {
             method: 'POST',
             headers: {"Content-Type": "application/json"},
@@ -76,20 +107,25 @@ $(function () {
             .then(data => {
                 if (data.alreadyInList) {
                     alert(data.alreadyInList);
-                    history.back();
                     return;
                 }
                 if (data.sizeOverError) {
                     alert(data.sizeOverError);
-                    history.back();
                     return;
                 }
                 if (data.addExistingTag) {
                     alert('검색 태그 목록에 저장 성공!');
                     return;
                 }
-                if (data.addTag) { // data.result 대신 data.addTag 존재 여부로 판단
+                if (data.addTag) {
                     const addedTag = data.addTag;
+
+                    // 클라이언트 사이드에서도 중복 검사
+                    if (isTagAlreadyAdded(addedTag.id)) {
+                        alert('이미 목록에 추가된 태그입니다.');
+                        return;
+                    }
+
                     $('#tagList').append(`
                   <div class="selectedTag tagName" style="color:${addedTag.color}; border: 2px solid ${addedTag.color}">
                             <input name="name" type="hidden" value="${addedTag.name}">
@@ -104,9 +140,16 @@ $(function () {
                     } else {
                         alert('기존 태그 목록에 추가 성공!');
                     }
-                }
-            });
 
+                    // 입력 필드 초기화
+                    $('input[name="tagName"]').val('');
+                    $('#tagAddButton').hide();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('태그 추가 중 오류가 발생했습니다.');
+            });
     });
 
     // 태그 삭제 (이벤트 위임)
@@ -116,8 +159,16 @@ $(function () {
         }
     });
 
-// 폼 제출 직전에 실행
+    // 폼 제출 직전에 실행
     $('#writeForm').on('submit', function (e) {
+        // 태그 개수 제한 검사
+        const tagCount = $('#tagList .selectedTag').length;
+        if (tagCount > 5) {
+            e.preventDefault();
+            alert('태그는 최대 5개까지 담을 수 있습니다.');
+            return false;
+        }
+
         // hiddenTagsContainer 비우기 (중복 방지)
         $('#hiddenTagsContainer').empty();
 
@@ -148,6 +199,3 @@ $(function () {
         history.back();
     }
 });
-
-
-

@@ -15,18 +15,21 @@
         <!--form1: 태그 검색하고 목록에 담기-->
         <form id="searchForm" method="post">
             <div id="tagSearch">
-                <!--카테고리 보여주기-->
-                <div id="categoryZone">
+
+            <!--카테고리 보여주기-->
+            <div id="categoryZone">
 
 
-                    <p>카테고리 선택</p>
-                    <div id="tagChoice" th:each="category : ${categoryList}" th:text="${category.name}"
-                         th:style="'background-color: ' + ${category.color} + '; display: inline-block'"
-                         class="categoryBox"
-                         th:id="${category.id}"
-                         th:classappend="${submittedCategoryId != null and category.id == submittedCategoryId} ? 'selected' : ''">
-                    </div>
+                <p>카테고리 선택</p>
+                <div th:each="category : ${categoryList}" th:text="${category.name}"
+                     th:style="'background-color: ' + ${category.color} + '; display: inline-block'"
+                     class="categoryBox"
+                     th:id="${category.id}"
+                     th:classappend="${submittedCategoryId != null and category.id == submittedCategoryId} ? 'selected' : ''">
                 </div>
+            </div>
+
+
 
                 <!--태그 검색 및 추가-->
                 <div id="searchZone">
@@ -45,6 +48,16 @@
                     <!--                    <input id="addSearchedTag" name="addedTagName" type="hidden" th:value="${searchedTag != null ? searchedTag.name : ''}">-->
                 </div>
 
+
+
+                    <p>카테고리 선택</p>
+                    <div th:each="category : ${categoryList}" th:text="${category.name}"
+                         th:style="'background-color: ' + ${category.color} + '; display: inline-block'"
+                         class="categoryBox"
+                         th:id="${category.id}"
+                         th:classappend="${submittedCategoryId != null and category.id == submittedCategoryId} ? 'selected' : ''">
+                    </div>
+                </div>
 
                 <!--validation 문구-->
                 <div>
