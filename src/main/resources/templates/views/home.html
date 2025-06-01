@@ -95,16 +95,15 @@
 <br>
 <!-- 가운데 정렬 메인 -->
 <main layout:fragment="content" class="main-center">
-    <!--버튼들-->
-    <div id="buttons" class="container-fluid">
-        <!-- 글쓰기 버튼 -->
-        <div class="mt-2 mb-2 ms-4 me-4 text-center">
-            <a class="btn btn-primary" th:href="@{/board/write}">글쓰기</a>
+    <div class="container my-4">
+      <div class="row justify-content-center g-3">
+        <div class="col-12 col-sm-6 col-md-4 text-center">
+          <a href="/board/write" class="btn btn-primary w-100">글쓰기</a>
         </div>
-        <!-- 위치 버튼 -->
-        <div class="mt-2 mb-2 ms-4 me-4 text-center">
-            <button id="setLocation" class="btn btn-primary">현재위치 가져오기</button>
+        <div class="col-12 col-sm-6 col-md-4 text-center">
+          <button id="setLocation" class="btn btn-primary w-100">현재위치 가져오기</button>
         </div>
+      </div>
     </div>
     <!-- 태그 필터 -->
     <div th:replace="~{common/tag :: tag}" class="mb-4"></div>

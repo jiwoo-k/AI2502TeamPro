@@ -139,7 +139,6 @@
             <span class="tagName" th:each="tag : ${board.post_tag}" th:text="'#' + ${tag.name}"
                   th:style="'color:' + ${tag.color} + '; border: 2px solid ' + ${tag.color}"></span>
         </div>
-
             <a class="followCount" th:if="${board.type == 'helper'}" th:text="'팔로워 : ' + ${board.followCount}"></a>
             <a class="day"
                th:text="${#temporals.format(board.createdat, board.createdat.monthValue >= 10 ? 'yy년 MM월 dd일 HH시' : 'yy년 M월 d일 H시')}"></a>

@@ -91,30 +91,29 @@
             <div id="files" class="mb-3"></div>
             <button type="button" id="btnAdd" class="btn btn-secondary">추가</button>
         </div>
-    </div>
-    <!-- 첨부파일 -->
-    <!-- 여기서부터 태그 검색 및 추가 영역 -->
+        <!-- 첨부파일 -->
+        <!-- 여기서부터 태그 검색 및 추가 영역 -->
 
         <!-- 태그 검색 및 추가 영역 -->
         <div id="tagSearch">
             <div id="searchZone">
-                <input type="text" id="tagSearchInput" name="tagName" placeholder="태그 검색 (# 제외)" th:value="${tagName}" />
-                <input type="hidden" id="categoryIdInput" name="category_id" th:value="${submittedCategoryId}" />
+                <input type="text" id="tagSearchInput" name="tagName" placeholder="태그 검색 (# 제외)" th:value="${tagName}"/>
+                <input type="hidden" id="categoryIdInput" name="category_id" th:value="${submittedCategoryId}"/>
                 <button type="button" id="tagSearchButton">검색</button>
                 <button type="button" id="tagAddButton" style="display:none;">추가</button>
                 <div class="searchSucceed" th:if="${searchedTag != null}" th:text="'검색 성공! 목록에 추가 가능합니다.'"></div>
             </div>
 
-        <div id="categoryZone" class="mb-3">
-            <p>카테고리 선택</p>
-            <div th:each="category : ${categoryList}"
-                 th:text="${category.name}"
-                 th:style="'background-color: ' + ${category.color} + '; display: inline-block'"
-                 class="categoryBox"
-                 th:id="${category.id}"
-                 th:classappend="${submittedCategoryId != null and category.id == submittedCategoryId} ? 'selected' : ''">
+            <div id="categoryZone" class="mb-3">
+                <p>카테고리 선택</p>
+                <div th:each="category : ${categoryList}"
+                     th:text="${category.name}"
+                     th:style="'background-color: ' + ${category.color} + '; display: inline-block'"
+                     class="categoryBox"
+                     th:id="${category.id}"
+                     th:classappend="${submittedCategoryId != null and category.id == submittedCategoryId} ? 'selected' : ''">
+                </div>
             </div>
-        </div>
 
             <div>
                 <div class="showError"><span th:if="${error_name}" th:utext="${error_name}"></span></div>
@@ -122,29 +121,30 @@
                 <div class="showError"><span th:if="${error_id}" th:utext="${error_id}"></span></div>
             </div>
 
-        <p class="mt-3">담은 태그 목록</p>
-        <div id="tagList">
-            <div th:each="tag : ${selectedTags}" class="selectedTag tagName" th:style="'border: 2px solid' +  ${tag.color}">
-                <input name="tagName" type="hidden" th:value="${tag.name}" />
-                <input name="categoryId" type="hidden" th:value="${tag.category_id}"/>
-                <input name="color" type="hidden" th:value="${tag.color}"/>
-                <input name="tagId" type="hidden" th:value="${tag.id}"/>
-                <span th:text="'# ' + ${tag.name}" th:style="'color : ' + ${tag.color}" ></span>
-                <button type="button" class="deleteTag" th:style="'color : ' + ${tag.color}">X</button>
+            <p class="mt-3">담은 태그 목록</p>
+            <div id="tagList">
+                <div th:each="tag : ${selectedTags}" class="selectedTag tagName"
+                     th:style="'border: 2px solid' +  ${tag.color}">
+                    <input name="tagName" type="hidden" th:value="${tag.name}"/>
+                    <input name="categoryId" type="hidden" th:value="${tag.category_id}"/>
+                    <input name="color" type="hidden" th:value="${tag.color}"/>
+                    <input name="tagId" type="hidden" th:value="${tag.id}"/>
+                    <span th:text="'# ' + ${tag.name}" th:style="'color : ' + ${tag.color}"></span>
+                    <button type="button" class="deleteTag" th:style="'color : ' + ${tag.color}">X</button>
+                </div>
             </div>
         </div>
-    </div>
 
         <div th:if="${error_post_tag}" th:text="${error_post_tag}" style="color: red"></div>
 
         <div id="hiddenTagsContainer"></div>
 
-        <div class="mt-4">
+        <div class="button-wrapper mt-4 mb-4">
             <button type="submit" class="btn btn-success">수정완료</button>
             <a th:href="@{/board/list}" class="btn btn-secondary">목록</a>
         </div>
-    </form>
-
+    </div>
+</form>
 
 
 </body>

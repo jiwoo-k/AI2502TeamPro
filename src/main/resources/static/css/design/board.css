@@ -328,15 +328,16 @@ button:hover, .btn:hover {
 }
 
 .btn-outline-primary {
-    background-color: transparent;
-    color: #aaa;
-    border: 1px solid #6c757d;
+    background-color: #888;
+    color: #fff;
+    border: 1px solid #888;
 }
 
 .btn-outline-primary:hover {
-    background-color: #6c757d;
-    color: white;
+    background-color: #444;
+    color: #fff;
 }
+
 .btn-primary {
     background-color: #888;
     color: #fff;

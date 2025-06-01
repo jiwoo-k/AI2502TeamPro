@@ -21,7 +21,7 @@ $(function () {
     // 삭제할 파일 ID를 hidden input으로 추가
     function markFileForDeletion(fileId) {
         $("#delFiles").append(
-            `<input type="hidden" name="delfile" value="${fileId}">`
+            `<input type="hidden" name="deletedFileIds" value="${fileId}">`
         );
     }
 

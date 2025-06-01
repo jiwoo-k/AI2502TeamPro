@@ -509,13 +509,23 @@ public class BoardController {
             selectedTags.removeIf(removeTag -> deletedTagIds.contains(removeTag.getId()));
         }
 
-// 추가로 선택된 태그 ID들 처리
+        // 추가로 선택된 태그 ID들 처리
         List<Tag> updatetags = new ArrayList<>();
         if (tagIds != null && !tagIds.isEmpty()) {
             updatetags = tagService.findTagsByIds(tagIds);
         }
 
         post.setPost_tag(updatetags);
+
+        // 삭제할 첨부파일 처리
+        if (deletedFileIds != null && deletedFileIds.length > 0) {
+            List<Long> delIds = List.of(deletedFileIds);
+            List<Attachment> delFiles = attachmentService.findByIds(delIds);
+            for (Attachment file : delFiles) {
+                attachmentService.delFiles(file);  // 물리적 파일 삭제
+            }
+            attachmentService.deleteByIds(delIds);  // DB 삭제
+        }
 
         int updateResult = boardService.update(post, files, deletedFileIds, updatetags);
 
