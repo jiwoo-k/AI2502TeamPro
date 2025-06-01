@@ -457,7 +457,7 @@ button:hover, .btn:hover {
 }
 
 .categoryBox.selected {
-    border: 2px solid #212529;
+    border: 2px solid #222;
     box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
 
