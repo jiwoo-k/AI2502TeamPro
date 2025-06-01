@@ -128,9 +128,9 @@ $(function () {
 
                     $('#tagList').append(`
                 <div class="selectedTag tagName" style="color:${addedTag.color}; border: 2px solid ${addedTag.color}">
-                            <input name="name" type="hidden" value="${addedTag.name}">
-                            <input name="category_id" type="hidden" value="${addedTag.category_id}">
-                            <input name="id" type="hidden" value="${addedTag.id}">
+                            <input name="tagName" type="hidden" value="${addedTag.name}">
+                            <input name="categoryId" type="hidden" value="${addedTag.category_id}">
+                            <input name="tagId" type="hidden" value="${addedTag.id}">
                             <span># ${addedTag.name}</span>
                             <button class="deleteTag">X</button>
                         </div>
