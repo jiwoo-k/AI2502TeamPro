@@ -379,6 +379,15 @@ button:hover, .btn:hover {
     background-color: #e0a800;
 }
 
+.btn-success {
+    background-color: #484;
+}
+
+.btn-success:hover {
+    background-color: #888;
+    color: #484;
+}
+
 #tagSearchButton {
     /*background-color: var(--main-color);*/
     background-color: #444;

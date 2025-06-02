@@ -19,3 +19,4 @@ public class Category {
     private Long tagCount;
     private Long postCount;
 }
+

@@ -298,6 +298,10 @@ button:hover, .btn:hover {
     background-color: #e0a800;
 }
 
+.btn-success {
+    background-color: #484;
+}
+
 /* ===========================================
    댓글 영역 (comment.html)
    =========================================== */
