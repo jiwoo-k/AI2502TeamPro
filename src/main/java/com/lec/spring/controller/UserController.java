@@ -1,11 +1,10 @@
 package com.lec.spring.controller;
 
 import com.lec.spring.domain.User;
-import com.lec.spring.domain.UserValidator;
+import com.lec.spring.vaildator.UserValidator;
 import com.lec.spring.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,6 +27,11 @@ public class UserController {
 
     public UserController(UserService userService) {
         this.userService = userService;
+    }
+
+    @RequestMapping("/rejectAuth")
+    public String rejectAuth(){
+        return "user/rejectAuth";
     }
 
     @GetMapping("/login")
@@ -59,7 +63,6 @@ public class UserController {
         if (result.hasErrors()) {
             redirectAttributes.addFlashAttribute("username", user.getUsername());
             redirectAttributes.addFlashAttribute("name", user.getName());
-            redirectAttributes.addFlashAttribute("juminNo", user.getJuminNo());
 
 
             List<FieldError> errList = result.getFieldErrors();

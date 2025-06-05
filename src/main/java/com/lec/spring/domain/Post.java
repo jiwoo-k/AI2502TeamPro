@@ -1,11 +1,9 @@
 package com.lec.spring.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import com.lec.spring.domain.Tag;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -18,14 +16,13 @@ public class Post {
     private String title;
     private String content;
     private LocalDateTime createdat;
-    private User user;
     private String type;
     private Boolean isdeleted;
     private LocalDateTime deletedat;
     private String name;
+    private User user;
 
-    @Builder.Default
-    private Long user_id = 1L;
+    private Long user_id;
 
     // 태그 검색
     private List<Tag> post_tag;
@@ -34,5 +31,16 @@ public class Post {
     // 팔로우
     private Boolean follow;
     private Integer followCount;
+
+
+    // 첨부파일 정보.
+
+    @ToString.Exclude
+    @Builder.Default
+    private List<Attachment> fileList = new ArrayList<>();
+
+
+    private List<Long> tagList;
+
 
 }

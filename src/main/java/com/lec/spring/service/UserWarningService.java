@@ -16,4 +16,8 @@ public interface UserWarningService {
     // 특정 사용자가 신고한 모든 신고 내역을 조회
     List<UserWarning> getWarningsByComplaintUserId(Long complaintUserId);
 
+    int postWarningCount(Long postId);
+
+    //특정 사용자의 신고당한 상세내역
+    List<UserWarning> findWarningDetails(Long userId);
 }

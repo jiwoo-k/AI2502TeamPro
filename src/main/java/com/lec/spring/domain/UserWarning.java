@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,4 +15,8 @@ public class UserWarning {
     private Long complaintUserId;
     private Long postId;
     private String reason;
+    private LocalDateTime warnDate;
+
+    private Post post;
+    private User complaintUser;
 }

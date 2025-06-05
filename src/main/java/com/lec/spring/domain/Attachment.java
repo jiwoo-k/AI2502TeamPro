@@ -9,10 +9,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-
 public class Attachment {
     private Long id;
     private Long postId;
-    private String sourcename;
-    private String filename;
+    private String sourceName;
+    private String fileName;
+    private boolean isImage; // 이미지 여부
 }

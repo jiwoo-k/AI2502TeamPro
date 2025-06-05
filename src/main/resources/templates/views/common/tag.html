@@ -4,23 +4,17 @@
     <meta charset="UTF-8">
     <title>태그Form</title>
     <link rel="stylesheet" th:href="@{/css/tag.css}">
+    <link rel="stylesheet" th:href="@{/css/design/common.css}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
     <script src="/js/tag.js"></script>
 </head>
 
-<th:block th:fragment="tag-fragment">
+<th:block th:fragment="tag">
 
-    <div>
-        <!--태그 검색창-->
-        <form th:action="@{/tag}" method="post">
+    <div class="mt-1 container-fluid">
+        <!--form1: 태그 검색하고 목록에 담기-->
+        <form id="searchForm" method="post">
             <div id="tagSearch">
-                <!--태그 검색 및 추가-->
-                <div id="searchZone">
-                    <input type="text" name="tagName" placeholder="태그 검색" th:value="${name}">
-                    <input type="hidden" name="categoryId">
-                    <button type="submit" id="tagSearchButton">검색</button>
-                    <button type="button" id="tagAddButton">추가</button>
-                </div>
 
                 <!--카테고리 보여주기-->
                 <div id="categoryZone">
@@ -30,40 +24,71 @@
                          class="categoryBox"
                          th:id="${category.id}"
                          th:classappend="${submittedCategoryId != null and category.id == submittedCategoryId} ? 'selected' : ''">
-
-                    </div>
-                    <div th:if="${searchedTag != null}" th:text="${'카테고리: ' + searchedTagCategoryName + ' - 태그: ' + searchedTag.name}">
-
                     </div>
                 </div>
+
+
+                <!--태그 검색 및 추가-->
+                <div id="searchZone">
+                    <input type="text" name="name" placeholder="태그 검색 (# 제외)" th:value="${name}">
+                    <input type="hidden" name="category_id" th:value="${submittedCategoryId}">
+                    <!--                    <input type="hidden" name="tagColor" th:value="${tagColor}">-->
+                    <input name="existError" type="hidden" th:value="${error_isExist}">
+                    <input name="sizeOverError" type="hidden" th:value="${error_sizeOver}">
+                    <button type="button" id="tagSearchButton">검색</button>
+                    <button th:if="${error_id != null} or ${searchedTag != null}" type="button" id="tagAddButton">추가
+                    </button>
+
+                    <div class="searchSucceed" th:if="${searchedTag != null}" th:text="'검색 성공! 목록에 추가 가능합니다.'">
+
+                    </div>
+                    <!--                    <input id="addSearchedTag" name="addedTagName" type="hidden" th:value="${searchedTag != null ? searchedTag.name : ''}">-->
+                </div>
+
+                <!--                <p>카테고리 선택</p>-->
+                <!--                <div th:each="category : ${categoryList}" th:text="${category.name}"-->
+                <!--                     th:style="'background-color: ' + ${category.color} + '; display: inline-block'"-->
+                <!--                     class="categoryBox"-->
+                <!--                     th:id="${category.id}"-->
+                <!--                     th:classappend="${submittedCategoryId != null and category.id == submittedCategoryId} ? 'selected' : ''">-->
+                <!--                </div>-->
 
                 <!--validation 문구-->
                 <div>
-                    <div><span th:if="${error_tagName}" th:utext="${error_tagName}"></span></div>
-                    <div><span th:if="${error_categoryId}" th:utext="${error_categoryId}"></span></div>
+                    <div class="showError"><span th:if="${error_name}" th:utext="${error_name}"></span></div>
+                    <div class="showError"><span th:if="${error_category_id}" th:utext="${error_category_id}"></span>
+                    </div>
+                    <div class="showError"><span th:if="${error_id}" th:utext="${error_id}"></span></div>
+                </div>
+
+                <!--담은 태그 목록-->
+                <p>담은 태그 목록</p>
+                <div id="tagList">
+                    <div th:each="tag : ${selectedTags}" class="selectedTag tagName"
+                         th:style="'border: 2px solid' +  ${tag.color}">
+                        <input name="tagName" type="hidden" th:value="${tag.name}"/>
+                        <input name="categoryId" type="hidden" th:value="${tag.category_id}"/>
+                        <input name="color" type="hidden" th:value="${tag.color}"/>
+                        <input name="tagId" type="hidden" th:value="${tag.id}"/>
+                        <span th:text="'# ' + ${tag.name}" th:style="'color : ' + ${tag.color}"></span>
+                        <button type="button" class="deleteTag" th:style="'color : ' + ${tag.color}">X</button>
+                    </div>
                 </div>
             </div>
+
+            <button th:if="${showSaveButton != null}" id="saveTagList" type="button">목록 저장</button>
         </form>
 
-
-        <form th:action="@{/board/list}" name="tagForm">
-            <!--담은 태그 목록창-->
-            <div id="tagChoice">
-                <div id="tagList">
-
-                </div>
-
-                <!--radio 와 버튼-->
-                <div id="optionButtons">
-                    <input type="radio" name="type" value="guest" id="guest" checked>
-                    <label for="guest">손님</label>
-                    <input type="radio" name="type" value="helper" id="helper">
-                    <label for="guest">도우미</label>
-
-                    <button id="deleteAll" type="button">초기화</button>
-                    <button id="postSearch" type="submit">조회</button>
-                    <button id="saveTagList" type="button">확인</button>
-                </div>
+        <!--form2: 게시글 목록으로 갈 때 및 user_tag, post_tag 에 저장-->
+        <form th:action="@{/board/list}" name="tagForm" method="get">
+            <!--radio 와 버튼-->
+            <div id="optionButtons">
+                <p>게시글 조회</p>
+                <input type="radio" name="type" value="guest" id="guest" checked>
+                <label for="guest">손님</label>
+                <input type="radio" name="type" value="helper" id="helper">
+                <label for="guest">도우미</label>
+                <button id="postSearch" type="submit">조회</button>
             </div>
         </form>
     </div>

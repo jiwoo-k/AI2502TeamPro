@@ -10,4 +10,50 @@
         values (#{complaintUserId}, #{reason}, #{postId})
     </insert>
 
+    <select id="postWarningCount" parameterType="long" resultType="int">
+        SELECT COUNT(*) FROM warning WHERE post_id = #{postId}
+    </select>
+
+    <select id="findByPostId" resultType="com.lec.spring.domain.UserWarning">
+        select complaint_user_id AS complaintUserId , post_id from warning where post_id = #{postId}
+    </select>
+
+    <select id="findWarningDetails" resultMap="mapUserWarning">
+        select
+            w.complaint_user_id "complaint_user_id",
+            complaint_user.username "complaint_username",
+            complaint_user.name "complaint_name",
+            p.id "p_id",
+            p.title "p_title",
+            w.reason "w_reason",
+            w.warndate "w_warnDate"
+        from
+            warning w
+                join post p on w.post_id = p.id
+                join user reported_user on p.user_id = reported_user.id
+                join user complaint_user on w.complaint_user_id = complaint_user.id
+        where
+            reported_user.id = #{userId};
+    </select>
+
+    <resultMap id="mapUser" type="com.lec.spring.domain.User">
+        <result column="complaint_user_id" property="id"/>
+        <result column="complaint_username" property="username"/>
+        <result column="complaint_name" property="name"/>
+    </resultMap>
+
+    <resultMap id="mapPost" type="com.lec.spring.domain.Post">
+        <result column="p_id" property="id"/>
+        <result column="p_title" property="title"/>
+    </resultMap>
+
+    <resultMap id="mapUserWarning" type="com.lec.spring.domain.UserWarning">
+        <id property="complaintUserId" column="complaint_user_id"/>
+        <id property="postId" column="p_id"/>
+
+        <result column="w_reason" property="reason"/>
+        <result column="w_warnDate" property="warnDate"/>
+        <association resultMap="mapPost" property="post"/>
+        <association resultMap="mapUser" property="complaintUser"/>
+    </resultMap>
 </mapper>

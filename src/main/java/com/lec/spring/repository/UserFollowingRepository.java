@@ -18,7 +18,7 @@ public interface UserFollowingRepository {
     UserFollowing findByFollow(@Param("followingUserId") Long followingUserId, @Param("followedUserId") Long followedUserId);
 
     // 팔로우 수
-    Integer followCount (@Param("followingUserId") Long followingUserId);
+    Integer followCount (@Param("followedUserId") Long followedUserId);
 
     // 내가 follow 한 모든 관계를 조회합니다.
     // 게시판 목록 (list, 도우미 게시판), 게시물 상세조회(detail , 손님, 도우미 게시판)

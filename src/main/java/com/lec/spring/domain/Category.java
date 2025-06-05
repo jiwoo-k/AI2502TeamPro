@@ -15,6 +15,8 @@ public class Category {
     private String name;
     private String color;
 
-    //DB 에는 없지만 인기순 정렬 위해서..
+    //DB 에는 없지만 정렬 및 집계를 위해서..
     private Long tagCount;
+    private Long postCount;
 }
+

@@ -1,7 +1,9 @@
 <th:block
         xmlns:th="http://www.thymeleaf.org"
         xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-        th:fragment="comment-fragment">
+        th:fragment="comment-fragment(post)">
+    <link rel="stylesheet" th:href="@{/css/design/common.css}">
+
 
     <div id="comment-section" class="container my-3">
         <h4 class="mb-3">댓글 <span id="comment-count" class="badge bg-secondary">0</span></h4>
@@ -18,5 +20,27 @@
         </div>
 
         <div id="comment-list-container"></div>
+
+        <!-- 대댓글 전용 폼 (초기엔 숨김) -->
+        <div id="reply-form-container" style="display:none;" class="mb-3">
+            <form th:action="@{/comment/write}" method="post">
+                <!-- CSRF 처리 -->
+                <sec:csrfInput/>
+                <input type="hidden" name="postId" th:value="${post.id}"/>
+                <input type="hidden" name="parentId" id="replyParentId"/>
+                <div class="input-group">
+                    <input type="text"
+                           class="form-control"
+                           id="replyContent"
+                           name="content"
+                           placeholder="답글을 입력하세요"
+                           required/>
+                    <button class="btn btn-primary" type="submit">등록</button>
+                    <button class="btn btn-secondary" type="button"
+                            id="btn-cancel-reply">취소
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </th:block>

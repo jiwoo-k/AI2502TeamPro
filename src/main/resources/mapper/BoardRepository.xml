@@ -13,8 +13,15 @@
         <result column="u_id" property="user_id"/>
         <result column="u_name" property="name"/>
         <result column="count" property="count"/>
-        <collection property="post_tag" ofType="com.lec.spring.domain.Tag"/>
-        <collection property="user_tag" ofType="com.lec.spring.domain.Tag"/>
+        <collection property="post_tag"
+                    ofType="com.lec.spring.domain.Tag"
+                    column="p_id"
+                    select="findTagsByPostId"/>
+        <!--<collection property="user_tag"
+                    ofType="com.lec.spring.domain.Tag"
+                    column="p_id"
+                    select="findTagsByUserId"/>-->
+
     </resultMap>
 
     <resultMap id="userMap" type="com.lec.spring.domain.User">
@@ -22,13 +29,12 @@
         <result column="u_name" property="name"/>
     </resultMap>
     <!--write / 게시판 작성 후 저장 mapper-->
-    <insert id="save" flushCache="true" keyProperty="id" parameterType="com.lec.spring.domain.Post" useGeneratedKeys="true">
+    <insert id="save" flushCache="true" keyProperty="id" parameterType="com.lec.spring.domain.Post" useGeneratedKeys="true" keyColumn="id">
         insert into post
             (user_id, title, content, type)
         values
             (#{user_id},#{title},#{content},#{type})
     </insert>
-
 
     <sql id="select_base">
         SELECT
@@ -38,7 +44,8 @@
             post.createdat AS p_createdat,
             post.type AS p_type,
             user.id AS u_id,
-            user.name AS u_name
+            user.name AS u_name,
+            post.isdeleted As isdeleted
         FROM post
                  JOIN user ON post.user_id = user.id
     </sql>
@@ -46,13 +53,44 @@
     <!--    전체 글 조회를 할 수 있게 만듦 (물론 밑에 findBytype 이 있어서 필요가 없을거 같은데 혹시 몰라서 일단 놔둠)-->
     <select id="findAll" resultMap="postMap">
         <include refid="select_base"/>
-        ORDER BY post.id DESC
+        ORDER BY post.createdat DESC
     </select>
+
     <!--손님, 도우미 타입 mapper-->
     <select id="findByType" resultMap="postMap">
         <include refid="select_base"/>
-        WHERE post.type = #{type}
+        WHERE post.type = #{type} and post.isdeleted = 0
+        ORDER BY post.createdat DESC
+
     </select>
+
+    <!--type 에 추가로 위치기준 추가-->
+    <select id="findByTypeLocation" resultType="com.lec.spring.domain.Post">
+        SELECT
+        p.id,
+        p.user_id,
+        p.type,
+        p.title,
+        p.content,
+        p.createdat,
+        p.type,
+        p.isdeleted,
+        p.deletedat,
+        u.id "user_id",
+        u.name "name"
+        FROM
+        post p,
+        user u
+        WHERE
+        p.user_id = u.id
+        AND u.id IN
+        <foreach collection="userList" item="user" separator="," open="(" close=")">
+            #{user.id}
+        </foreach>
+        AND p.type = #{type}
+        AND p.isdeleted = 0 ORDER BY p.createdat DESC
+    </select>
+
     <!--게시글 상세조회-->
     <select id="findById" parameterType="long" resultMap="postMap">
         <include refid="select_base"/>
@@ -72,15 +110,16 @@
         delete from post where id = #{id}
     </delete>
 <!--    손님 태그-->
-    <select id="findByPostTag" resultType="com.lec.spring.domain.Tag">
-        SELECT t.name, post.id
+    <select id="findTagsByPostId" resultType="com.lec.spring.domain.Tag">
+        SELECT t.name "name", t.id "id", c.id "category_id",c.color "color"
         FROM tag t
                  JOIN post_tag pt ON pt.tag_id = t.id
                  JOIN post ON pt.post_id = post.id
-        WHERE pt.post_id = #{id}
+                 JOIN category c ON t.category_id = c.id
+        WHERE pt.post_id = #{p_id}
     </select>
 <!--도우미 태그-->
-    <select id="findByUserTag" resultType="com.lec.spring.domain.Tag">
+    <select id="findTagsByUserId" resultType="com.lec.spring.domain.Tag">
         SELECT
             t.id AS id,
             t.category_id AS category_id,
@@ -88,16 +127,37 @@
             c.color AS color
         FROM tag t
                  JOIN category c ON t.category_id = c.id
-                 JOIN user_tag ut ON ut.tag_id = t.id
+--                  JOIN user_tag ut ON ut.tag_id = t.id
                  JOIN post p ON ut.user_id = p.user_id
         WHERE p.id = #{id}
     </select>
-
+<!--팔로우 여부-->
     <select id="findByFollow" resultType="com.lec.spring.domain.UserFollowing" parameterType="map">
         SELECT *
         FROM user_follow
         WHERE following_userid = #{followingUserId}
           AND followed_userid = #{followedUserId}
+    </select>
+<!--삭제여부-->
+    <update id="isDelete" >
+        update post set isdeleted = 1
+        where id = #{id}
+    </update>
+<!--삭제 날짜-->
+    <update id="deletedAt" parameterType="map">
+        update post set deletedat = now()
+        where id = #{id}
+    </update>
+
+    <!--   페이징용 쿼리  -->
+    <select id="selectFromRow" resultMap="postMap">
+        <include refid="select_base"/>
+        ORDER BY p_id DESC
+        LIMIT #{param1}, #{param2}
+    </select>
+
+    <select id="countAll" resultType="int">
+        SELECT count(*) FROM post
     </select>
 
 

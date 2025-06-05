@@ -1,24 +1,54 @@
 <!-- src/main/resources/templates/views/mypage/editProfile.html -->
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
+    <!-- 필수 요소-->
     <meta charset="UTF-8">
     <title>회원정보 수정</title>
+
+    <!-- Bootstrap CSS: 필수 -->
+    <!-- Bootstrap CSS (SRI 제거) -->
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+    />
     <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/design/mypage.css}">
+
+
 </head>
 <body>
 <th:block th:replace="~{common/header :: header-fragment}"/>
 <main style="padding: 40px; max-width: 800px; margin: auto;">
+
+    <!-- ← 마이페이지 메인으로 -->
+    <div style="margin-bottom: 20px;">
+        <a class="mypage-button" th:href="@{/mypage}">
+            ← 마이페이지 메인으로
+        </a>
+    </div>
+
+    <!-- 수정 성공 메시지 -->
+    <div th:if="${msg}" class="alert alert-success" th:text="${msg}"></div>
 
     <!-- 1. 회원 정보 수정 -->
     <div style="background-color:#555;color:#fff;padding:15px;margin-bottom:20px;">
         회원정보 수정
     </div>
 
-    <form th:action="@{/mypage/editProfile}"
-          th:object="${profileForm}"
-          method="post"
-          onsubmit="alert('회원정보 수정 완료');">
+    <form th:action="@{/mypage/update}"
+          th:object="${profileUpdateForm}"
+          method="post">
+
+        <sec:csrfInput/>
+
+        <!-- _csrf 변수가 있을 때만 폼에 hidden input 추가 -->
+        <input th:if="${_csrf != null}"
+               type="hidden"
+               th:name="${_csrf.parameterName}"
+               th:value="${_csrf.token}"/>
+
 
         <!-- 2. 새로운 닉네임 입력 -->
         <div style="border:1px solid #ccc;padding:15px;margin-bottom:10px;">
@@ -32,64 +62,69 @@
             <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
         </div>
 
+        <!-- 닉네임 입력 블록 끝난 뒤에 추가 -->
+        <button type="button"
+                id="togglePassword"
+                class="btn btn-secondary mb-3">
+            비밀번호 수정하기
+        </button>
+
+
         <!-- 3. 새로운 비밀번호 입력 -->
-        <div style="border:1px solid #ccc;padding:15px;margin-bottom:10px;">
-            새로운 비밀번호 입력
+        <div id="passwordSection" style="display:none; border:1px solid #ccc; padding:15px; margin-bottom:10px;">
             <input id="newPassword"
                    th:field="*{newPassword}"
                    type="password"
-                   disabled
                    placeholder="새 비밀번호"
-                   style="width:100%;margin-top:5px;padding:8px;"/>
+                   readonly
+                   style="width:100%; margin-top:5px; padding:8px;"/>
             <!-- 검증 에러 출력 추가 -->
             <div th:if="${#fields.hasErrors('newPassword')}" th:errors="*{newPassword}"></div>
-        </div>
-
-        <!-- 4. 비밀번호 재입력 -->
-        <div style="border:1px solid #ccc;padding:15px;margin-bottom:10px;">
             비밀번호 재입력
             <input id="confirmPassword"
                    th:field="*{confirmPassword}"
                    type="password"
-                   disabled
                    placeholder="비밀번호 확인"
-                   style="width:100%;margin-top:5px;padding:8px;"/>
+                   readonly
+                   style="width:100%; margin-top:5px; padding:8px;"/>
             <!-- 검증 에러 출력 추가 -->
             <div th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></div>
         </div>
 
-        <!-- 비밀번호 수정 토글 -->
-        <button type="button"
-                id="togglePassword"
-                style="margin-bottom:20px;padding:8px 16px;">
-            비밀번호 수정하기
-        </button>
+
 
         <!-- 5. 태그 form -->
-        <div style="border:1px solid #ccc;padding:15px;margin-bottom:20px;">
-            태그 추가
-            <input th:field="*{tags}"
-                   type="text"
-                   placeholder="관심사 태그 입력"
-                   style="width:100%;margin-top:5px;padding:8px;"/>
-            <!-- 검증 에러 출력 추가 -->
-            <div th:if="${#fields.hasErrors('tags')}" th:errors="*{tags}"></div>
-        </div>
+        <!--        <div style="border:1px solid #ccc;padding:15px;margin-bottom:20px;">-->
+        <!--            태그 추가-->
+        <!--            <input th:field="*{tags}"-->
+        <!--                   type="text"-->
+        <!--                   placeholder="관심사 태그 입력"-->
+        <!--                   style="width:100%;margin-top:5px;padding:8px;"/>-->
+        <!--            &lt;!&ndash; 검증 에러 출력 추가 &ndash;&gt;-->
+        <!--            <div th:if="${#fields.hasErrors('tags')}" th:errors="*{tags}"></div>-->
+        <!--        </div>-->
 
         <!-- 6. 수정 완료 버튼 -->
-        <button type="submit" style="padding:10px 20px;">
+        <button type="submit" class="btn btn-secondary mb-3">
             수정 완료
         </button>
     </form>
 
     <script>
-        const toggleBtn   = document.getElementById('togglePassword');
-        const pwInput     = document.getElementById('newPassword');
-        const confirmInput= document.getElementById('confirmPassword');
+        const toggleBtn = document.getElementById('togglePassword');
+        const pwSection = document.getElementById('passwordSection');
         toggleBtn.addEventListener('click', () => {
-            const disabled = pwInput.disabled;
-            pwInput.disabled = !disabled;
-            confirmInput.disabled = !disabled;
+            if (pwSection.style.display === 'none') {
+                pwSection.style.display = 'block';
+                toggleBtn.textContent = '비밀번호 수정 취소';
+                document.getElementById('newPassword').readOnly = false;
+                document.getElementById('confirmPassword').readOnly = false;
+            } else {
+                pwSection.style.display = 'none';
+                toggleBtn.textContent = '비밀번호 수정하기';
+                document.getElementById('newPassword').readOnly = true;
+                document.getElementById('confirmPassword').readOnly = true;
+            }
         });
     </script>
 

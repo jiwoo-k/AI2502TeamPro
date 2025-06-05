@@ -3,63 +3,135 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>글쓰기</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!--CSS-->
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+    />
+    <th:block th:replace="~{common/header :: headline-fragment}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/tag.css}"/>
+    <link rel="stylesheet" th:href="@{/css/design/board.css}">
+
+    <!--JS-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <script th:src="@{/js/writeTag.js}"></script>
+    <script th:src="@{/js/write.js}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <link rel="stylesheet" th:href="@{/css/common.css}">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+    <!-- Bootstrap CSS: 필수 -->
+    <!-- Bootstrap CSS (SRI 제거) -->
 
-    <script th:src="@{/js/write.js}"></script>
+    <!-- 이 4개는 헤더를 사용하는 모든 페이지에 포함되어야합니다. -->
+    <!-- 올바른 순서대로 해야 충돌 없이 작동한답니다... -->
 
 </head>
 <body>
-<h2>게시물 작성</h2>
+<header th:replace="~{common/header :: header-fragment}"></header>
+<!--<h2>게시물 작성</h2>-->
 
-<form th:action="@{/board/write}" method="post">
-    <div>
-        <span>제목을 입력하세요</span>
-        <input type="text" th:value="${title}" placeholder="제목을 입력하세요" name="title">
-    </div>
-    <div th:if="${error_title}" th:text="${error_title}" style="color: red"></div>
+<div id="writeBoard">
 
-    <div>
-        <span>내용을 입력하세요</span>
-        <textarea th:value="${content}" placeholder="글을 작성하세요" name="content"></textarea>
-    </div>
-    <div th:if="${error_content}" th:text="${error_content}" style="color: red"></div>
+    <!-- 게시글 작성 form -->
+    <form th:action="@{/board/write}" method="post" enctype="multipart/form-data" id="writeForm">
 
-
-    <!--  게시물 유형을 바꿀 수 있게 select로 구현 함 => 근데 태크도 나중에 같이 수정되게 만들어야 하고, 심지어 팔로우도 도우미에서만 보이게 해야 함-->
-    <!--  => 어떻게 하지...-->
-    <div>
-        <select name="type" placeholder="게시물 유형" th:value="${type}">
-            <option value="guest">손님</option>
-            <option value="helper">도우미</option>
-        </select>
-    </div>
-    <div>
-        <button type="submit">작성</button>
-        <a th:href="@{/board/write}"></a>
-    </div>
-    <button><a th:href="@{/board/list}">목록</a></button>
-
-    <!-- 첨부파일 -->
-    <div class="container mt-3 mb-3 border rounded">
-        <div class="mb-3 mt-3">
-            <label>첨부파일:</label>
-            <div id="files">
-
-            </div>
-            <button type="button" id="btnAdd" class="btn btn-secondary">추가</button>
+        <div id="board-selector" class="select-wrapper">
+            <select class="selectType" name="type">
+                <option value="guest" th:selected="${selectedType == 'guest'}">손님</option>
+                <option value="helper" th:selected="${selectedType == 'helper'}">도우미</option>
+            </select>
         </div>
-    </div>
-    <!-- 첨부파일 -->
 
-</form>
+        <br/>
+
+        <div class="writeTitle">
+            <div>
+                <span>제목</span>
+                <input type="text" th:value="${title}" placeholder="제목을 입력하세요" name="title"/>
+            </div>
+            <div th:if="${error_title}" th:text="${error_title}" style="color: red"></div>
+        </div>
+
+        <br/>
+
+        <div class="writeContent">
+            <span>내용</span>
+            <textarea placeholder="글을 작성하세요" name="content"
+                      th:text="${content}"></textarea>
+            <div th:if="${error_content}" th:text="${error_content}" style="color: red"></div>
+        </div>
+
+        <div class="container mt-3 mb-3 border rounded">
+            <div class="mb-3 mt-3">
+                <label>첨부파일:</label>
+                <div id="files"></div>
+                <button type="button" id="btnAdd" class="btn btn-secondary">추가</button>
+            </div>
+        </div>
+
+
+
+        <!-- 여기서부터 태그 검색 및 추가 영역 -->
+
+        <div id="tagSearch">
+
+            <div id="categoryZone">
+                <p>카테고리 선택</p>
+                <div th:each="category : ${categoryList}"
+                     th:text="${category.name}"
+                     th:style="'background-color: ' + ${category.color} + '; display: inline-block'"
+                     class="categoryBox"
+                     th:id="${category.id}"
+                     th:classappend="${submittedCategoryId != null and category.id == submittedCategoryId} ? 'selected' : ''">
+                </div>
+            </div>
+
+            <div id="searchZone">
+                <input type="text" id="tagSearchInput" name="tagName" placeholder="태그 검색 (# 제외)" th:value="${name}"/>
+                <input type="hidden" id="categoryIdInput" name="category_id" th:value="${submittedCategoryId}"/>
+                <button type="button" id="tagSearchButton">검색</button>
+                <button type="button" id="tagAddButton" style="display:none;">추가</button>
+                <div class="searchSucceed" th:if="${searchedTag != null}" th:text="'검색 성공! 목록에 추가 가능합니다.'"></div>
+            </div>
+
+            <div>
+                <div class="showError"><span th:if="${error_name}" th:utext="${error_name}"></span></div>
+                <div class="showError"><span th:if="${error_category_id}" th:utext="${error_category_id}"></span></div>
+                <div class="showError"><span th:if="${error_id}" th:utext="${error_id}"></span></div>
+            </div>
+
+            <p>담은 태그 목록</p>
+            <div id="tagList">
+                <div th:each="tag : ${selectedTags}" class="selectedTag"
+                     th:style="'background-color: ' + ${tag.color} + '; color: white; display: inline-flex; align-items: center; padding: 6px 12px; margin: 5px; border-radius: 16px;'">
+                    <input name="name" type="hidden" th:value="${tag.name}"/>
+                    <input name="category_id" type="hidden" th:value="${tag.category_id}"/>
+                    <input name="id" type="hidden" th:value="${tag.id}"/>
+                    <span th:text="'# ' + ${tag.name}" th:style="'background-color: ' + ${tag.color}"></span>
+                    <button type="submit" class="deleteTag"
+                            style="background: none; border: none; color: inherit; cursor: pointer; font-size: 12px; padding: 2px 6px; border-radius: 50%; background-color: rgba(255,255,255,0.2);">
+                        ×
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div th:if="${error_post_tag}" th:text="${error_post_tag}" style="color: red"></div>
+
+        <!-- 여기에 선택된 태그 id 값을 담는 숨겨진 input들이 동적으로 추가됨 -->
+        <div id="hiddenTagsContainer"></div>
+
+        <div class="button-wrapper mt-4 mb-4">
+            <button type="submit" class="writeBtn">작성</button>
+            <a th:href="@{/board/list}" class="listBtn">목록</a>
+        </div>
+    </form>
+
+</div>
+
 </body>
 </html>

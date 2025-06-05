@@ -16,6 +16,8 @@
         ,latitude
         ,longitude
         ,status
+        ,pause_end_date "pauseEndDate"
+        ,areaname "areaName"
         FROM user
         WHERE 1 = 1
     </sql>
@@ -51,4 +53,54 @@
         insert into loginhistory(user_id)
         values(#{id});
     </insert>
+
+    <update id="updateLocation" parameterType="com.lec.spring.domain.User" flushCache="true">
+        update user
+        set latitude=#{latitude}, longitude=#{longitude}, areaname=#{areaName}
+        where id=#{id}
+    </update>
+
+    <update id="updateState" parameterType="com.lec.spring.domain.User" flushCache="true">
+        update user
+        set status = #{status}, pause_end_date = #{pauseEndDate}
+        where id = #{id};
+    </update>
+
+    <select id="findNearUsers" resultType="com.lec.spring.domain.User">
+        select distinct u.id "id",
+        u.username "username",
+        u.password "password",
+        u.name "name",
+        u.createdAt "createdAt",
+        u.provider "provider",
+        u.providerId "providerId",
+        u.latitude "latitude",
+        u.longitude "longitude",
+        u.areaname "areaName",
+        u.status "status"
+        from user u, post p
+        where u.id=p.user_id;
+    </select>
+
+    <select id="findUsersByWarnCount" resultType="com.lec.spring.domain.User">
+        select u.id "id",
+        u.username "username",
+        u.name "name",
+        u.status "status",
+        u.pause_end_date "pauseEndDate",
+        count(*) "warningCount"
+        from user u, warning w, post p
+        where w.post_id = p.id and u.id = p.user_id
+        group by u.id, u.username, u.status
+        having count(*) between #{warnCount1} and #{warnCount2}
+    </select>
+
+    <select id="findLoginHistory" resultType="com.lec.spring.domain.LoginHistory">
+        select l.login_date "loginAt", count(*) "userCount"
+        from (select distinct cast(loginat AS date) as login_date, user_id
+        from loginhistory) l
+        where l.login_date between #{startDate} and #{endDate}
+        group by loginAt
+        order by loginAt;
+    </select>
 </mapper>

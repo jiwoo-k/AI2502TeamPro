@@ -50,7 +50,7 @@ CREATE TABLE comment
   PRIMARY KEY (id)
 ) COMMENT '댓글';
 
-CREATE TABLE login_history
+CREATE TABLE loginhistory
 (
   user_id INT      NOT NULL,
   loginat DATETIME NOT NULL     DEFAULT now(),
@@ -101,6 +101,7 @@ CREATE TABLE user
   latitude   DOUBLE       NULL    ,
   longitude  DOUBLE       NULL    ,
   status     ENUM('active', 'paused', 'banned')         NOT NULL DEFAULT 'active' COMMENT '계정상태(active, paused, banned)',
+  areaname   VARCHAR(50) NULL,
   PRIMARY KEY (id)
 ) COMMENT '사용자';
 
@@ -241,8 +242,8 @@ ALTER TABLE user_follow
     ON DELETE CASCADE
 ;
 
-ALTER TABLE login_history
-  ADD CONSTRAINT FK_user_TO_login_history
+ALTER TABLE loginhistory
+  ADD CONSTRAINT FK_user_TO_loginhistory
     FOREIGN KEY (user_id)
     REFERENCES user (id)
     ON UPDATE RESTRICT
@@ -260,11 +261,17 @@ ALTER TABLE warning
     ON UPDATE RESTRICT
     ON DELETE CASCADE
 ;
+#
+# ALTER TABLE `user`
+#     DROP COLUMN `juminNo`;
 
 
 
-insert into user_follow (
-    following_userid ,
-    followed_userid
-)  values
-    (2,2)
+
+# insert into user_follow (
+#     following_userid ,
+#     followed_userid
+# )  values
+#     (2,2)
+
+ALTER TABLE user ADD pause_end_date DATETIME NULL;

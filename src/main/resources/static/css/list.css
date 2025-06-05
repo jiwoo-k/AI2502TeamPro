@@ -1,0 +1,94 @@
+body {
+    background-color: #f1f1f1;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+#button {
+    text-align: right;
+    margin: 20px auto;
+    max-width: 1000px;
+}
+
+.writeBtn {
+    background-color: #5cb85c;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.board {
+    display: flex;
+    max-width: 1000px;
+    margin: 20px auto;
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.image-wrapper {
+    width: 200px;
+    height: 150px;
+    background-color: #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.image-wrapper img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+}
+
+.image-thumbnail {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+}
+
+#text-area {
+    padding: 20px;
+    flex-grow: 1;
+}
+
+.title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    text-decoration: none;
+}
+
+.content {
+    margin-top: 8px;
+    color: #555;
+    display: block;
+}
+
+.tagName {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 10px;
+    margin-right: 6px;
+    font-size: 12px;
+    margin-top: 6px;
+}
+
+.day {
+    font-size: 12px;
+    color: #999;
+    margin-top: 10px;
+    display: block;
+}
+
+#listControlForm .form-select {
+    height: 38px;
+    font-size: 14px;
+}

@@ -35,3 +35,9 @@ out/
 
 ### VS Code ###
 .vscode/
+.idea/
+
+application-dev.yml
+application.yml
+
+/upload

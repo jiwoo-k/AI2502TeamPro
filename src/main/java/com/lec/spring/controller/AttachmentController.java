@@ -22,7 +22,7 @@ import java.nio.file.Paths;
 @RestController
 public class AttachmentController {
 
-    @Value("${app.upload.path}")
+    @Value("upload")
     private String uploadDir;
 
     private final AttachmentService attachmentService;
@@ -43,8 +43,8 @@ public class AttachmentController {
         Attachment file = attachmentService.findById(id);
         if (file == null) return new ResponseEntity<>(null, HttpStatus.NOT_FOUND); // 404
 
-        String sourceName = file.getSourcename(); // 원본 이름
-        String fileName = file.getFilename(); // 저장된 파일명
+        String sourceName = file.getSourceName(); // 원본 이름
+        String fileName = file.getFileName(); // 저장된 파일명
 
         String path = new File(uploadDir, sourceName).getAbsolutePath();
 

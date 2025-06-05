@@ -16,7 +16,7 @@ public class FollowController {
     private final UserFollowingService userFollowingService;
     private final UserService userService;
     public FollowController( UserFollowingService userFollowingService,  UserService userService) {
-        System.out.println("일단 생성");
+        System.out.println("[ACTIVE] FollowController");
         this.userFollowingService = userFollowingService;
         this.userService = userService;
     }
@@ -26,14 +26,13 @@ public class FollowController {
     // 팔로우하기
     @PostMapping("/follow/insert")
     public String insertFollow(@RequestParam("followedUserId") Long followedUserId,
-                               @AuthenticationPrincipal(expression = "user") User loginUser
-            ,@RequestParam("followingUserId") Long followingUserId,
+                               @AuthenticationPrincipal(expression = "user") User loginUser,
                                @RequestParam("id") Long postId
     ) {
 
 
         System.out.println("followingUserId: " + followedUserId);
-        User followedUser = userService.findByUSerId(followedUserId);
+        User followedUser = userService.findByUserId(followedUserId);
         System.out.println("followedUser: " + followedUser);
 
         if (followedUser == null) {
@@ -47,19 +46,18 @@ public class FollowController {
 
     // 언팔로우하기 ㅇㅇㅇㅇ
     @PostMapping("/follow/delete")
-    public String deleteFollow(@RequestParam("followingUserId") Long followingUserId,
-                               @AuthenticationPrincipal(expression = "user") User loginUser,
+    public String deleteFollow(@AuthenticationPrincipal(expression = "user") User loginUser,
                                @RequestParam("followedUserId") Long followedUserId,
                                @RequestParam("id") Long postId
     ) {
 
-        User followedUser = userService.findByUSerId(followingUserId);
+        User followedUser = userService.findByUserId(followedUserId); // 언팔로우할 대상 조회
 
         if (followedUser == null) {
-            System.out.println("팔로우하려는 사용자가 존재하지 않습니다.");
+            System.out.println("언팔로우하려는 사용자가 존재하지 않습니다.");
             return "redirect:/board/list";
         }
-        userFollowingService.unfollow(loginUser, followedUser);
+        userFollowingService.unfollow(loginUser.getId(), followedUser.getId());
         return "redirect:/board/detail/" + postId;
     }
 

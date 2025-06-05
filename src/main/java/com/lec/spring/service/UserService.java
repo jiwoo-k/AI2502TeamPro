@@ -1,8 +1,11 @@
 package com.lec.spring.service;
 
 import com.lec.spring.domain.Authority;
+import com.lec.spring.domain.LoginHistory;
 import com.lec.spring.domain.User;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface UserService {
@@ -31,6 +34,18 @@ public interface UserService {
     int saveUserLoginHistory(Long id);
 
     int updateLocation(User user);
+
+    List<User> findNearUsers();
+
+    //사용자들 신고 목록
+    List<User> findUsersByWarnCount(Integer warnCount1, Integer warnCount2);
+
+    //특정 사용자 특정 일수 만큼 계정 정지
+    void limitUser(Long id, Integer days);
+
+    User activateAccount(String username);
+
+    List<LoginHistory> findLoginHistory(LocalDate startDate, LocalDate EndDate);
 }
 
 

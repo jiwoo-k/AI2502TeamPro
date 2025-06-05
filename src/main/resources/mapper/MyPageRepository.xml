@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lec.spring.repository.MyPageRepository">
+
+    <!-- ▶ Post 도메인 컬럼–필드 매핑을 위한 resultMap -->
+    <resultMap id="PostResultMap" type="com.lec.spring.domain.Post">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="type" column="type"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="createdat" column="createdat"/>
+        <result property="isdeleted" column="isdeleted"/>
+        <result property="deletedat" column="deletedat"/>
+    </resultMap>
+
+    <resultMap id="UserResultMap" type="com.lec.spring.domain.User">
+        <id property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="name" column="name"/>
+        <result property="password" column="password"/>
+        <result property="createdAt" column="createdAt"/>
+        <result property="latitude" column="latitude"/>
+        <result property="longitude" column="longitude"/>
+        <result property="status" column="status"/>
+        <result property="followersCount" column="followersCount"/>
+        <result property="warningCount" column="warningCount"/>
+    </resultMap>
+
+    <!-- 1) 회원 정보 조회 -->
+    <select id="selectUserById"
+            parameterType="long"
+            resultMap="UserResultMap">
+        SELECT
+        u.id,
+        u.username,
+        u.name,
+        u.password,
+        u.createdAt AS createdAt,
+        u.latitude,
+        u.longitude,
+        u.status,
+        -- 팔로워 수 (domain.followersCount)
+        (SELECT COUNT(*)
+        FROM user_follow uf
+        WHERE uf.followed_userid = u.id
+        ) AS followersCount,
+        (SELECT COUNT(*)
+        FROM warning w
+        JOIN post p
+        ON w.post_id = p.id
+        WHERE p.user_id = u.id
+        ) AS warningCount
+        FROM user u
+        WHERE u.id = #{userId}
+    </select>
+
+    <!-- 2) 내가 쓴 게시글 목록 -->
+    <select id="selectMyPosts"
+            parameterType="long"
+            resultMap="PostResultMap">
+        SELECT
+        id,
+        user_id AS userId,
+        type,
+        title,
+        content,
+        createdat AS createdat,
+        isdeleted AS isdeleted,
+        deletedat AS deletedat
+        FROM post
+        WHERE user_id = #{userId}
+        ORDER BY createdat DESC
+    </select>
+
+    <!-- 2-2) 내가 쓴 게시글 페이징 -->
+    <select id="selectMyPostsPaged"
+            parameterType="map"
+            resultMap="PostResultMap">
+        SELECT
+        id,
+        user_id AS userId,
+        type,
+        title,
+        content,
+        createdat AS createdat,
+        isdeleted AS isdeleted,
+        deletedat AS deletedat
+        FROM post
+        WHERE user_id = #{userId}
+        <if test="selectedType != null and selectedType != ''">
+            AND type = #{selectedType}
+        </if>
+        ORDER BY createdat DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 2-3) 내가 쓴 게시글 총건수 조회 -->
+    <select id="countMyPostsFiltered"
+            parameterType="map"
+            resultType="long">
+        SELECT COUNT(*)
+        FROM post
+        WHERE user_id = #{userId}
+        AND isdeleted = FALSE
+        <if test="selectedType != null and selectedType != ''">
+            AND type = #{selectedType}
+        </if>
+    </select>
+
+    <!-- 3) 내가 쓴 댓글 목록 -->
+    <select id="selectMyCommentsPaged"
+            parameterType="map"
+            resultType="com.lec.spring.domain.Comment">
+        SELECT
+        c.id,
+        c.user_id AS userId,
+        c.post_id AS postId,
+        c.parent_id AS parentId,
+        c.content,
+        c.createdat AS createdAt,
+        c.ispicked AS isPicked,
+        p.title AS postTitle
+        FROM comment c
+        JOIN post p ON c.post_id = p.id
+        WHERE c.user_id = #{userId}
+        ORDER BY c.createdat DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <!-- 3-1) 내가 쓴 댓글 총건수 -->
+    <select id="countMyComments"
+            parameterType="map"
+            resultType="long">
+        SELECT COUNT(*)
+        FROM comment
+        WHERE user_id = #{userId}
+    </select>
+
+    <!-- 4) 내가 팔로잉한 사용자 목록 -->
+    <select id="selectMyFollowing"
+            parameterType="long"
+            resultType="com.lec.spring.domain.User">
+        SELECT u.id,
+        u.username,
+        u.name,
+        (SELECT COUNT(*) FROM user_follow uf WHERE uf.following_userid = u.id) AS followersCount
+        FROM user_follow f
+        JOIN user u ON f.followed_userid = u.id
+        WHERE f.following_userid = #{userId}
+        ORDER BY u.name ASC
+    </select>
+
+    <!-- 4-2) 내가 팔로잉한 사용자 페이징 -->
+    <select id="selectMyFollowingPaged"
+            parameterType="map"
+            resultType="com.lec.spring.domain.User">
+        SELECT
+        u.id,
+        u.username,
+        u.name,
+        true AS following,
+        (SELECT COUNT(*) FROM user_follow uf
+        WHERE uf.following_userid = u.id) AS followersCount
+        FROM user_follow f
+        JOIN user u ON f.followed_userid = u.id
+        WHERE f.following_userid = #{userId}
+        ORDER BY u.name ASC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 4-3) 내가 팔로잉한 사용자 총건수 조회 -->
+    <select id="countMyFollowing"
+            parameterType="long"
+            resultType="long">
+        SELECT COUNT(*)
+        FROM user_follow
+        WHERE following_userid = #{userId}
+    </select>
+
+    <!-- ▶ 팔로우 추가 -->
+    <insert id="insertFollow" parameterType="map">
+        INSERT INTO user_follow (following_userid, followed_userid)
+        VALUES (#{userId}, #{followedUserId})
+    </insert>
+
+    <!-- ▶ 언팔로우 -->
+    <delete id="deleteFollow" parameterType="map">
+        DELETE FROM user_follow
+        WHERE following_userid = #{userId}
+        AND followed_userid = #{followedUserId}
+    </delete>
+
+
+    <!-- 5) 프로필 양식(form) 조회 -->
+    <select id="selectProfileUpdateForm"
+            parameterType="long"
+            resultType="com.lec.spring.domain.ProfileUpdateForm">
+        SELECT id AS userId,
+        name AS name
+        FROM user
+        WHERE id = #{userId}
+    </select>
+
+    <!-- 6) 프로필 일부(name, password) 업데이트 -->
+    <update id="updateUser"
+            parameterType="com.lec.spring.domain.User">
+        UPDATE `user`
+        <set>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="password != null and password != ''">
+                password = #{password},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 내가 포스트에서 픽한 댓글이 있는 게시글 조회 (페이징) -->
+    <select id="selectMyPickedCommentPostsPaged"
+            parameterType="map"
+            resultMap="PostResultMap">
+        SELECT
+        p.id,
+        p.user_id       AS userId,
+        p.type          AS type,
+        p.title         AS title,
+        p.content       AS content,
+        p.createdat     AS createdAt,
+        p.isdeleted     AS isdeleted,
+        p.deletedat     AS deletedAt
+        FROM post p
+        JOIN comment c ON c.post_id = p.id
+        WHERE p.user_id   = #{userId}      <!-- 내가 작성한 포스트 -->
+        AND c.ispicked  = TRUE           <!-- 그 포스트에서 내가 픽한 댓글 -->
+        ORDER BY p.createdat DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 내가 포스트에서 픽한 댓글이 있는 게시글 총건수 -->
+    <select id="countMyPickedCommentPosts"
+            parameterType="long"
+            resultType="long">
+        SELECT COUNT(DISTINCT c.post_id)
+        FROM comment c
+        JOIN post p ON c.post_id = p.id
+        WHERE p.user_id  = #{userId}
+        AND c.ispicked = TRUE
+    </select>
+
+
+</mapper>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>관리자 홈</title>
+<!--    <th:block th:replace="~{common/head :: head}"></th:block>-->
+</head>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Bootstrap & Header Head-->
+    <!-- Bootstrap CSS: 필수 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+          rel="stylesheet"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+
+    <!-- 이 4개는 헤더를 사용하는 모든 페이지에 포함되어야합니다. -->
+    <!-- 올바른 순서대로 해야 충돌 없이 작동한답니다... -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY"></script>
+    <script th:src="@{/js/location.js}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap & Header Head-->
+<th:block th:replace="~{common/header :: headline-fragment}"></th:block>
+<body>
+<!--header-->
+<th:block th:replace="~{common/header :: header-fragment}"></th:block>
+<!--header-->
+
+<!--다른 페이지 이동 버튼들-->
+<!-- footer-style 버튼 박스 -->
+<!-- 관리 기능 버튼 영역 -->
+<div class="container mt-5 mb-5">
+    <div class="p-4 border rounded text-center shadow-sm bg-white admin-box">
+        <h5 class="mb-4 fw-bold">관리자 기능</h5>
+        <a th:href="@{/admin/users}" class="btn btn-outline-secondary me-3">사용자 관리</a>
+        <a th:href="@{/admin/category/list}" class="btn btn-outline-primary">카테고리 관리</a>
+    </div>
+</div>
+<!--다른 페이지 이동 버튼들-->
+
+<!-- 날짜 선택 영역 -->
+<div class="chart-section container mt-4 mb-5">
+    <div class="card p-4 shadow-sm">
+        <form id="dateSelect" method="get" class="row g-3 align-items-center">
+            <div class="col-auto">
+                <label for="startDate" class="col-form-label fw-bold">시작 날짜:</label>
+            </div>
+            <div class="col-auto">
+                <input type="date" id="startDate" name="startDate" class="form-control" required>
+            </div>
+
+            <div class="col-auto">
+                <label for="endDate" class="col-form-label fw-bold">종료 날짜:</label>
+            </div>
+            <div class="col-auto">
+                <input type="date" id="endDate" name="endDate" class="form-control" required>
+            </div>
+
+            <div class="col-auto">
+                <button id="showChartButton" class="btn btn-outline-primary" type="submit">차트 보기</button>
+            </div>
+        </form>
+        <div class="text-danger mt-2" th:text="${dateError}"></div>
+    </div>
+</div>
+
+<!--chart-->
+<!-- 차트 영역 -->
+<div class="chart-wrapper container mb-5">
+    <div class="card p-4 shadow-sm">
+        <canvas id="loginHistoryChart" style="max-height: 400px;"></canvas>
+    </div>
+
+    <div class="card mt-4 p-4 shadow-sm">
+        <canvas id="categoryPieChart" style="max-height: 400px;"></canvas>
+    </div>
+</div>
+<!--chart-->
+
+<!--x축 선택 zone-->
+<div class="xOptions">
+
+</div>
+<!--x축 선택 zone-->
+
+</body>
+
+<script th:inline="javascript">
+    let categories = [[${categories}]];
+    let loginHistories = [[${loginHistories}]];
+
+    let categoryNames = categories.map(category => category.name);
+    let postCounts = categories.map(category => category.postCount);
+
+    let loginDates = loginHistories.map(loginHistory => loginHistory.loginAt);
+    let userCounts = loginHistories.map(loginHistory => loginHistory.userCount);
+
+
+    function getRandomRgb() {
+        let r = Math.floor(Math.random() * 255);
+        let g = Math.floor(Math.random() * 255);
+        let b = Math.floor(Math.random() * 255);
+        return {r: r, g: g, b: b};
+    }
+
+
+    let backgroundColors_category = [];
+    let borderColors_category = [];
+
+    for (let i = 0; i < categories.length; i++) {
+        let rgb = getRandomRgb();
+        backgroundColors_category.push('rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ', 0.5)'); // 투명도 0.5
+        borderColors_category.push('rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ', 1)');     // 투명도 1
+    }
+
+    //카테고리별 이용률 차트
+    let ctx_category = document.getElementById('categoryPieChart').getContext('2d');
+    new Chart(ctx_category, {
+        type: 'pie',
+        data: {
+            labels: categoryNames,
+            datasets: [{
+                label: '카테고리별 게시글 수',
+                data: postCounts,
+                backgroundColor: backgroundColors_category,
+                borderColor: borderColors_category,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (tooltipItem) {
+                            let label = tooltipItem.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            const value = tooltipItem.raw; // 실제 값
+                            const total = tooltipItem.dataset.data.reduce((sum, current) => sum + current, 0);
+                            const percentage = ((value / total) * 100).toFixed(1);
+
+                            // '라벨: 값 (비율%)' 형태로 표시
+                            label += percentage + '%';
+                            return label;
+                        }
+                    }
+                },
+                title: {
+                    display: true,
+                    text: '카테고리별 사용자 이용률',
+                    font: {
+                        size: 18, // 제목 글자 크기
+                        weight: 'bold' // 제목 글자 굵기
+                    },
+                    padding: {
+                        top: 10,
+                        bottom: 30
+                    }
+                }
+            }
+        },
+    });
+
+    let backgroundColors_login = [];
+    let borderColors_login = [];
+
+    for (let i = 0; i < loginHistories.length; i++) {
+        let rgb = getRandomRgb();
+        backgroundColors_login.push('rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ', 0.5)');
+        borderColors_login.push('rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ', 1)');
+    }
+
+    let ctx_login = document.getElementById('loginHistoryChart').getContext('2d');
+
+    new Chart(ctx_login, {
+        type: 'bar', // 막대 그래프
+        data: {
+            labels: loginDates, // 날짜 배열
+            datasets: [{
+                label: '일일 로그인 사용자 수',
+                data: userCounts, // 사용자 수 배열
+                backgroundColor: backgroundColors_login, // 막대 색상
+                borderColor: borderColors_login, // 막대 테두리 색상
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true, // 컨테이너 크기에 맞춰 비율 유지
+            scales: {
+                y: {
+                    beginAtZero: true, // y축을 0부터 시작
+                    ticks: {
+                        stepSize: 1,
+                    },
+                    title: {
+                        display: true,
+                        text: '사용자 수'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: '날짜'
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            let label = context.dataset.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            if (context.parsed.y !== null) {
+                                label += context.parsed.y + '명';
+                            }
+                            return label;
+                        }
+                    },
+                },
+                title: {
+                    display: true,
+                    text: '일일 로그인 사용자 수',
+                    font: {
+                        size: 18, // 제목 글자 크기
+                        weight: 'bold' // 제목 글자 굵기
+                    },
+                    padding: {
+                        top: 10,
+                        bottom: 30
+                    }
+                }
+            }
+        }
+    });
+</script>
+</html>

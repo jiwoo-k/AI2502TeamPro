@@ -1,0 +1,145 @@
+:root {
+    --main-color: #5cb85c;
+    --accent-color: #e4aeb7;
+    --gray-bg: #f9f9f9;
+    --form-width: 800px;
+}
+
+body {
+    background-color: var(--gray-bg);
+    font-family: 'Noto Sans KR', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+#writeBoard {
+    width: var(--form-width);
+    margin: 80px auto;
+    background: #fff;
+    border-radius: 12px;
+    padding: 40px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.writeTitle,
+.writeContent {
+    margin-bottom: 24px;
+}
+
+.writeTitle span,
+.writeContent span {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.writeTitle input,
+.writeContent textarea {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    transition: border 0.3s;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 180px;
+}
+
+input:focus,
+textarea:focus {
+    border-color: var(--main-color);
+    outline: none;
+}
+
+.container {
+    margin-bottom: 20px;
+}
+
+.select-wrapper {
+    margin-bottom: 20px;
+}
+
+.selectType {
+    width: 150px;
+    height: 36px;
+    font-size: 14px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+#tagSearch,
+#categoryZone,
+#tagList {
+    margin-bottom: 20px;
+}
+
+.categoryBox {
+    padding: 4px 10px;
+    border-radius: 6px;
+    margin: 4px 6px;
+    font-size: 14px;
+    color: white;
+    cursor: pointer;
+}
+
+.selectedTag {
+    display: flex;
+    align-items: center;
+    margin: 5px 0;
+}
+
+.selectedTag span {
+    padding: 4px 10px;
+    border-radius: 12px;
+    margin-right: 8px;
+    color: white;
+}
+
+.deleteTag {
+    background: none;
+    border: none;
+    color: red;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.button-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.writeBtn,
+.listBtn {
+    border: none;
+    border-radius: 20px;
+    padding: 8px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.writeBtn {
+    background-color: var(--main-color);
+    color: white;
+}
+
+.writeBtn:hover {
+    background-color: #449d44;
+}
+
+.listBtn {
+    background-color: var(--accent-color);
+    color: white;
+    text-decoration: none;
+}
+
+.listBtn:hover {
+    background-color: #d9534f;
+}

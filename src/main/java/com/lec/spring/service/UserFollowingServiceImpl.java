@@ -45,12 +45,12 @@ public class UserFollowingServiceImpl implements UserFollowingService {
 
     @Override
     @Transactional // 언팔로우 작업도 데이터베이스에 쓰기(DELETE) 작업을 포함하므로 트랜잭션 관리가 필요
-    public int unfollow(User followingUser, User followedUser) {
+    public int unfollow(Long followingUserId, Long followedUserId) {
 
         // 언팔로우할 경우 ID 정보만으로 충분
         UserFollowing uf = UserFollowing.builder()
-                .followingUserId(followingUser.getId())
-                .followedUserId(followedUser.getId())
+                .followingUserId(followingUserId)
+                .followedUserId(followedUserId)
                 .build();
         // Repository 를 통해 DELETE 작업 수행
         return repository.delete(uf);
@@ -70,16 +70,16 @@ public class UserFollowingServiceImpl implements UserFollowingService {
 
     @Override
     public Boolean isFollowing(Long followingUserId, Long followedUserId) {
-        System.out.println("👀 followingUserId = " + followingUserId);
-        System.out.println("👀 followedUserId  = " + followedUserId);
+//        System.out.println("👀 followingUserId = " + followingUserId);
+//        System.out.println("👀 followedUserId  = " + followedUserId);
 
         return repository
                 .findByFollow(followingUserId, followedUserId) !=null;
     }
 
     @Override
-    public int followCount(Long followingUserId) {
-        Integer count = repository.followCount(followingUserId);
+    public int followCount(Long followedUserId) {
+        Integer count = repository.followCount(followedUserId);
         return count != null ? count : 0;
     }
 }

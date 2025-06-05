@@ -11,14 +11,15 @@ import java.util.List;
 @Service
 public class UserWarningServiceImpl implements UserWarningService {
 
-    private final UserWarningRepository repository;
+    private final UserWarningRepository userWarningRepository;
     private final PostRepository postRepository;
+
     /**
      * 생성자에서 SqlSession 을 주입받고, 이를 통해 MyBatis Mapper b 로부터
      * UserWarningRepository 구현체를 획득
      */
     public UserWarningServiceImpl(SqlSession sqlSession) {
-        this.repository = sqlSession.getMapper(UserWarningRepository.class);
+        this.userWarningRepository = sqlSession.getMapper(UserWarningRepository.class);
         this.postRepository = sqlSession.getMapper(PostRepository.class);
     }
 
@@ -28,17 +29,27 @@ public class UserWarningServiceImpl implements UserWarningService {
         if (post == null) {
             return 0;
         }
-        return repository.insert(warning);
+        return userWarningRepository.insert(warning);
     }
 
     @Override
     public List<UserWarning> getWarningsByPostId(Long postId) {
-        return repository.findByPostId(postId);
+        return userWarningRepository.findByPostId(postId);
     }
 
     @Override
     public List<UserWarning> getWarningsByComplaintUserId(Long complaintUserId) {
-        return repository.findByComplaintUserId(complaintUserId);
+        return List.of();
     }
 
+    @Override
+    public int postWarningCount(Long postId) {
+        return userWarningRepository.postWarningCount(postId);
+    }
+
+    @Override
+    public List<UserWarning> findWarningDetails(Long userId) {
+        return userWarningRepository.findWarningDetails(userId);
+    }
 }
+
