@@ -34,4 +34,5 @@ public interface MypageRepository {
     long countMyPostsFiltered(Map<String, Object> params);
 
     int countMyPosts(long userId);
+
 }
