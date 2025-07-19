@@ -4,9 +4,9 @@
   "settings": {
     "width": 2000,
     "height": 2000,
-    "scrollTop": -225,
-    "scrollLeft": -461.5243,
-    "zoomLevel": 0.91,
+    "scrollTop": -391.0569,
+    "scrollLeft": -441.0014,
+    "zoomLevel": 0.88,
     "show": 511,
     "database": 4,
     "databaseName": "",
@@ -332,31 +332,6 @@
         "meta": {
           "updateAt": 1746618182614,
           "createAt": 1746084973663
-        }
-      },
-      "A8DCqNKiXyhBJjLDAoAaV": {
-        "id": "A8DCqNKiXyhBJjLDAoAaV",
-        "name": "user_tag",
-        "comment": "사용자 태그",
-        "columnIds": [
-          "saduvtPPMN7zOA52PG9qY",
-          "Wi-Ephg8k3mdIIYmeb09M"
-        ],
-        "seqColumnIds": [
-          "saduvtPPMN7zOA52PG9qY",
-          "Wi-Ephg8k3mdIIYmeb09M"
-        ],
-        "ui": {
-          "x": 794.1343,
-          "y": 1338.017,
-          "zIndex": 716,
-          "widthName": 60,
-          "widthComment": 65,
-          "color": ""
-        },
-        "meta": {
-          "updateAt": 1748391026540,
-          "createAt": 1746087935824
         }
       },
       "F3J4-Rvk1kakGKQJPCC4K": {
@@ -1376,46 +1351,6 @@
         "meta": {
           "updateAt": 1746087306016,
           "createAt": 1746087176543
-        }
-      },
-      "saduvtPPMN7zOA52PG9qY": {
-        "id": "saduvtPPMN7zOA52PG9qY",
-        "tableId": "A8DCqNKiXyhBJjLDAoAaV",
-        "name": "user_id",
-        "comment": "",
-        "dataType": "INT",
-        "default": "",
-        "options": 10,
-        "ui": {
-          "keys": 1,
-          "widthName": 60,
-          "widthComment": 60,
-          "widthDataType": 60,
-          "widthDefault": 60
-        },
-        "meta": {
-          "updateAt": 1746087990826,
-          "createAt": 1746087964891
-        }
-      },
-      "Wi-Ephg8k3mdIIYmeb09M": {
-        "id": "Wi-Ephg8k3mdIIYmeb09M",
-        "tableId": "A8DCqNKiXyhBJjLDAoAaV",
-        "name": "tag_id",
-        "comment": "",
-        "dataType": "INT",
-        "default": "",
-        "options": 10,
-        "ui": {
-          "keys": 1,
-          "widthName": 60,
-          "widthComment": 60,
-          "widthDataType": 60,
-          "widthDefault": 60
-        },
-        "meta": {
-          "updateAt": 1746683043446,
-          "createAt": 1746087988024
         }
       },
       "SPcAtEGYRDxcq9BmiSTbi": {
@@ -2634,12 +2569,6 @@
       {
         "name": 1748390961537
       }
-    ],
-    "A8DCqNKiXyhBJjLDAoAaV": [
-      "tableEntities",
-      -1,
-      1748391035147,
-      {}
     ],
     "q6KoAZJunuUU4WWosoNCs": [
       "tableColumnEntities",

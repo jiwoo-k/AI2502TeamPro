@@ -205,3 +205,7 @@ select * from category;
 select * from user;
 
 delete from user;
+
+update user
+set status='active', pause_end_date=null
+where id=7
